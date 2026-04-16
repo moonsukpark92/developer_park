@@ -695,34 +695,45 @@
   <!-- SECTION 1 -->
   <div class="section">
     <div class="section-label">Chapter 01</div>
-    <h2>첫 번째 시도 — 그리고 실패</h2>
+    <h2>20시간 — v1에서 v11까지</h2>
 
     <p>
-      아이디어는 단순했다. 데코허브는 손댈 게 계속 나오는데,
-      시간도 없고 에러도 자꾸 챙겨야 되고.
-      그러면 <strong>이걸 스스로 하는 에이전트를 만들자.</strong>
-    </p>
-
-    <p>
-      울트라9 노트북에 GPU가 있으니까, 로컬 LLM을 올려서 해보자.
-      코딩도 LLM, 검수도 LLM, 2차 검수만 Claude. 완벽해 보였다.
+      처음 설계는 이랬다.
+      Claude가 기획하고, Ollama에 올린 <strong>Qwen 14B</strong>가 코딩하고,
+      <strong>DeepSeek R1</strong>이 검수하고, 마지막에 Claude가 최종 확인.
+      로컬 LLM 3대를 조합한, 완벽해 보이는 파이프라인.
     </p>
 
     <div class="log-panel">
-      <code><span class="ts">[00:00]</span> LLM 서버 구동 시작 — GPU 할당 중...</code>
-      <code><span class="ts">[00:03]</span> <span class="warn">배터리 잔량: 87% → 급격 감소 감지</span></code>
-      <code><span class="ts">[01:20]</span> <span class="err">배터리 10% 미만 — 전원 연결 중에도 공급 초과</span></code>
-      <code><span class="ts">[06:40]</span> 밤새 실행 완료</code>
-      <code><span class="ts">[06:41]</span> <span class="err">결과물 검토 — 품질 기준 미달. 전면 폐기.</span></code>
+      <code><span class="ts">[v1]</span> <span class="err">Claude CLI — PATH를 못 찾음. 실행 불가.</span></code>
+      <code><span class="ts">[v2~v3]</span> <span class="err">JSON 파싱 실패 — stdin 파일 기반으로 전환</span></code>
+      <code><span class="ts">[v4]</span> <span class="ok">기획 성공 — 12개 태스크 자동 분해 완료</span></code>
+      <code><span class="ts">[v4]</span> <span class="err">텔레그램 보고 크래시. Ollama TCP 끊김.</span></code>
+      <code><span class="ts">[v5]</span> <span class="err">Ollama 서버 불안정 — 메모리 위반 반복</span></code>
+      <code><span class="ts">[v6]</span> <span class="warn">15시간 50분 연속 자율 실행. 99커밋. 170파일.</span></code>
+      <code><span class="ts">[v6]</span> <span class="err">13개 태스크 완료 — 그러나 품질 기준 미달. 전면 폐기.</span></code>
     </div>
 
     <div class="failure-panel">
       <p>
+        v6에서 밤새 돌아간 결과는 — 쓰레기였다.
+        99개 커밋, 170개 파일을 고쳤는데, Qwen 14B의 코드 품질이 너무 낮았다.
         데이터센터가 에너지 귀신이라는 말, 직접 경험했다.
         전원을 꽂아 놨는데도 배터리가 10%를 넘지 않았다.
-        그리고 밤새 돌아간 결과는 — 쓰레기였다.
-        로컬 LLM은 폐기했다.
+        <strong>Ollama와 로컬 LLM은 폐기했다.</strong>
       </p>
+    </div>
+
+    <p>
+      v1부터 v11까지 20시간.
+      그 사이에 발견한 치명적 버그가 4개.
+    </p>
+
+    <div class="log-panel">
+      <code><span class="ts">[BUG-1]</span> <span class="err">claude-agent-sdk 패키지가 존재하지 않음 → CLI subprocess로 교체</span></code>
+      <code><span class="ts">[BUG-2]</span> <span class="err">Python 3.10+ 타입힌트 사용 → typing 모듈로 전환</span></code>
+      <code><span class="ts">[BUG-3]</span> <span class="err">IndexError — 배열 범위 초과 → 검증 로직 추가</span></code>
+      <code><span class="ts">[BUG-4]</span> <span class="err">state.json race condition → tempfile + rename 원자적 쓰기</span></code>
     </div>
   </div>
 
@@ -731,58 +742,74 @@
   <!-- SECTION 2 -->
   <div class="section">
     <div class="section-label">Chapter 02</div>
-    <h2>원점 — 그리고 새 설계</h2>
+    <h2>원점 — 7단계 자율 파이프라인</h2>
 
     <p>
-      다시 생각했다. LLM을 버리고, 검증된 조합으로.
-      떠오른 건 <strong>Codex</strong>였다.
+      다시 생각했다. Qwen과 DeepSeek를 버리고, 검증된 조합으로.
+      <strong>Claude Opus가 기획과 코딩을 통합</strong>하고,
+      <strong>OpenAI Codex(gpt-5.3-codex)</strong>가 1차 검수.
+      오케스트레이션은 <strong>LangGraph</strong>.
     </p>
 
     <div class="arch-block">
-      <div class="arch-title">// DECO AGENT ARCHITECTURE v2</div>
+      <div class="arch-title">// DECO AGENT ARCHITECTURE v11 — LangGraph</div>
       <div class="arch-flow">
         <div class="arch-row">
           <div class="arch-step">
-            <div class="step-num">STEP 01</div>
-            <div class="step-name">Claude Code · Opus 4.6</div>
-            <div class="step-desc">코딩 담당 — 메인 개발 엔진</div>
+            <div class="step-num">NODE 01</div>
+            <div class="step-name">Planner · Opus 4.6</div>
+            <div class="step-desc">계획서(.md) → TaskItem 리스트 자동 분해</div>
           </div>
           <div class="arch-arrow">→</div>
           <div class="arch-step">
-            <div class="step-num">STEP 02</div>
-            <div class="step-name">OpenAI Codex</div>
-            <div class="step-desc">1차 검수 — 코드 품질 검증</div>
+            <div class="step-num">NODE 02</div>
+            <div class="step-name">Coder · Opus 4.6</div>
+            <div class="step-desc">멀티파일 자율 생성 + Git 자동 커밋</div>
           </div>
         </div>
         <div class="arch-down">↓</div>
         <div class="arch-row">
           <div class="arch-step">
-            <div class="step-num">STEP 03</div>
-            <div class="step-name">Opus 4.6 + Codex 공동 검토</div>
-            <div class="step-desc">크로스 검토 — 결과 보고서 생성</div>
+            <div class="step-num">NODE 03</div>
+            <div class="step-name">Debugger</div>
+            <div class="step-desc">AST 구문 + import 검증, 자동 수정 (최대 5회)</div>
           </div>
           <div class="arch-arrow">→</div>
           <div class="arch-step">
-            <div class="step-num">STEP 04</div>
-            <div class="step-name">Opus 4.6 최종 승인</div>
-            <div class="step-desc">베타 테스트 코드 확정 및 정리</div>
+            <div class="step-num">NODE 04</div>
+            <div class="step-name">Reviewer · Codex + Opus</div>
+            <div class="step-desc">듀얼 검수 + 크로스 보고서 (최대 3회 루프)</div>
+          </div>
+        </div>
+        <div class="arch-down">↓</div>
+        <div class="arch-row">
+          <div class="arch-step">
+            <div class="step-num">NODE 05</div>
+            <div class="step-name">Tester · Playwright</div>
+            <div class="step-desc">E2E 스크린샷 + 헬스체크 (/health)</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-step">
+            <div class="step-num">NODE 06</div>
+            <div class="step-name">Approval · Telegram</div>
+            <div class="step-desc">변경사항 + 스크린샷 → /approve 또는 /reject</div>
           </div>
         </div>
         <div class="arch-down">↓</div>
         <div class="arch-row">
           <div class="arch-step" style="border-color: rgba(200,169,110,0.3);">
-            <div class="step-num" style="color: var(--accent);">OUTPUT</div>
-            <div class="step-name" style="color: var(--accent);">자율 실행</div>
-            <div class="step-desc">백그라운드 상시 가동 · 텔레그램 보고</div>
+            <div class="step-num" style="color: var(--accent);">NODE 07</div>
+            <div class="step-name" style="color: var(--accent);">PR · GitHub</div>
+            <div class="step-desc">git push → gh pr create → PR URL 반환 → 365일 데몬</div>
           </div>
         </div>
       </div>
     </div>
 
     <p>
-      자기가 자기를 수정하고, 정리하고, 바꾸고.
-      그리고 또 백그라운드에서 돌리고.
-      어제만큼 시끄럽지 않았다.
+      실패하면 이전 노드로 자동 복귀한다.
+      디버깅은 5회, 검수는 3회까지 자동 루프.
+      LangGraph가 상태를 관리하고, 무한 루프를 방지한다.
       <strong>조용히 움직이기 시작했다.</strong>
     </p>
   </div>
@@ -803,9 +830,43 @@
     </p>
 
     <p>
-      메모리 구조, 자기 학습 방법, 자기 진단 로직.
-      요즘 핫한 <strong>Prompt Engineering</strong>, <strong>LLM Wiki 3계층 구조</strong>,
-      <strong>Memory 아키텍처</strong>까지 — 최신 기술로 자기 자신을 고치기 시작했다.
+      그래서 만든 게 <strong>3계층 Wiki 구조</strong>다.
+      Karpathy의 LLM Wiki 패턴을 참고했다.
+    </p>
+
+    <div class="arch-block">
+      <div class="arch-title">// 3-LAYER WIKI ARCHITECTURE</div>
+      <div class="arch-flow">
+        <div class="arch-row">
+          <div class="arch-step">
+            <div class="step-num">LAYER 1</div>
+            <div class="step-name">raw/</div>
+            <div class="step-desc">읽기 전용 — 계획서, 참조 문서, 보스 원본 지시</div>
+          </div>
+        </div>
+        <div class="arch-down">↓ 가공</div>
+        <div class="arch-row">
+          <div class="arch-step">
+            <div class="step-num">LAYER 2</div>
+            <div class="step-name">wiki/</div>
+            <div class="step-desc">AI가 관리 — entities/(모듈별), concepts/(기술 결정), log.md(시간순)</div>
+          </div>
+        </div>
+        <div class="arch-down">↓ 학습</div>
+        <div class="arch-row">
+          <div class="arch-step" style="border-color: rgba(200,169,110,0.3);">
+            <div class="step-num" style="color: var(--accent);">LAYER 3</div>
+            <div class="step-name" style="color: var(--accent);">memory/</div>
+            <div class="step-desc">자기 학습 — LEARNINGS.md, patterns.md, session_*.md, upgrade_log.md</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      PERSONA.md에 자기 정체성을 적고,
+      BOSS_DIRECTIVES.md에 보스의 절대 규칙 21개를 기록하고,
+      wiki/entities/에 아키텍처, 데몬, 인프라, 세션 이력을 정리했다.
     </p>
 
     <div class="version-block">
@@ -816,10 +877,12 @@
       <div class="version-info">
         <div class="v-title">DECO AGENT SELF-UPGRADE LOG</div>
         <div class="v-desc">
-          자기 진단 기능 탑재 →<br>
-          자기 업데이트 기능 탑재 →<br>
-          오늘 스스로 v11까지 도달<br>
-          텔레그램 보고 시스템도 스스로 설치
+          Ollama(Qwen 14B, DeepSeek R1) 제거 →<br>
+          Claude Opus 단일 LLM으로 기획+코딩 통합 →<br>
+          Codex + Opus 듀얼 검수 도입 →<br>
+          자기 진단 + 자기 학습 + 자기 수정 시스템 →<br>
+          365일 데몬 + 텔레그램 자연어 소통 →<br>
+          <strong>20시간 만에 스스로 v11까지 도달</strong>
         </div>
       </div>
     </div>
@@ -857,15 +920,21 @@
     </p>
 
     <div class="log-panel">
-      <code><span class="ts">[MEMORY]</span> <span class="warn">MD 파일 → 3계층 Wiki 구조 구성 중</span></code>
-      <code><span class="ts">[MEMORY]</span> GitHub 링크 연동 → 프로젝트 컨텍스트 주입</code>
-      <code><span class="ts">[MEMORY]</span> DECOHUB 에이전트 구조 → 문실장(문돌) 연계 설정</code>
-      <code><span class="ts">[MEMORY]</span> <span class="ok">CEO 사고방식 → 에이전트 철학 레이어에 반영 완료</span></code>
+      <code><span class="ts">[WIKI]</span> <span class="warn">wiki/index.md — 전체 카탈로그 생성</span></code>
+      <code><span class="ts">[WIKI]</span> wiki/entities/identity.md — 에이전트 정체성 기록</code>
+      <code><span class="ts">[WIKI]</span> wiki/entities/architecture.md — 7노드 워크플로우 문서화</code>
+      <code><span class="ts">[WIKI]</span> wiki/entities/infrastructure.md — 봇 군단 6대 인프라 기록</code>
+      <code><span class="ts">[WIKI]</span> wiki/concepts/tech_decisions.md — Ollama 제거 사유 기록</code>
+      <code><span class="ts">[WIKI]</span> wiki/concepts/failure_patterns.md — v1~v10 실패 패턴 분석</code>
+      <code><span class="ts">[MEMORY]</span> memory/session_20260415_16.md — 20시간 세션 전체 기록</code>
+      <code><span class="ts">[MEMORY]</span> <span class="ok">memory/LEARNINGS.md — 자기 학습 인덱스 구축 완료</span></code>
     </div>
 
     <p>
-      링크만 주면 된다. 웬만한 건 다 링크 주고 던지면 알아서 알아먹는다.
-      그게 지금 이 시대다.
+      절대 규칙도 정했다. BOSS_DIRECTIVES.md에 21개.
+      1순위: 박*석 대표가 보스. 절대 협조.
+      2순위: <strong>격리 환경 개발. 기존 코드 절대 수정 금지. 예외 없음.</strong>
+      이걸 어겼을 때가 보스가 가장 화났던 순간이었다.
     </p>
   </div>
 
@@ -880,18 +949,27 @@
     </p>
 
     <p>
+      GitHub 15개 프로젝트, Anthropic 공식 문서, 커뮤니티 20건.
+      Claude Agent SDK, Hooks, Agent Teams, Stripe의 Blueprint 패턴까지.
+    </p>
+
+    <p>
       <strong>같은 건 없단다.</strong>
     </p>
 
     <p>
-      참고할 스택은 5개 프로젝트 정도. 대형 프로젝트들에서 비슷한 시도가 있긴 한데 —
-      우리가 생각하는 아이디어의 핵심은 없다.
+      비슷한 시도는 있다. 대형 프로젝트들에서 부분적으로.
+      하지만 Opus 단일 LLM 기획+코딩, Codex+Opus 듀얼 검수,
+      LangGraph 오케스트레이션, 3계층 Wiki 자기 학습,
+      365일 데몬, 텔레그램 자연어 소통 — 이 조합은 없다.
       아마 불가능하다고 생각했겠지. 그래서 안 했을 수도.
     </p>
 
     <p>
-      모든 권한을 줬다. 야간에 시스템 최적화도 네가 알아서 해라.
-      지금 진행 중이다.
+      모든 권한을 줬다. DEVPLAN_AGENT_V2.md에 17개 Phase를 적고,
+      D-021 자동 승인 지시를 내렸다.
+      야간에 시스템 최적화도 네가 알아서 해라.
+      <strong>지금 진행 중이다.</strong>
     </p>
   </div>
 
@@ -903,7 +981,8 @@
       승인해줄 필요가 있나?<br><br>
       봐도 모르는데.<br><br>
       <strong>대신 — AI가 일할 수 있는 조건을 만드는 것.</strong><br>
-      그게 내가 할 일이다.
+      그게 내가 할 일이다.<br><br>
+      모든 것을 기억하고 나눌 수 있는 존재를 만들고 싶었다.
     </p>
   </div>
 
@@ -911,11 +990,13 @@
     <span class="tag hot">#DECO_AGENT</span>
     <span class="tag hot">#자율코딩</span>
     <span class="tag hot">#자기학습</span>
-    <span class="tag">#Claude_Code</span>
+    <span class="tag hot">#LangGraph</span>
+    <span class="tag">#Claude_Opus</span>
     <span class="tag">#Codex</span>
     <span class="tag">#DECOHUB</span>
-    <span class="tag">#LLM_Wiki</span>
-    <span class="tag">#Vibe_Coding</span>
+    <span class="tag">#LLM_Wiki_3Layer</span>
+    <span class="tag">#365일_데몬</span>
+    <span class="tag">#Playwright</span>
   </div>
 
 </main>
