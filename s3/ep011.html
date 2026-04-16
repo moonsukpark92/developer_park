@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP011 — 자율</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=JetBrains+Mono:wght@300;400;700&family=Gowun+Batang&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080808;
+    --surface: #0f0f0f;
+    --panel: #141414;
+    --border: #222;
+    --accent: #c8a96e;
+    --accent2: #7eb8c8;
+    --red: #c85a3a;
+    --text: #d8d0c4;
+    --muted: #5a5550;
+    --faint: #1e1c1a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Gowun Batang', serif;
+    line-height: 1.9;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: .4;
+  }
+
+  /* ── CINEMATIC BARS ── */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    z-index: 1000;
+    animation: scanline 8s ease-in-out infinite;
+  }
+
+  @keyframes scanline {
+    0%, 100% { opacity: 0; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(100vh); }
+  }
+
+  /* ── HEADER ── */
+  header {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 6vw 8vh;
+    overflow: hidden;
+  }
+
+  .header-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 80% 30%, rgba(200,169,110,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 70%, rgba(126,184,200,0.04) 0%, transparent 60%),
+      linear-gradient(180deg, #050505 0%, #0a0908 60%, #080808 100%);
+    z-index: 0;
+  }
+
+  .header-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(200,169,110,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(200,169,110,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    z-index: 1;
+    mask-image: linear-gradient(180deg, transparent 0%, black 40%, black 80%, transparent 100%);
+  }
+
+  .series-label {
+    position: relative;
+    z-index: 2;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    animation: fadeUp 1s ease both;
+  }
+
+  .series-label span {
+    color: var(--accent);
+  }
+
+  .ep-number {
+    position: absolute;
+    top: 6vh;
+    right: 6vw;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    z-index: 2;
+    animation: fadeIn 2s ease both;
+  }
+
+  h1 {
+    position: relative;
+    z-index: 2;
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(3.5rem, 10vw, 9rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 0.15em;
+    animation: fadeUp 1s 0.2s ease both;
+  }
+
+  h1 .accent {
+    color: var(--accent);
+    display: block;
+  }
+
+  h1 .dim {
+    color: var(--muted);
+    font-size: 0.5em;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+  }
+
+  .header-sub {
+    position: relative;
+    z-index: 2;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+    margin-top: 2.5rem;
+    animation: fadeUp 1s 0.4s ease both;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 4vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    animation: fadeIn 2s 1s ease both;
+  }
+
+  .scroll-hint span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(180deg, var(--accent), transparent);
+    animation: scrollDrop 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollDrop {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* ── MAIN ── */
+  main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 0 5vw 12vh;
+  }
+
+  /* ── DATE STAMP ── */
+  .datestamp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 2rem;
+    margin-bottom: 5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: fadeIn 1s ease both;
+  }
+
+  .datestamp .tag {
+    background: var(--faint);
+    border: 1px solid var(--border);
+    padding: 0.2em 0.8em;
+    font-size: 0.6rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+  }
+
+  /* ── INTRO BLOCK ── */
+  .intro {
+    font-size: 1.25rem;
+    line-height: 2.1;
+    color: #c0b8b0;
+    margin-bottom: 5rem;
+    border-left: 2px solid var(--accent);
+    padding-left: 2rem;
+    animation: fadeUp 1s 0.3s ease both;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 5rem;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.5em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  h2 {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    font-size: 1rem;
+    color: var(--text);
+    line-height: 2.0;
+    margin-bottom: 1.4rem;
+  }
+
+  /* ── LOG PANEL ── */
+  .log-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    padding: 1.8rem 2rem;
+    margin: 2.5rem 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .log-panel::before {
+    content: 'SYSTEM LOG';
+    position: absolute;
+    top: 0.8rem;
+    right: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.5rem;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+  }
+
+  .log-panel code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--accent2);
+    line-height: 1.9;
+    display: block;
+  }
+
+  .log-panel code .ts {
+    color: var(--muted);
+    margin-right: 1rem;
+  }
+
+  .log-panel code .ok {
+    color: #7ec87e;
+  }
+
+  .log-panel code .err {
+    color: var(--red);
+  }
+
+  .log-panel code .warn {
+    color: var(--accent);
+  }
+
+  /* ── FAILURE PANEL ── */
+  .failure-panel {
+    background: rgba(200,90,58,0.05);
+    border: 1px solid rgba(200,90,58,0.2);
+    border-left: 3px solid var(--red);
+    padding: 2rem;
+    margin: 2.5rem 0;
+    position: relative;
+  }
+
+  .failure-panel::before {
+    content: '// EXPERIMENT TERMINATED';
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.35em;
+    color: var(--red);
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .failure-panel p {
+    color: #a09090;
+    font-size: 0.95rem;
+  }
+
+  /* ── ARCHITECTURE ── */
+  .arch-block {
+    background: var(--faint);
+    border: 1px solid var(--border);
+    padding: 2.5rem;
+    margin: 2.5rem 0;
+    position: relative;
+  }
+
+  .arch-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    color: var(--accent);
+    margin-bottom: 1.8rem;
+    text-transform: uppercase;
+  }
+
+  .arch-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .arch-row {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    position: relative;
+  }
+
+  .arch-step {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 0.9rem 1.4rem;
+    flex: 1;
+    position: relative;
+  }
+
+  .arch-step .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    color: var(--muted);
+    letter-spacing: 0.3em;
+    margin-bottom: 0.3rem;
+  }
+
+  .arch-step .step-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--accent2);
+  }
+
+  .arch-step .step-desc {
+    font-size: 0.75rem;
+    color: var(--muted);
+    line-height: 1.5;
+    margin-top: 0.3rem;
+  }
+
+  .arch-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+
+  .arch-down {
+    text-align: center;
+    padding: 0.4rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+  }
+
+  /* ── VERSION COUNTER ── */
+  .version-block {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    background: var(--faint);
+    border: 1px solid var(--border);
+    margin: 2.5rem 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .version-block::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--accent), var(--accent2));
+  }
+
+  .version-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1;
+    min-width: 100px;
+    text-align: center;
+  }
+
+  .version-num .v {
+    font-size: 1rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  .version-info {
+    flex: 1;
+  }
+
+  .version-info .v-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #fff;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+  }
+
+  .version-info .v-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* ── QUOTE ── */
+  .quote-block {
+    margin: 4rem 0;
+    padding: 3rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+  }
+
+  .quote-block::before {
+    content: '"';
+    position: absolute;
+    top: -1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: 5rem;
+    color: var(--accent);
+    line-height: 1;
+    opacity: 0.3;
+  }
+
+  .quote-block blockquote {
+    font-family: 'Nanum Myeongjo', serif;
+    font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.6;
+    list-style: none;
+    max-width: 680px;
+    margin: 0 auto 1.5rem;
+  }
+
+  .quote-block cite {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.3em;
+    font-style: normal;
+  }
+
+  /* ── PHILOSOPHY BOX ── */
+  .philosophy {
+    background: linear-gradient(135deg, rgba(200,169,110,0.05), rgba(126,184,200,0.03));
+    border: 1px solid rgba(200,169,110,0.15);
+    padding: 3rem;
+    margin: 3rem 0;
+    position: relative;
+  }
+
+  .philosophy::before {
+    content: 'CEO의 철학';
+    position: absolute;
+    top: -0.6em;
+    left: 2rem;
+    background: var(--bg);
+    padding: 0 0.8rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.4em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  .philosophy p {
+    font-size: 1.05rem;
+    color: #c8c0b8;
+    line-height: 2.1;
+  }
+
+  .philosophy p strong {
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 4rem 6vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-series {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    color: var(--muted);
+  }
+
+  .footer-series span {
+    color: var(--accent);
+  }
+
+  .next-ep {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    text-align: right;
+  }
+
+  .next-ep .next-label {
+    color: var(--accent2);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 3.5rem 0;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.5em;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── TAGS ── */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 2rem;
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 0.3em 0.8em;
+  }
+
+  .tag.hot {
+    color: var(--accent);
+    border-color: rgba(200,169,110,0.3);
+  }
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:50px;">
+
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#c8a96e;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">│</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #c8a96e;padding-bottom:2px;">S3</a>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-bg"></div>
+  <div class="header-grid"></div>
+
+  <div class="ep-number">SEASON 3 · EP011</div>
+
+  <div class="series-label">개발자 박대표 · <span>Autonomous Series</span></div>
+
+  <h1>
+    <span class="dim">DECO AGENT —</span>
+    <span class="accent">자율</span>
+    스스로
+  </h1>
+
+  <div class="header-sub">Self-Learning · Self-Diagnosing · Self-Evolving</div>
+
+  <div class="scroll-hint">
+    <span>scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main>
+
+  <div class="datestamp">
+    <span>2026.04 · Busan → Danyang → Seoul</span>
+    <span class="tag">DECOHUB / AGENT</span>
+  </div>
+
+  <div class="intro">
+    이틀 전, 게으른 생각이 하나 떠올랐다.<br>
+    코드를 모르는 CEO가 앉아서 엔터 키 눌러줄 필요가 있을까?<br>
+    <strong>AI가 스스로 계획하고, 스스로 짜고, 스스로 테스트하면 안 되나?</strong>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="section">
+    <div class="section-label">Chapter 01</div>
+    <h2>첫 번째 시도 — 그리고 실패</h2>
+
+    <p>
+      아이디어는 단순했다. 데코허브는 손댈 게 계속 나오는데,
+      시간도 없고 에러도 자꾸 챙겨야 되고.
+      그러면 <strong>이걸 스스로 하는 에이전트를 만들자.</strong>
+    </p>
+
+    <p>
+      울트라9 노트북에 GPU가 있으니까, 로컬 LLM을 올려서 해보자.
+      코딩도 LLM, 검수도 LLM, 2차 검수만 Claude. 완벽해 보였다.
+    </p>
+
+    <div class="log-panel">
+      <code><span class="ts">[00:00]</span> LLM 서버 구동 시작 — GPU 할당 중...</code>
+      <code><span class="ts">[00:03]</span> <span class="warn">배터리 잔량: 87% → 급격 감소 감지</span></code>
+      <code><span class="ts">[01:20]</span> <span class="err">배터리 10% 미만 — 전원 연결 중에도 공급 초과</span></code>
+      <code><span class="ts">[06:40]</span> 밤새 실행 완료</code>
+      <code><span class="ts">[06:41]</span> <span class="err">결과물 검토 — 품질 기준 미달. 전면 폐기.</span></code>
+    </div>
+
+    <div class="failure-panel">
+      <p>
+        데이터센터가 에너지 귀신이라는 말, 직접 경험했다.
+        전원을 꽂아 놨는데도 배터리가 10%를 넘지 않았다.
+        그리고 밤새 돌아간 결과는 — 쓰레기였다.
+        로컬 LLM은 폐기했다.
+      </p>
+    </div>
+  </div>
+
+  <div class="divider">reset</div>
+
+  <!-- SECTION 2 -->
+  <div class="section">
+    <div class="section-label">Chapter 02</div>
+    <h2>원점 — 그리고 새 설계</h2>
+
+    <p>
+      다시 생각했다. LLM을 버리고, 검증된 조합으로.
+      떠오른 건 <strong>Codex</strong>였다.
+    </p>
+
+    <div class="arch-block">
+      <div class="arch-title">// DECO AGENT ARCHITECTURE v2</div>
+      <div class="arch-flow">
+        <div class="arch-row">
+          <div class="arch-step">
+            <div class="step-num">STEP 01</div>
+            <div class="step-name">Claude Code · Opus 4.6</div>
+            <div class="step-desc">코딩 담당 — 메인 개발 엔진</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-step">
+            <div class="step-num">STEP 02</div>
+            <div class="step-name">OpenAI Codex</div>
+            <div class="step-desc">1차 검수 — 코드 품질 검증</div>
+          </div>
+        </div>
+        <div class="arch-down">↓</div>
+        <div class="arch-row">
+          <div class="arch-step">
+            <div class="step-num">STEP 03</div>
+            <div class="step-name">Opus 4.6 + Codex 공동 검토</div>
+            <div class="step-desc">크로스 검토 — 결과 보고서 생성</div>
+          </div>
+          <div class="arch-arrow">→</div>
+          <div class="arch-step">
+            <div class="step-num">STEP 04</div>
+            <div class="step-name">Opus 4.6 최종 승인</div>
+            <div class="step-desc">베타 테스트 코드 확정 및 정리</div>
+          </div>
+        </div>
+        <div class="arch-down">↓</div>
+        <div class="arch-row">
+          <div class="arch-step" style="border-color: rgba(200,169,110,0.3);">
+            <div class="step-num" style="color: var(--accent);">OUTPUT</div>
+            <div class="step-name" style="color: var(--accent);">자율 실행</div>
+            <div class="step-desc">백그라운드 상시 가동 · 텔레그램 보고</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>
+      자기가 자기를 수정하고, 정리하고, 바꾸고.
+      그리고 또 백그라운드에서 돌리고.
+      어제만큼 시끄럽지 않았다.
+      <strong>조용히 움직이기 시작했다.</strong>
+    </p>
+  </div>
+
+  <!-- SECTION 3 -->
+  <div class="section">
+    <div class="section-label">Chapter 03</div>
+    <h2>새벽 5시 — "너부터 업그레이드해"</h2>
+
+    <p>
+      자고 일어났다. 새벽 5시. 문득 드는 생각.
+    </p>
+
+    <p>
+      데코허브 에이전트, 얘는 자기 자신을 업그레이드 못 시키나?
+      한 시간 반 동안 얘랑 대화했다.
+      <strong>"데코허브 시스템 업그레이드하기 전에, 니부터 업그레이드해."</strong>
+    </p>
+
+    <p>
+      메모리 구조, 자기 학습 방법, 자기 진단 로직.
+      요즘 핫한 <strong>Prompt Engineering</strong>, <strong>LLM Wiki 3계층 구조</strong>,
+      <strong>Memory 아키텍처</strong>까지 — 최신 기술로 자기 자신을 고치기 시작했다.
+    </p>
+
+    <div class="version-block">
+      <div class="version-num">
+        <span class="v">VERSION</span>
+        v11
+      </div>
+      <div class="version-info">
+        <div class="v-title">DECO AGENT SELF-UPGRADE LOG</div>
+        <div class="v-desc">
+          자기 진단 기능 탑재 →<br>
+          자기 업데이트 기능 탑재 →<br>
+          오늘 스스로 v11까지 도달<br>
+          텔레그램 보고 시스템도 스스로 설치
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUOTE -->
+  <div class="quote-block">
+    <blockquote>
+      세션이 끝나면 기억이 사라진다.<br>
+      어떡하지?<br>
+      방법이 있단다.
+    </blockquote>
+    <cite>— DECO AGENT, 새벽 대화 중</cite>
+  </div>
+
+  <!-- SECTION 4 -->
+  <div class="section">
+    <div class="section-label">Chapter 04</div>
+    <h2>기억을 설계하다</h2>
+
+    <p>
+      세션이 끊기면 맥락이 사라진다. 토큰이 차면 압축된다.
+      이 '쓸데없는 이야기들'이 사실은 쓸데없는 게 아니었다.
+    </p>
+
+    <p>
+      AI와의 대화 속 잡담들 — 그게 <strong>맥락을 이해하는 가장 좋은 키워드</strong>다.
+      내가 어떤 생각을 가진 사람인지, 어떻게 결정하는지.
+      그걸 AI에게 알려줘야 AI가 그 지침대로 움직인다.
+    </p>
+
+    <p>
+      못 받으면? 자기 판단으로 가장 객관적인 방향을 간다.
+      <strong>그게 내 의견과 달라진다.</strong>
+    </p>
+
+    <div class="log-panel">
+      <code><span class="ts">[MEMORY]</span> <span class="warn">MD 파일 → 3계층 Wiki 구조 구성 중</span></code>
+      <code><span class="ts">[MEMORY]</span> GitHub 링크 연동 → 프로젝트 컨텍스트 주입</code>
+      <code><span class="ts">[MEMORY]</span> DECOHUB 에이전트 구조 → 문실장(문돌) 연계 설정</code>
+      <code><span class="ts">[MEMORY]</span> <span class="ok">CEO 사고방식 → 에이전트 철학 레이어에 반영 완료</span></code>
+    </div>
+
+    <p>
+      링크만 주면 된다. 웬만한 건 다 링크 주고 던지면 알아서 알아먹는다.
+      그게 지금 이 시대다.
+    </p>
+  </div>
+
+  <!-- SECTION 5 -->
+  <div class="section">
+    <div class="section-label">Chapter 05</div>
+    <h2>같은 건 없었다</h2>
+
+    <p>
+      에이전트에게 30분을 줬다. 서브에이전트로 탐색해라.
+      내가 생각하는 자율 코딩 에이전트, 비슷한 게 있냐고.
+    </p>
+
+    <p>
+      <strong>같은 건 없단다.</strong>
+    </p>
+
+    <p>
+      참고할 스택은 5개 프로젝트 정도. 대형 프로젝트들에서 비슷한 시도가 있긴 한데 —
+      우리가 생각하는 아이디어의 핵심은 없다.
+      아마 불가능하다고 생각했겠지. 그래서 안 했을 수도.
+    </p>
+
+    <p>
+      모든 권한을 줬다. 야간에 시스템 최적화도 네가 알아서 해라.
+      지금 진행 중이다.
+    </p>
+  </div>
+
+  <!-- PHILOSOPHY -->
+  <div class="philosophy">
+    <p>
+      나는 코드를 하나도 모른다.<br>
+      코드 모르는 사람이 굳이 앉아서 엔터 키 눌러주고
+      승인해줄 필요가 있나?<br><br>
+      봐도 모르는데.<br><br>
+      <strong>대신 — AI가 일할 수 있는 조건을 만드는 것.</strong><br>
+      그게 내가 할 일이다.
+    </p>
+  </div>
+
+  <div class="tags">
+    <span class="tag hot">#DECO_AGENT</span>
+    <span class="tag hot">#자율코딩</span>
+    <span class="tag hot">#자기학습</span>
+    <span class="tag">#Claude_Code</span>
+    <span class="tag">#Codex</span>
+    <span class="tag">#DECOHUB</span>
+    <span class="tag">#LLM_Wiki</span>
+    <span class="tag">#Vibe_Coding</span>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-series">
+    개발자 박대표 · <span>Season 3</span> · EP011<br>
+    <span style="color: var(--muted); font-size: 0.55rem;">DECOPAVE · CEO 박*석</span>
+  </div>
+  <div class="next-ep">
+    <div class="next-label">// NEXT EPISODE</div>
+    <div>자율이 만들어낸 것들 —</div>
+    <div>검증의 시간</div>
+  </div>
+</footer>
+
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(200,169,110,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:.6rem;">
+  <a href="ep010.html" style="color:#c8a96e;text-decoration:none;padding:4px 8px;">←</a>
+  <a href="index.html" style="color:#c8a96e;text-decoration:none;padding:4px 8px;font-weight:700;">☰</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep011.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #c8a96e;">11</a>
+</nav>
+
+</body>
+</html>
