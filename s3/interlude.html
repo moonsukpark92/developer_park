@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 — Interlude · AI를 조합하는 기술</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;700&family=DM+Mono:ital@0;1&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#04050a;--amber:#e8a83a;--gold:#f5c842;--dawn:#c8922a;
+  --cream:#f0e8d0;--mist:rgba(240,232,208,0.5);--fog:rgba(240,232,208,0.22);
+  --ghost:rgba(240,232,208,0.07);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background-color:var(--void);color:var(--cream);font-family:"Noto Sans KR",sans-serif;font-weight:300;line-height:1.9;overflow-x:hidden;padding-top:40px;padding-bottom:50px;}
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.5;}
+
+/* 진행 바 */
+.dawn-bar{position:fixed;top:0;left:0;height:1px;background:linear-gradient(90deg,transparent,var(--amber),transparent);width:0%;z-index:1000;transition:width 0.1s linear;}
+
+nav{position:fixed;top:36px;left:0;right:0;z-index:100;padding:1.5rem 6vw;display:flex;justify-content:space-between;align-items:center;}
+.nav-logo{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.25em;color:rgba(232,168,58,0.5);text-transform:uppercase;}
+.nav-tag{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;color:rgba(240,232,208,0.2);text-transform:uppercase;}
+
+/* 단일 풀스크린 오프닝 */
+.opening{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 6vw;overflow:hidden;}
+.opening-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(26,47,110,0.08) 0%,transparent 70%),var(--void);z-index:0;}
+
+/* 수평선 하나 */
+.horizon{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,var(--dawn) 30%,var(--amber) 50%,var(--dawn) 70%,transparent 100%);opacity:0.25;}
+
+.interlude-badge{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.35em;color:rgba(232,168,58,0.4);text-transform:uppercase;margin-bottom:2.5rem;position:relative;z-index:1;opacity:0;animation:fadeIn 1s ease 0.3s forwards;}
+
+.opening-title{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(2rem,6vw,4.5rem);line-height:1.05;letter-spacing:-0.02em;color:var(--cream);position:relative;z-index:1;opacity:0;animation:fadeUp 1s ease 0.5s forwards;}
+.opening-title em{font-style:normal;color:var(--amber);text-shadow:0 0 30px rgba(232,168,58,0.3);}
+
+.opening-sub{margin-top:2rem;font-family:"Noto Serif KR",serif;font-size:clamp(0.9rem,1.8vw,1.05rem);font-weight:300;color:var(--mist);max-width:40ch;line-height:1.9;position:relative;z-index:1;opacity:0;animation:fadeUp 0.8s ease 0.9s forwards;}
+
+.scroll-hint{position:absolute;bottom:3vh;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:0.5rem;opacity:0;animation:fadeIn 1s ease 1.4s forwards;}
+.scroll-hint span{font-family:"DM Mono",monospace;font-size:0.45rem;letter-spacing:0.3em;color:rgba(240,232,208,0.2);text-transform:uppercase;}
+.scroll-hint-line{width:1px;height:40px;background:linear-gradient(180deg,var(--amber),transparent);animation:pulse 2s ease infinite;opacity:0.4;}
+
+/* 본문 */
+.content{max-width:640px;margin:0 auto;padding:0 6vw;}
+
+/* 짧은 섹션들 */
+.interlude-block{padding:5rem 0;border-bottom:1px solid var(--ghost);}
+.interlude-block:last-child{border-bottom:none;}
+
+.block-label{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.3em;color:rgba(232,168,58,0.4);text-transform:uppercase;margin-bottom:1.5rem;}
+
+.block-text{font-family:"Noto Serif KR",serif;font-size:clamp(1rem,2.2vw,1.15rem);font-weight:300;color:rgba(240,232,208,0.8);line-height:2;margin-bottom:0;}
+
+/* 핵심 인용 — 크게 */
+.big-quote{padding:4rem 0;text-align:center;}
+.big-quote-text{font-family:"Syne",sans-serif;font-weight:700;font-size:clamp(1.4rem,3.5vw,2.2rem);line-height:1.3;color:var(--cream);letter-spacing:-0.01em;}
+.big-quote-text em{font-style:normal;color:var(--amber);}
+.big-quote-source{margin-top:1.5rem;font-family:"DM Mono",monospace;font-size:0.52rem;letter-spacing:0.2em;color:var(--fog);text-transform:uppercase;}
+
+/* 워크플로우 — 심플 가로 흐름 */
+.flow-simple{margin:3rem 0;display:flex;align-items:center;gap:0;flex-wrap:wrap;justify-content:center;row-gap:0.8rem;}
+.flow-node{font-family:"DM Mono",monospace;font-size:0.65rem;padding:0.6rem 1rem;border:1px solid rgba(240,232,208,0.08);color:rgba(240,232,208,0.6);letter-spacing:0.05em;text-align:center;white-space:nowrap;}
+.flow-node.highlight{color:var(--amber);border-color:rgba(232,168,58,0.2);background:rgba(232,168,58,0.04);}
+.flow-arrow{font-family:"DM Mono",monospace;font-size:0.7rem;color:rgba(240,232,208,0.15);padding:0 0.5rem;}
+.flow-caption{width:100%;text-align:center;margin-top:1rem;font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;color:rgba(240,232,208,0.2);text-transform:uppercase;}
+
+/* AI 특성 태그 */
+.ai-tags{margin:2rem 0;display:flex;flex-wrap:wrap;gap:0.6rem;}
+.ai-tag{font-family:"DM Mono",monospace;font-size:0.6rem;padding:0.4rem 0.9rem;letter-spacing:0.1em;}
+.ai-tag.claude{border:1px solid rgba(232,168,58,0.3);color:var(--amber);}
+.ai-tag.gemini{border:1px solid rgba(66,133,244,0.3);color:rgba(66,133,244,0.8);}
+.ai-tag.openai{border:1px solid rgba(100,200,120,0.3);color:rgba(100,200,120,0.8);}
+.ai-tag.label{border:none;color:var(--fog);padding-left:0;}
+
+/* 클로징 */
+.closing{padding:6rem 6vw 5rem;text-align:center;}
+.closing-label{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.3em;color:rgba(232,168,58,0.35);text-transform:uppercase;margin-bottom:1.5rem;}
+.closing-text{font-family:"Noto Serif KR",serif;font-size:0.95rem;color:var(--fog);line-height:1.9;max-width:38ch;margin:0 auto 2.5rem;}
+.closing-series{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;color:rgba(240,232,208,0.15);text-transform:uppercase;}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes pulse{0%,100%{opacity:0.3;}50%{opacity:0.8;}}
+
+.reveal{opacity:0;transform:translateY(24px);transition:opacity 0.9s ease,transform 0.9s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:600px){
+  .opening{padding:0 4vw;}
+  .content{padding:0 4vw;}
+  .flow-simple{flex-direction:column;align-items:flex-start;}
+  .flow-arrow{transform:rotate(90deg);}
+}
+</style>
+</head>
+<body>
+
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+
+<div class="dawn-bar" id="dawnBar"></div>
+<nav>
+  <span class="nav-logo">개발자 박대표 · S3</span>
+  <span class="nav-tag">Interlude</span>
+</nav>
+
+<!-- 오프닝 -->
+<div class="opening">
+  <div class="opening-bg"></div>
+  <div class="horizon"></div>
+
+  <div class="interlude-badge">Interlude · 쉬어가기</div>
+
+  <h1 class="opening-title">
+    AI를<br>
+    <em>조합하는</em><br>
+    기술
+  </h1>
+
+  <p class="opening-sub">
+    각각의 AI는 잘하는 것이 다르다.<br>
+    그 특성을 알고 조합하는 것.<br>
+    그게 이 시대의 기술이다.
+  </p>
+
+  <div class="scroll-hint">
+    <div class="scroll-hint-line"></div>
+    <span>계속</span>
+  </div>
+</div>
+
+<!-- 본문 -->
+<main class="content">
+
+  <div class="interlude-block">
+    <div class="block-label reveal">기술의 속도</div>
+    <p class="block-text reveal">
+      AI vibe coding을 하면서 느낀 게 있다. 기술은 엄청나게 빠른 속도로 만들어지고 변화되고 있다. AI는 거의 매일 바뀐다. 어떤 기술을 받아들이고 활용한다는 게 정말 힘들 정도로 발전이 빠르다.
+    </p>
+    <p class="block-text reveal">
+      심지어 오늘 나온 기술 중 하나는 Claude Code에서 ChatGPT의 Codex를 불러와 협업하듯 일하는 기능이다. AI들이 서로 연결되기 시작했다.
+    </p>
+  </div>
+
+  <div class="interlude-block">
+    <div class="block-label reveal">검색의 방법론</div>
+    <p class="block-text reveal">
+      인터넷 서칭은 정밀도가 떨어진다. 이제는 GitHub에서 관련 자료를 찾고, Anthropic 공식 문서를 직접 서치해서 정리해두는 것이 더 빠르고 정확하다. 전문 소스를 직접 뒤지는 것이 방법론이 됐다.
+    </p>
+  </div>
+
+  <div class="interlude-block">
+    <div class="block-label reveal">각 AI의 특성을 파악하라</div>
+    <p class="block-text reveal">
+      YouTube 동영상 링크를 Claude에게 주고 분석해달라고 하면 잘 못한다. 동영상 분석 기능이 없다. 하지만 Gemini는 YouTube 링크를 주면 생각보다 분석을 잘하고 정리를 잘한다. YouTube가 구글 것이니까.
+    </p>
+
+    <div class="ai-tags reveal">
+      <span class="ai-tag label">잘하는 것 →</span>
+      <span class="ai-tag claude">Claude · 코드 / 문서 / 구조화</span>
+      <span class="ai-tag gemini">Gemini · YouTube 분석 / 검색 연동</span>
+      <span class="ai-tag openai">Codex · 코드 특화 협업</span>
+    </div>
+
+    <p class="block-text reveal">
+      각 AI와 LLM의 특성값을 잘 알면 복합적으로 사용할 수 있다. 하나로 모든 걸 해결하려 하지 않는 것. 잘하는 것을 맡기는 것이 방법이다.
+    </p>
+  </div>
+
+  <div class="interlude-block">
+    <div class="block-label reveal">Gemini → Claude 파이프라인</div>
+    <p class="block-text reveal">
+      새로운 기술을 프로젝트에 이식하는 방법이 생겼다.
+    </p>
+
+    <div class="flow-simple reveal">
+      <div class="flow-node">YouTube 영상 링크</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight">Gemini 분석</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">MD 파일 변환</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight">Claude Code에 투입</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node">관련 자료 추가 서칭</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node highlight">프로젝트 보강</div>
+      <div class="flow-caption">새로운 기술 하나를 심플하게 이식하는 파이프라인</div>
+    </div>
+
+    <p class="block-text reveal">
+      Gemini로 YouTube 영상을 분석해 MD 파일로 만들고, 그걸 Claude Code에 가져와 관련 자료를 추가로 서치하게 해 MD 파일을 완성한 뒤, 현재 진행 중인 프로젝트에 넣어 프로그램을 보강한다. 완전히 새로운 기술 하나를 아주 심플하게 이식할 수 있는 방법이 됐다.
+    </p>
+  </div>
+
+  <!-- 핵심 인용 -->
+  <div class="big-quote reveal">
+    <div class="big-quote-text">
+      AI 시대는<br>
+      각 AI의 특성과 기능을<br>
+      <em>어떻게 최적화해서 조합하느냐</em>가<br>
+      그 사람의 기술이다.
+    </div>
+    <div class="big-quote-source">Season 3 · Interlude · 개발자 박대표</div>
+  </div>
+
+  <div class="interlude-block">
+    <div class="block-label reveal">이 시대를 사는 방법</div>
+    <p class="block-text reveal">
+      방법론을 찾아서 정리하는 것. 어떤 도구를 언제 쓰는지 아는 것. 각각이 가진 특성을 이해하고 연결하는 것. 결국 AI 시대를 살아가는 방법은 AI 하나를 잘 쓰는 것이 아니라, AI들을 어떻게 조합할 것인지 아는 것이다.
+    </p>
+  </div>
+
+</main>
+
+<footer class="closing">
+  <div class="closing-label">Interlude · 끝</div>
+  <p class="closing-text">
+    정식 에피소드 사이, 잠깐 멈추고 생각한 것들.<br>
+    기술은 계속 바뀌지만 방법론은 남는다.
+  </p>
+  <div class="closing-series">Decopave Co., Ltd. · 개발자 박대표 · Season 3 · 2026</div>
+</footer>
+
+<script>
+const bar=document.getElementById("dawnBar");
+window.addEventListener("scroll",()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  bar.style.width=pct+"%";
+});
+const reveals=document.querySelectorAll(".reveal");
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){setTimeout(()=>e.target.classList.add("visible"),i*50);obs.unobserve(e.target);}
+  });
+},{threshold:0.1,rootMargin:"0px 0px -40px 0px"});
+reveals.forEach(el=>obs.observe(el));
+</script>
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
+  <a href="ep005.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep006.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+</nav>
+</body>
+</html>

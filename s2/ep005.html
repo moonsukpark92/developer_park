@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 시즌2 #005 — 이해하는 기술이 필요하다</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --bg: #06070b;
+    --surface: #0d0f15;
+    --accent: #f59e0b;
+    --accent-dim: #92400e;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --purple: #8b5cf6;
+    --teal: #14b8a6;
+    --orange: #f97316;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(245,158,11,.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Noto Serif KR',serif; overflow-x:hidden; padding-top:40px; padding-bottom:50px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes pulse { 0%,100%{opacity:.6} 50%{opacity:1} }
+  @keyframes spin { from{transform:rotate(0)} to{transform:rotate(360deg)} }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height:100vh; display:flex; flex-direction:column;
+    justify-content:center; padding:80px 8vw;
+    position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 50% 50% at 20% 40%, rgba(245,158,11,.06) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 80% 60%, rgba(59,130,246,.04) 0%, transparent 60%);
+  }
+  .hero-season {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:6px; color:var(--accent-dim); text-transform:uppercase;
+    margin-bottom:12px; opacity:0; animation:fadeUp .7s .1s forwards;
+  }
+  .hero-ep {
+    font-family:'JetBrains Mono',monospace; font-size:.65rem;
+    letter-spacing:5px; color:var(--accent); text-transform:uppercase;
+    margin-bottom:36px; opacity:0; animation:fadeUp .7s .3s forwards;
+  }
+  .hero-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(2rem,5.5vw,4.8rem); line-height:1.12;
+    opacity:0; animation:fadeUp .7s .5s forwards; max-width:800px;
+  }
+  .hero-title .a { color:var(--accent); }
+  .hero-title .b { color:var(--blue); }
+  .hero-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:clamp(.85rem,1.5vw,1.05rem); line-height:2;
+    color:rgba(255,255,255,.45); margin-top:32px; max-width:600px;
+    opacity:0; animation:fadeUp .7s .7s forwards;
+  }
+  .hero-date {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:3px; color:var(--muted);
+    margin-top:48px; opacity:0; animation:fadeUp .7s .9s forwards;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section { padding:100px 8vw; position:relative; }
+  .section.dark { background:var(--bg); }
+  .section.surface { background:var(--surface); }
+  .section.gradient { background:linear-gradient(180deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%); }
+
+  .ch-label {
+    font-family:'JetBrains Mono',monospace; font-size:.58rem;
+    letter-spacing:4px; text-transform:uppercase; margin-bottom:14px;
+  }
+  .ch-label.amber { color:var(--accent); }
+  .ch-label.blue { color:var(--blue); }
+  .ch-label.green { color:var(--green); }
+  .ch-label.red { color:var(--red); }
+  .ch-label.purple { color:var(--purple); }
+  .ch-label.teal { color:var(--teal); }
+
+  .ch-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.6rem,4vw,3rem); line-height:1.2;
+    margin-bottom:40px; max-width:700px;
+  }
+
+  .prose {
+    font-family:'Noto Serif KR',serif; font-weight:300;
+    font-size:1.02rem; line-height:2.1;
+    color:rgba(255,255,255,.72); max-width:680px;
+  }
+  .prose strong { color:#fff; font-weight:700; }
+  .prose .a { color:var(--accent); font-weight:700; }
+  .prose .b { color:#60a5fa; font-weight:700; }
+  .prose .g { color:var(--green); font-weight:700; }
+  .prose .r { color:var(--red); font-weight:700; }
+  .prose .v { color:var(--purple); font-weight:700; }
+  .prose .t { color:var(--teal); font-weight:700; }
+  .prose + .prose { margin-top:28px; }
+
+  /* TERMINAL */
+  .terminal {
+    background:#0d1117; border:1px solid rgba(255,255,255,.08);
+    border-radius:12px; overflow:hidden;
+    margin:40px auto; max-width:700px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .terminal.active {
+    border-color:rgba(34,197,94,.2);
+    box-shadow:0 0 30px rgba(34,197,94,.05);
+  }
+  .term-bar {
+    background:#161b22; padding:10px 16px;
+    display:flex; align-items:center; gap:7px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .term-dot { width:10px; height:10px; border-radius:50%; }
+  .term-dot.r { background:#ff5f57; }
+  .term-dot.y { background:#febc2e; }
+  .term-dot.g { background:#28c840; }
+  .term-name { font-size:.65rem; color:var(--muted); margin-left:auto; letter-spacing:1px; }
+  .term-body { padding:20px; }
+  .term-line { font-size:.78rem; line-height:1.9; color:rgba(255,255,255,.6); }
+  .term-line .prompt { color:var(--green); }
+  .term-line .cmd { color:#fff; }
+  .term-line .comment { color:var(--muted); font-style:italic; }
+  .term-line .success { color:var(--green); }
+  .term-line .warn { color:var(--accent); }
+  .term-line .err { color:var(--red); }
+  .term-line .info { color:var(--blue); }
+
+  /* BLOCKQUOTE */
+  .bq {
+    border-left:3px solid var(--accent);
+    padding:20px 28px; margin:36px 0;
+    background:rgba(245,158,11,.04);
+    border-radius:0 10px 10px 0; max-width:680px;
+  }
+  .bq.blue { border-left-color:var(--blue); background:rgba(59,130,246,.04); }
+  .bq.green { border-left-color:var(--green); background:rgba(34,197,94,.04); }
+  .bq.red { border-left-color:var(--red); background:rgba(239,68,68,.04); }
+  .bq.purple { border-left-color:var(--purple); background:rgba(139,92,246,.04); }
+  .bq.teal { border-left-color:var(--teal); background:rgba(20,184,166,.04); }
+  .bq p {
+    font-family:'Noto Serif KR',serif; font-size:1rem;
+    line-height:1.85; font-style:italic; color:rgba(255,255,255,.85);
+  }
+  .bq-attr {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    color:rgba(255,255,255,.25); letter-spacing:2px; margin-top:10px;
+  }
+
+  /* INSIGHT */
+  .insight {
+    background:linear-gradient(135deg, rgba(245,158,11,.06) 0%, rgba(59,130,246,.04) 100%);
+    border:1px solid rgba(245,158,11,.15);
+    border-radius:14px; padding:32px 28px;
+    margin:40px 0; max-width:680px; position:relative;
+  }
+  .insight::before {
+    content:'💡'; position:absolute; top:-14px; left:24px;
+    font-size:1.4rem; background:var(--bg); padding:0 8px;
+  }
+  .insight-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:.95rem; color:var(--accent); margin-bottom:12px;
+  }
+  .insight p {
+    font-family:'Noto Serif KR',serif; font-size:.95rem;
+    line-height:1.9; color:rgba(255,255,255,.75);
+  }
+
+  /* SPLIT COMPARE */
+  .split-compare {
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+    margin:40px 0; max-width:680px;
+  }
+  .sc-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:24px; text-align:center;
+  }
+  .sc-card.no { border-color:rgba(239,68,68,.2); }
+  .sc-card.yes { border-color:rgba(34,197,94,.2); }
+  .sc-icon { font-size:2rem; margin-bottom:12px; }
+  .sc-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:1rem; margin-bottom:8px;
+  }
+  .sc-card.no .sc-title { color:var(--red); }
+  .sc-card.yes .sc-title { color:var(--green); }
+  .sc-desc {
+    font-family:'Noto Sans KR',sans-serif; font-size:.8rem;
+    line-height:1.7; color:var(--muted);
+  }
+
+  /* TIMELINE */
+  .timeline {
+    margin:48px 0; max-width:680px; position:relative; padding-left:32px;
+  }
+  .timeline::before {
+    content:''; position:absolute; left:10px; top:0; bottom:0;
+    width:2px; background:linear-gradient(180deg, var(--accent), var(--green));
+  }
+  .tl-item { position:relative; margin-bottom:36px; padding-left:24px; }
+  .tl-item::before {
+    content:''; position:absolute; left:-26px; top:6px;
+    width:12px; height:12px; border-radius:50%;
+    border:2px solid; background:var(--bg);
+  }
+  .tl-item.amber::before { border-color:var(--accent); }
+  .tl-item.green::before { border-color:var(--green); }
+  .tl-item.blue::before { border-color:var(--blue); }
+  .tl-time {
+    font-family:'JetBrains Mono',monospace; font-size:.65rem;
+    letter-spacing:2px; margin-bottom:6px;
+  }
+  .tl-item.amber .tl-time { color:var(--accent); }
+  .tl-item.green .tl-time { color:var(--green); }
+  .tl-item.blue .tl-time { color:var(--blue); }
+  .tl-text {
+    font-family:'Noto Sans KR',sans-serif; font-size:.88rem;
+    line-height:1.7; color:rgba(255,255,255,.7);
+  }
+  .tl-text strong { color:#fff; }
+
+  /* DIVIDER */
+  .divider {
+    width:60px; height:2px; margin:60px auto;
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  /* CLOSING */
+  .closing {
+    min-height:80vh; display:flex; flex-direction:column;
+    justify-content:center; align-items:center;
+    text-align:center; padding:80px 8vw;
+    background:
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(245,158,11,.04) 0%, transparent 70%),
+      var(--bg);
+  }
+  .closing-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.8rem,5vw,3.6rem); line-height:1.25; margin-bottom:28px;
+  }
+  .closing-title .a { color:var(--accent); }
+  .closing-title .g { color:var(--green); }
+  .closing-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:1rem; line-height:2; color:rgba(255,255,255,.5); max-width:560px;
+  }
+
+  @media(max-width:768px){
+    .hero,.section,.closing { padding-left:6vw; padding-right:6vw; }
+    .split-compare { grid-template-columns:1fr; }
+    .terminal { max-width:100%; }
+  }
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(234,179,8,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#eab308;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">│</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #eab308;padding-bottom:2px;">S2</a>
+  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-season">SEASON 2 — 전환점</div>
+  <div class="hero-ep">Episode 005</div>
+  <h1 class="hero-title">
+    코딩하는 기술은<br>
+    필요 <span class="a">없다</span><br>
+    <span class="b">이해하는 기술</span>은<br>
+    필요하다
+  </h1>
+  <p class="hero-sub">
+    두 달째. 모르니까 빙빙 돌아가고 있었다.<br>
+    이제 진짜 하나하나 제대로 알아야 할 시기가 됐다.<br>
+    그리고 오늘 아침, 문득 생각이 들었다 —<br>
+    "직원들의 익숙함도 자산이다."
+  </p>
+  <div class="hero-date">2026.04.05 — DECOPAVE Inc.</div>
+</section>
+
+<!-- ===== CH01: 두 달의 깨달음 ===== -->
+<section class="section gradient">
+  <div class="ch-label amber">Chapter 01</div>
+  <h2 class="ch-title">
+    <span style="color:var(--accent)">두 달</span>째,<br>
+    빙빙 돌아가고 있었다
+  </h2>
+
+  <div class="prose">
+    <p>
+      어제부터 많은 부분이 변화가 있었다.
+      시스템을 직접 개발하고, 만들고, 정리하면서 느낀 것이 많다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="a">좀 더 배워야 한다. 공부해야 된다.</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>모르니까 빙빙 돌아가는 거다.</strong>
+      지금 두 달째다.
+      리눅스도 공부해야 되고,
+      진짜 기능을 하나하나 제대로 알아야 될 시기가 된 것이다.
+    </p>
+  </div>
+
+  <div class="split-compare">
+    <div class="sc-card no">
+      <div class="sc-icon">✗</div>
+      <div class="sc-title">코딩하는 기술</div>
+      <div class="sc-desc">필요 없다.<br>AI가 코드를 쓴다.<br>그건 AI의 영역이다.</div>
+    </div>
+    <div class="sc-card yes">
+      <div class="sc-icon">✓</div>
+      <div class="sc-title">이해하는 기술</div>
+      <div class="sc-desc">필요하다.<br>구조를 이해하고,<br>방향을 제시하는 것.<br>그건 CEO의 영역이다.</div>
+    </div>
+  </div>
+
+  <div class="bq">
+    <p>코딩하는 기술은 필요 없다.<br>
+    <strong>이해하는 기술은 필요하다.</strong><br><br>
+    이 차이를 아는 데 두 달이 걸렸다.</p>
+    <div class="bq-attr">— 박문석 대표, 2026.04.05</div>
+  </div>
+</section>
+
+<!-- ===== CH02: 익숙함이라는 자산 ===== -->
+<section class="section dark">
+  <div class="ch-label blue">Chapter 02</div>
+  <h2 class="ch-title">
+    오늘 아침,<br>
+    <span style="color:#60a5fa">문득</span> 생각이 들었다
+  </h2>
+
+  <div class="prose">
+    <p>
+      기존 우리가 쓰고 있는 ERP.
+      직원들이 되게 익숙하지 않나.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      그런데 그 <span class="b">익숙함도 자산</span>이라는 생각이 들었다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      그 익숙한 자산을 어떻게 이용하지?
+      문득 생각이 들었다 —
+      <strong>지금 쓰고 있는 ERP에서 직원들이 잘 쓰고 있는 기능들,
+      그걸 그대로 가져오면 DECOHUB에서 사용할 수 있지 않나?</strong>
+    </p>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">오늘 아침의 인사이트</div>
+    <p>
+      새로운 시스템을 만드는 게 아니라,<br>
+      <strong>익숙한 것 위에 새로운 것을 얹는 것.</strong><br>
+      직원들이 이미 잘 쓰는 화면, 이미 익힌 프로세스 —<br>
+      그것을 DECOHUB으로 옮기면 교육이 필요 없다.
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH03: ERP에 대한 불만 ===== -->
+<section class="section surface">
+  <div class="ch-label red">Chapter 03</div>
+  <h2 class="ch-title">
+    근데 <span style="color:var(--red)">짜증</span>이 난다
+  </h2>
+
+  <div class="prose">
+    <p>
+      클로드에게 물었다.
+      "ERP 시스템 그대로 가져올 수 있어?"
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      할 수는 있단다.
+      기술적인 문제가 있고, 뭐 어쩌고저쩌고
+      장황한 이야기를 하길래 — 말했다.
+    </p>
+  </div>
+
+  <div class="bq red">
+    <p>"나 그냥 이거 불편해서 다 쓰려고 하는 게 아니야.<br>
+    우리가 익숙한 것, 데이터베이스, 다 <strong>우리 회사 자산</strong>인데<br>
+    뭐만 하면 돈 달라잖아."</p>
+    <div class="bq-attr">— 박문석 대표, ERP 벤더에 대한 솔직한 심정</div>
+  </div>
+
+  <div class="prose">
+    <p>
+      살짝 짜증도 나고, 엉망이고.
+      내가 생각해도 — <span class="r">이 정도 코드로 이렇게밖에 못 짜?</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      물론 그 사람들도 범용성에 맞춰서 개발한 거니까 그럴 수 있다.
+      그럼 <strong>처음부터 설계를 이렇게 하지 말지</strong> 하는 생각이 들었다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="a">그래서 시작했다.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH04: 새벽의 지시 ===== -->
+<section class="section gradient">
+  <div class="ch-label green">Chapter 04</div>
+  <h2 class="ch-title">
+    <span style="color:var(--green)">새벽</span>,<br>
+    골프장 가기 전
+  </h2>
+
+  <div class="prose">
+    <p>
+      새벽. 골프장에 가야 된다.
+      나오면서 클로드에게 질문을 했다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>"너 이거 할 수 있어?"</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      할 수 있단다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>"해봐라."</strong>
+    </p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item amber">
+      <div class="tl-time">지시 1</div>
+      <div class="tl-text">"나 나가니까 <strong>승인도 네가 알아서 해.</strong>"</div>
+    </div>
+    <div class="tl-item amber">
+      <div class="tl-time">지시 2</div>
+      <div class="tl-text">"일단 <strong>먼저 승인부터 해라.</strong> 오늘은 네가 할 수밖에 없다. 나는 없으니까."</div>
+    </div>
+    <div class="tl-item blue">
+      <div class="tl-time">지시 3</div>
+      <div class="tl-text">"ERP에 대해서 <strong>처음부터 끝까지</strong> 네가 들어갈 수 있는 모든 곳을 다 분석해."</div>
+    </div>
+    <div class="tl-item blue">
+      <div class="tl-time">지시 4</div>
+      <div class="tl-text">"화면 <strong>캡처</strong>하고, <strong>분석</strong>하고, <strong>DB도 다 다운받아라.</strong>"</div>
+    </div>
+    <div class="tl-item green">
+      <div class="tl-time">지시 5</div>
+      <div class="tl-text">"DB 구조도 <strong>네가 분석해.</strong> 아주 좋은 방식이다. 해봐라."</div>
+    </div>
+  </div>
+
+  <div class="terminal active">
+    <div class="term-bar">
+      <div class="term-dot r"></div>
+      <div class="term-dot y"></div>
+      <div class="term-dot g"></div>
+      <span class="term-name">claude-code — ERP 전수 분석 (자율 모드)</span>
+    </div>
+    <div class="term-body">
+      <div class="term-line"><span class="success">✓ 승인 권한 위임 확인 — 자율 모드 ON</span></div>
+      <div class="term-line"><span class="info">→ ERP 로그인 시도...</span></div>
+      <div class="term-line"><span class="success">✓ 로그인 성공</span></div>
+      <div class="term-line"><span class="info">→ 전체 메뉴 트리 스캔 중...</span></div>
+      <div class="term-line"><span class="info">→ 화면별 스크린샷 캡처 중...</span></div>
+      <div class="term-line"><span class="info">→ DB 테이블 구조 다운로드 중...</span></div>
+      <div class="term-line"><span class="info">→ 테이블 간 관계 분석 중...</span></div>
+      <div class="term-line"><span class="info">→ 데이터 모델 역공학 중...</span></div>
+      <div class="term-line"><span class="warn">⚡ 대표님 골프 중 — AI 자율 작업 계속...</span></div>
+    </div>
+  </div>
+
+  <div class="bq green">
+    <p>골프장에서 돌아오면 — AI는 일을 해놨겠지?<br>
+    <strong>그게 AI 시대다.</strong><br>
+    CEO는 CEO의 일을 하고,<br>
+    AI는 AI의 일을 한다.</p>
+    <div class="bq-attr">— 골프장으로 향하며</div>
+  </div>
+</section>
+
+<!-- ===== CH05: AI에게 자율권을 주다 ===== -->
+<section class="section dark">
+  <div class="ch-label purple">Chapter 05</div>
+  <h2 class="ch-title">
+    <span style="color:#c084fc">승인도</span><br>
+    네가 알아서 해
+  </h2>
+
+  <div class="prose">
+    <p>
+      이 말이 의미하는 것.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      두 달 전만 해도 — AI에게 한 줄 한 줄 확인받고 진행했다.
+      "이거 해도 돼?" "네." "그럼 해."
+      매번 승인. 매번 확인. 매번 대기.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      지금은 다르다.<br>
+      <span class="v">"나 나가니까 승인도 네가 알아서 하고."</span><br>
+      이 한마디에 — 두 달간 쌓아온 <strong>신뢰</strong>가 들어있다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      AI가 ERP에 접속해서 —
+      모든 화면을 캡처하고,
+      모든 DB를 다운받고,
+      구조를 분석하고,
+      보고서를 만드는 동안 —
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>나는 골프장에서 대표의 일을 하고 있다.</strong>
+      사람을 만나고, 관계를 만들고, 사업을 이야기한다.
+    </p>
+  </div>
+
+  <div class="bq purple">
+    <p>AI에게 자율권을 준다는 것.<br>
+    그건 기술의 문제가 아니라 <strong>신뢰의 문제</strong>다.<br>
+    두 달간 매일 같이 일하면서 —<br>
+    그 신뢰가 만들어진 것이다.</p>
+    <div class="bq-attr">— 두 달의 협업이 만든 결과</div>
+  </div>
+</section>
+
+<!-- ===== CH06: 이번 한 주 ===== -->
+<section class="section surface">
+  <div class="ch-label teal">Chapter 06</div>
+  <h2 class="ch-title">
+    이번 한 주도<br>
+    <span style="color:var(--teal)">재밌는 일</span>이 많아질 것 같다
+  </h2>
+
+  <div class="prose">
+    <p>
+      골프장에서 돌아오면 —
+      AI는 ERP 전체를 분석해 놨을 것이다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      화면 구조, DB 테이블 관계, 데이터 모델 —
+      지금까지 ERP 벤더한테 돈 주고 물어봐야 했던 것들을
+      <span class="t">AI가 직접 역공학으로 분석해 놓은 것이다.</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      그러면 다음 단계는 뭘까.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>직원들이 익숙한 ERP 화면</strong> →
+      그대로 DECOHUB으로 옮긴다.
+      데이터도, 화면도, 프로세스도.
+      <span class="a">익숙함 위에 AI를 얹는다.</span>
+    </p>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">이번 주 방향</div>
+    <p>
+      <strong>1.</strong> ERP 분석 결과 검토 — AI가 정리해 놓은 화면/DB/구조<br>
+      <strong>2.</strong> 직원이 잘 쓰는 기능 선별 — 익숙한 것을 살린다<br>
+      <strong>3.</strong> DECOHUB에 이식 설계 — 익숙함 + AI = 최강 조합<br>
+      <strong>4.</strong> 서버 구축 진행 — 자체 LLM 테스트 시작<br>
+      <strong>5.</strong> 리눅스 공부 — 이해하는 기술 레벨업
+    </p>
+  </div>
+
+  <div class="bq teal">
+    <p>이번 한 주도 되게 복잡하고<br>
+    <strong>재밌는 일들이 많아질 것 같다.</strong></p>
+    <div class="bq-attr">— 박문석 대표, 일요일 아침</div>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section class="closing">
+  <h2 class="closing-title">
+    CEO는 <span class="a">골프</span>를 치고<br>
+    AI는 <span class="g">일</span>을 한다
+  </h2>
+  <p class="closing-sub">
+    코딩하는 기술은 필요 없다.<br>
+    이해하는 기술은 필요하다.<br><br>
+    직원들의 익숙함도 자산이다.<br>
+    ERP 데이터도 우리 회사 자산이다.<br>
+    그 자산 위에 AI를 얹는 것.<br>
+    <strong style="color:#fff;">그것이 DECOHUB의 다음 단계다.</strong><br><br>
+    새벽에 지시하고, 골프장에 가고,<br>
+    돌아오면 AI가 일을 해놓는다.<br><br>
+    두 달이 만든 신뢰.<br>
+    이제 <strong style="color:var(--accent);">진짜가 시작된다.</strong>
+  </p>
+
+  <div class="divider" style="margin-top:60px;margin-bottom:32px;"></div>
+
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">
+    개발자 박대표 시즌2 — 계속됩니다
+  </p>
+  <p style="font-family:'Noto Sans KR',sans-serif;font-size:.7rem;color:rgba(255,255,255,.2);margin-top:16px;">
+    (주)데코페이브 | 대표이사 박문석 | DECOPAVE Co., LTD.<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&D: 서울<br><br>
+    ⚠️ 이 블로그는 Claude AI를 기반으로 하는 (주)데코페이브 경영지원실장 문돌봇의 도움으로 작성되었습니다.<br>
+    AI가 만든 글이니 실수할 수 있습니다. 다시 한번 잘 확인해주세요. ㅎㅎㅎ
+  </p>
+</section>
+
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(234,179,8,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.65rem;">
+  <a href="ep004.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">←</a>
+  <a href="index.html" style="color:#eab308;text-decoration:none;padding:4px 8px;font-weight:700;">☰</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">04</a>
+  <a href="ep005.html" style="color:#fff;text-decoration:none;padding:4px 6px;font-weight:700;border-bottom:2px solid #eab308;">05</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">07</a>
+  <a href="epilogue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">EP</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">FIN</a>
+  <a href="ep006.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">→</a>
+</nav>
+</body>
+</html>

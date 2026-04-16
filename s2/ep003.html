@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 시즌2 #003 — 리눅스가 가르쳐 준 것</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg: #020604;
+    --surface: #0a0f0c;
+    --accent: #22c55e;
+    --accent-dim: #166534;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --teal: #14b8a6;
+    --purple: #a855f7;
+    --text: #d4e7d9;
+    --muted: #4a7a5a;
+    --border: rgba(34,197,94,.1);
+    --glow: rgba(34,197,94,.06);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Noto Serif KR',serif; overflow-x:hidden; padding-top:40px; padding-bottom:50px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes typewriter { from{width:0} to{width:100%} }
+  @keyframes cursor { 0%,100%{border-right-color:var(--accent)} 50%{border-right-color:transparent} }
+  @keyframes scanDown { 0%{top:-2px} 100%{top:calc(100% + 2px)} }
+  @keyframes pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+  @keyframes flicker { 0%,100%{opacity:1} 92%{opacity:1} 93%{opacity:.7} 94%{opacity:1} 96%{opacity:.8} 97%{opacity:1} }
+  @keyframes glowPulse { 0%,100%{text-shadow:0 0 8px rgba(34,197,94,.3)} 50%{text-shadow:0 0 20px rgba(34,197,94,.6)} }
+
+  /* ===== HERO — RETRO TERMINAL ===== */
+  .hero {
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:80px 8vw;
+    position:relative; overflow:hidden;
+    background:#000;
+  }
+
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse 60% 60% at 50% 50%, rgba(34,197,94,.04) 0%, transparent 70%);
+  }
+
+  .hero::after {
+    content:''; position:absolute; inset:0;
+    background:repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(34,197,94,.015) 2px, rgba(34,197,94,.015) 4px
+    );
+    pointer-events:none;
+  }
+
+  .hero-scanline {
+    position:absolute; left:0; right:0; height:2px;
+    background:linear-gradient(90deg, transparent, rgba(34,197,94,.06), transparent);
+    animation:scanDown 5s linear infinite;
+    pointer-events:none;
+  }
+
+  .hero-season {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:6px; color:var(--accent-dim); text-transform:uppercase;
+    margin-bottom:12px;
+    opacity:0; animation:fadeUp .7s .1s forwards;
+  }
+
+  .hero-ep {
+    font-family:'JetBrains Mono',monospace; font-size:.65rem;
+    letter-spacing:5px; color:var(--accent); text-transform:uppercase;
+    margin-bottom:36px;
+    opacity:0; animation:fadeUp .7s .3s forwards;
+  }
+
+  .hero-title {
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:clamp(2rem,5.5vw,4.5rem); line-height:1.15;
+    color:var(--accent);
+    animation:fadeUp .7s .5s forwards, glowPulse 4s 1.5s infinite;
+    opacity:0;
+    max-width:800px;
+  }
+
+  .hero-title .white { color:#e2e8f0; }
+  .hero-title .dim { color:var(--muted); }
+
+  .hero-prompt {
+    font-family:'JetBrains Mono',monospace; font-size:1rem;
+    color:var(--accent); margin-top:40px;
+    opacity:0; animation:fadeUp .7s .7s forwards;
+  }
+  .hero-prompt .cursor-blink {
+    display:inline-block; width:10px; height:1.2em;
+    background:var(--accent); vertical-align:text-bottom;
+    animation:blink 1s step-end infinite;
+    margin-left:4px;
+  }
+
+  .hero-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:clamp(.85rem,1.5vw,1rem); line-height:2;
+    color:rgba(34,197,94,.4); margin-top:24px; max-width:600px;
+    opacity:0; animation:fadeUp .7s .9s forwards;
+  }
+
+  .hero-date {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:3px; color:var(--muted);
+    margin-top:48px; opacity:0; animation:fadeUp .7s 1.1s forwards;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section { padding:100px 8vw; position:relative; }
+  .section.dark { background:var(--bg); }
+  .section.surface { background:var(--surface); }
+  .section.gradient { background:linear-gradient(180deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%); }
+  .section.deep { background:linear-gradient(180deg, #010302 0%, var(--bg) 100%); }
+
+  .ch-label {
+    font-family:'JetBrains Mono',monospace; font-size:.58rem;
+    letter-spacing:4px; text-transform:uppercase; margin-bottom:14px;
+  }
+  .ch-label.green { color:var(--accent); }
+  .ch-label.amber { color:var(--amber); }
+  .ch-label.blue { color:var(--blue); }
+  .ch-label.red { color:var(--red); }
+  .ch-label.teal { color:var(--teal); }
+  .ch-label.purple { color:var(--purple); }
+
+  .ch-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.6rem,4vw,3rem); line-height:1.2;
+    margin-bottom:40px; max-width:700px;
+  }
+
+  .prose {
+    font-family:'Noto Serif KR',serif; font-weight:300;
+    font-size:1.02rem; line-height:2.1;
+    color:rgba(255,255,255,.72); max-width:680px;
+  }
+  .prose strong { color:#fff; font-weight:700; }
+  .prose .g { color:var(--accent); font-weight:700; }
+  .prose .a { color:var(--amber); font-weight:700; }
+  .prose .b { color:#60a5fa; font-weight:700; }
+  .prose .r { color:var(--red); font-weight:700; }
+  .prose .t { color:var(--teal); font-weight:700; }
+  .prose + .prose { margin-top:28px; }
+
+  /* RETRO TERMINAL */
+  .retro-term {
+    background:#000800; border:2px solid rgba(34,197,94,.2);
+    border-radius:16px; overflow:hidden;
+    margin:40px auto; max-width:640px;
+    font-family:'IBM Plex Mono','JetBrains Mono',monospace;
+    position:relative;
+    box-shadow:0 0 40px rgba(34,197,94,.05), inset 0 0 60px rgba(0,0,0,.5);
+  }
+
+  .retro-term::before {
+    content:''; position:absolute; inset:0;
+    background:repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(34,197,94,.02) 2px, rgba(34,197,94,.02) 4px
+    );
+    pointer-events:none; border-radius:14px;
+  }
+
+  .retro-term::after {
+    content:''; position:absolute; inset:0;
+    background:radial-gradient(ellipse 80% 60% at 50% 50%, transparent 50%, rgba(0,0,0,.4) 100%);
+    pointer-events:none; border-radius:14px;
+  }
+
+  .retro-bar {
+    background:rgba(34,197,94,.08); padding:10px 16px;
+    border-bottom:1px solid rgba(34,197,94,.15);
+    font-size:.65rem; color:var(--accent); letter-spacing:2px;
+    position:relative; z-index:1;
+  }
+
+  .retro-body {
+    padding:24px 20px; position:relative; z-index:1;
+    animation:flicker 10s infinite;
+  }
+  .retro-line {
+    font-size:.8rem; line-height:2;
+    color:var(--accent); opacity:.85;
+  }
+  .retro-line .dim { opacity:.4; }
+  .retro-line .bright { opacity:1; text-shadow:0 0 8px rgba(34,197,94,.5); }
+
+  /* MODERN TERMINAL */
+  .terminal {
+    background:#0d1117; border:1px solid rgba(255,255,255,.08);
+    border-radius:12px; overflow:hidden;
+    margin:40px auto; max-width:700px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .term-bar {
+    background:#161b22; padding:10px 16px;
+    display:flex; align-items:center; gap:7px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .term-dot { width:10px; height:10px; border-radius:50%; }
+  .term-dot.r { background:#ff5f57; }
+  .term-dot.y { background:#febc2e; }
+  .term-dot.g { background:#28c840; }
+  .term-name { font-size:.65rem; color:var(--muted); margin-left:auto; letter-spacing:1px; }
+  .term-body { padding:20px; }
+  .term-line { font-size:.78rem; line-height:1.9; color:rgba(255,255,255,.6); }
+  .term-line .prompt { color:var(--accent); }
+  .term-line .cmd { color:#fff; }
+  .term-line .comment { color:var(--muted); font-style:italic; }
+  .term-line .success { color:var(--accent); }
+  .term-line .warn { color:var(--amber); }
+  .term-line .err { color:var(--red); }
+  .term-line .info { color:var(--blue); }
+
+  /* BLOCKQUOTE */
+  .bq {
+    border-left:3px solid var(--accent);
+    padding:20px 28px; margin:36px 0;
+    background:rgba(34,197,94,.04);
+    border-radius:0 10px 10px 0; max-width:680px;
+  }
+  .bq.amber { border-left-color:var(--amber); background:rgba(245,158,11,.04); }
+  .bq.blue { border-left-color:var(--blue); background:rgba(59,130,246,.04); }
+  .bq.red { border-left-color:var(--red); background:rgba(239,68,68,.04); }
+  .bq.teal { border-left-color:var(--teal); background:rgba(20,184,166,.04); }
+  .bq p {
+    font-family:'Noto Serif KR',serif; font-size:1rem;
+    line-height:1.85; font-style:italic; color:rgba(255,255,255,.85);
+  }
+  .bq-attr {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    color:rgba(255,255,255,.25); letter-spacing:2px; margin-top:10px;
+  }
+
+  /* COMPARISON TABLE */
+  .compare-wrap {
+    margin:40px auto; max-width:620px;
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  }
+  .compare-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:28px 24px;
+  }
+  .compare-card.old { border-color:rgba(239,68,68,.2); }
+  .compare-card.new { border-color:rgba(34,197,94,.2); }
+  .cc-badge {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:3px; text-transform:uppercase;
+    margin-bottom:16px; font-weight:700;
+  }
+  .compare-card.old .cc-badge { color:var(--red); }
+  .compare-card.new .cc-badge { color:var(--accent); }
+  .cc-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:1.1rem; color:#fff; margin-bottom:16px;
+  }
+  .cc-item {
+    font-family:'Noto Sans KR',sans-serif; font-size:.8rem;
+    line-height:1.8; color:rgba(255,255,255,.6);
+    padding-left:16px; position:relative;
+  }
+  .cc-item::before {
+    position:absolute; left:0; font-size:.7rem;
+  }
+  .compare-card.old .cc-item::before { content:'✗'; color:var(--red); }
+  .compare-card.new .cc-item::before { content:'✓'; color:var(--accent); }
+
+  /* INSIGHT BOX */
+  .insight {
+    background:linear-gradient(135deg, rgba(34,197,94,.06) 0%, rgba(20,184,166,.04) 100%);
+    border:1px solid rgba(34,197,94,.15);
+    border-radius:14px; padding:32px 28px;
+    margin:40px 0; max-width:680px;
+    position:relative;
+  }
+  .insight::before {
+    content:'💡'; position:absolute; top:-14px; left:24px;
+    font-size:1.4rem; background:var(--bg);
+    padding:0 8px;
+  }
+  .insight-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:.95rem; color:var(--accent); margin-bottom:12px;
+    letter-spacing:1px;
+  }
+  .insight p {
+    font-family:'Noto Serif KR',serif; font-size:.95rem;
+    line-height:1.9; color:rgba(255,255,255,.75);
+  }
+
+  /* STAT GRID */
+  .stat-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:16px; margin:40px 0; max-width:700px;
+  }
+  .stat-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:22px; text-align:center;
+  }
+  .stat-num {
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:1.6rem; margin-bottom:6px;
+  }
+  .stat-num.green { color:var(--accent); }
+  .stat-num.amber { color:var(--amber); }
+  .stat-num.blue { color:var(--blue); }
+  .stat-num.red { color:var(--red); }
+  .stat-label {
+    font-family:'Noto Sans KR',sans-serif; font-size:.7rem;
+    color:var(--muted); letter-spacing:1px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width:60px; height:2px; margin:60px auto;
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  /* CLOSING */
+  .closing {
+    min-height:80vh; display:flex; flex-direction:column;
+    justify-content:center; align-items:center;
+    text-align:center; padding:80px 8vw;
+    background:
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(34,197,94,.04) 0%, transparent 70%),
+      var(--bg);
+  }
+  .closing-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.8rem,5vw,3.6rem); line-height:1.25;
+    margin-bottom:28px;
+  }
+  .closing-title .g { color:var(--accent); }
+  .closing-title .a { color:var(--amber); }
+  .closing-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:1rem; line-height:2; color:rgba(255,255,255,.5);
+    max-width:560px;
+  }
+
+  @media(max-width:768px){
+    .hero,.section,.closing { padding-left:6vw; padding-right:6vw; }
+    .stat-grid { grid-template-columns:1fr 1fr; }
+    .compare-wrap { grid-template-columns:1fr; }
+    .retro-term,.terminal { max-width:100%; }
+  }
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(234,179,8,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#eab308;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">│</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #eab308;padding-bottom:2px;">S2</a>
+  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-scanline"></div>
+  <div class="hero-season">SEASON 2 — 깨달음</div>
+  <div class="hero-ep">Episode 003</div>
+  <h1 class="hero-title">
+    <span class="dim">$</span> <span class="white">리눅스</span>가<br>
+    가르쳐 준 것
+  </h1>
+  <div class="hero-prompt">
+    <span style="color:var(--accent-dim)">user@decopave:~$</span> <span style="color:var(--accent)">_</span><span class="cursor-blink"></span>
+  </div>
+  <p class="hero-sub">
+    새카만 화면. 녹색 글자. 깜빡이는 커서.<br>
+    40년 전의 기억이 되살아났다.<br>
+    그리고 깨달았다 — 이것이 중소기업의 답이었다.
+  </p>
+  <div class="hero-date">2026.04.04 — DECOPAVE Inc.</div>
+</section>
+
+<!-- ===== CH01: 40년 전의 기억 ===== -->
+<section class="section deep">
+  <div class="ch-label green">Chapter 01</div>
+  <h2 class="ch-title">
+    <span style="color:var(--accent)">40년 전</span>,<br>
+    그 새카만 화면
+  </h2>
+
+  <div class="prose">
+    <p>
+      내가 처음 만진 컴퓨터.
+      유닉스 시스템이었다.
+      <span class="g">새카만 화면에 녹색 글자</span>가 띵띵띵 깜빡이고 있던 그 시스템.
+      리눅스의 전신이다.
+    </p>
+  </div>
+
+  <div class="retro-term">
+    <div class="retro-bar">UNIX SYSTEM V — TERMINAL</div>
+    <div class="retro-body">
+      <div class="retro-line"><span class="dim">login:</span> <span class="bright">park_ms</span></div>
+      <div class="retro-line"><span class="dim">password:</span> <span class="dim">********</span></div>
+      <div class="retro-line">&nbsp;</div>
+      <div class="retro-line"><span class="bright">Welcome to UNIX System V</span></div>
+      <div class="retro-line"><span class="dim">Last login: Mon Jan 12 09:23:41 1987</span></div>
+      <div class="retro-line">&nbsp;</div>
+      <div class="retro-line"><span class="bright">$ ls -la</span></div>
+      <div class="retro-line"><span class="dim">drwxr-xr-x  2 park_ms  staff  512 Jan 12 09:24 .</span></div>
+      <div class="retro-line"><span class="dim">drwxr-xr-x 15 root     root  1024 Jan  1 00:00 ..</span></div>
+      <div class="retro-line"><span class="bright">$ _</span></div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      일반적이지 못했다.
+      코딩도 해야 되고, 명령어를 다 외워야 되고,
+      토시 하나 틀리면 안 되고.
+      GUI로 구현되는 윈도우가 한참 뒤에 나오면서
+      — 밀렸다. 사라졌다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      20년 넘게 안 썼다. 아니, 안 써본 건지 못 써본 건지.
+      그런데 이번에 —
+      <strong>다시 만났다.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH02: 리눅스의 재발견 ===== -->
+<section class="section gradient">
+  <div class="ch-label amber">Chapter 02</div>
+  <h2 class="ch-title">
+    <span style="color:var(--amber)">저사양</span>이<br>
+    고사양으로 변하는 마법
+  </h2>
+
+  <div class="prose">
+    <p>
+      이번에 문실장 서버를 세팅하면서 알게 됐다.
+      <span class="g">윈도우가 아닌 리눅스</span>를 올리면 —
+      저사양 PC가 고사양으로 바뀐다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      고사양은 아니지만, <strong>저사양에서 할 수 있는 모든 것을 할 수 있다.</strong>
+      안정도가 엄청나게 뛰어나다.
+      그리고 무엇보다 중요한 것 —
+    </p>
+  </div>
+
+  <div class="bq">
+    <p style="font-size:1.3rem;font-weight:700;text-align:center;">
+      공짜다.
+    </p>
+    <div class="bq-attr">— Linux, 1991년부터 지금까지</div>
+  </div>
+
+  <div class="compare-wrap">
+    <div class="compare-card old">
+      <div class="cc-badge">기존 사고방식</div>
+      <div class="cc-title">Windows + 유료 DB</div>
+      <div class="cc-item">OS 라이선스 비용</div>
+      <div class="cc-item">MS SQL 라이선스 비용</div>
+      <div class="cc-item">고사양 하드웨어 필요</div>
+      <div class="cc-item">업데이트마다 호환성 문제</div>
+      <div class="cc-item">리소스 낭비</div>
+    </div>
+    <div class="compare-card new">
+      <div class="cc-badge">새로운 기준</div>
+      <div class="cc-title">Linux + 오픈소스</div>
+      <div class="cc-item">OS 무료</div>
+      <div class="cc-item">PostgreSQL 등 DB 무료</div>
+      <div class="cc-item">저사양에서도 충분</div>
+      <div class="cc-item">서버 안정성 압도적</div>
+      <div class="cc-item">운영 도구 전부 오픈소스</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      돈 받고 파는 SQL 서버들이 많다.
+      그런데 <span class="g">PostgreSQL</span> 같은 무상 DB가 이렇게 많다는 걸 이번에 알았다.
+      무상이라고 해서 못 돌아가는 것도 아니다.
+      <strong>더 대단한 건 — 이것들을 운영하는 게 다 오픈소스다. 무료다.</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="a">공부만 하고, 생각만 있으면 — 무조건 할 수 있는 무료.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH03: 모르면 사진 찍는다 ===== -->
+<section class="section dark">
+  <div class="ch-label blue">Chapter 03</div>
+  <h2 class="ch-title">
+    <span style="color:#60a5fa">모르면</span><br>
+    사진을 찍는다
+  </h2>
+
+  <div class="prose">
+    <p>
+      리눅스의 까만 커맨드 화면.
+      정말 모르겠으면 — <span class="b">화면을 사진 찍는다.</span>
+      그리고 Claude에게 물어본다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      "내가 하고 싶은 게 이건데?"
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      재밌다.
+      <strong>답해 준다.</strong>
+    </p>
+  </div>
+
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="term-dot r"></div>
+      <div class="term-dot y"></div>
+      <div class="term-dot g"></div>
+      <span class="term-name">claude.ai — photo analysis</span>
+    </div>
+    <div class="term-body">
+      <div class="term-line"><span class="info">📸 화면 캡처 분석 중...</span></div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="success">✓ 리눅스 시스템이군요.</span></div>
+      <div class="term-line"><span class="comment"># 버전을 확인하려면 다음 명령어를 입력하세요:</span></div>
+      <div class="term-line"><span class="prompt">$</span> <span class="cmd">cat /etc/os-release</span></div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="comment"># 원하시는 작업을 하려면:</span></div>
+      <div class="term-line"><span class="prompt">$</span> <span class="cmd">sudo apt update && sudo apt install ...</span></div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="warn">⚠ 이 명령어를 그대로 터미널에 입력하세요.</span></div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      물론 귀찮다. 시간도 많이 걸린다.
+      그런데 <strong>그 과정을 한 일주일 하고 나니까</strong> —
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="g">옛날 기억들이 새록새록 돋아난다.</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <code style="background:rgba(34,197,94,.1);padding:2px 8px;border-radius:4px;color:var(--accent);">sudo</code>가 뭔지.
+      <code style="background:rgba(34,197,94,.1);padding:2px 8px;border-radius:4px;color:var(--accent);">ls</code>가 뭔지.
+      <code style="background:rgba(34,197,94,.1);padding:2px 8px;border-radius:4px;color:var(--accent);">mount</code>를 왜 해야 되는지.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      40년이 지났는데도 기억한다.
+      <strong>사람은 참 재밌다. 대단한 거다.</strong>
+    </p>
+  </div>
+
+  <div class="bq blue">
+    <p>사진 찍고, 물어보고, 명령어 치고, 또 물어보고.<br>
+    일주일이면 20년의 공백이 사라졌다.<br>
+    <strong>AI가 있으면 — 잊어버린 것도 다시 배울 수 있다.</strong></p>
+    <div class="bq-attr">— 리눅스 재입문 1주차</div>
+  </div>
+</section>
+
+<!-- ===== CH04: 77만 중소기업의 질문 ===== -->
+<section class="section surface">
+  <div class="ch-label red">Chapter 04</div>
+  <h2 class="ch-title">
+    <span style="color:var(--red)">77만</span> 중소기업이<br>
+    직면한 질문
+  </h2>
+
+  <div class="prose">
+    <p>
+      중소기업이 가야 할 길은 뻔하다.
+      <span class="a">저비용 고효율.</span>
+      그러면 중소기업에 맞는 시스템, 맞는 체계는 뭘까?
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      정말 심각하게 고민해 봤다.
+    </p>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">생각의 기준이 바뀌는 순간</div>
+    <p>
+      많은 비용을 들여서 좋은 컴퓨터를 사는 것이 최선의 길인가?<br>
+      아니면 — <strong>내가 지금 하고 싶어 하는 것이 무엇이고,
+      그 일을 하기 위해서 가장 효율적이고 최적화된 것이 무엇인가?</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      이것은 <span class="r">77만 개의 중소기업</span>이 직면한 문제다.
+      그리고 이 문제에 우리는 접근해야 한다.
+      <strong>명확하게.</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      한 분야에 한 달 반이라는 시간을 투자해서 느낀 이 모든 것.
+      이것이 앞으로 우리 회사의 경영 철학에도 그대로 적용된다.
+    </p>
+  </div>
+
+  <div class="bq red">
+    <p>지금 우리가 알고 있는 지식이 최선인가?<br>
+    <strong>그 생각부터 바꿔야 한다.</strong><br><br>
+    내가 알고 있는 것이 모든 것이 아니다.<br>
+    아닌 거고, 아닌 것이다, 아닐 수도 있다.<br>
+    <strong>이거에 집중해야 한다. 이게 AI 시대다.</strong></p>
+    <div class="bq-attr">— 박문석 대표</div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num green">₩0</div>
+      <div class="stat-label">Linux OS 비용</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num green">₩0</div>
+      <div class="stat-label">PostgreSQL 비용</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num green">₩0</div>
+      <div class="stat-label">오픈소스 도구</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num amber">$20~</div>
+      <div class="stat-label">AI 월 구독료</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      모르면 어떠냐.
+      물어보면 답해 줄 <span class="b">엄청난 엔지니어와 전문가</span>가 내 옆에 있다.
+      <strong>그것도 단돈 몇십 달러에.</strong>
+      그런데 뭘 못 할 수 있느냐.
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH05: 안 된다고 하지 마라 ===== -->
+<section class="section gradient">
+  <div class="ch-label teal">Chapter 05</div>
+  <h2 class="ch-title">
+    <span style="color:var(--teal)">안 된다</span>고<br>
+    하지 마라
+  </h2>
+
+  <div class="prose">
+    <p>
+      나는 AI에게 항상 이렇게 말한다.
+    </p>
+  </div>
+
+  <div class="bq teal">
+    <p><strong>"안 된다고 하지 마라.</strong><br>
+    안 되는 이유를 정확하게 설명해라.<br>
+    그리고 만약에 한다면 — 이걸 해결할 수 있는 방법을<br>
+    <strong>3가지 이상 제시해라.</strong>"</p>
+    <div class="bq-attr">— AI에게 묻는 방법</div>
+  </div>
+
+  <div class="prose">
+    <p>
+      그게 고민이다.
+      사람의 로직으로 생각하면 이것이 고민인데,
+      고민을 사람이 하게 되면 — 귀찮아지고, 힘들어지고, 못 한다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      근데 <span class="t">그 질문을 AI에게 던지면</span> —
+      뭔가를 찾기 시작한다.
+      해답을 만들기 위해서 노력한다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>지금 이 시간에도</strong> — 우리 재무팀 *** 프로는
+      프로그램을 뒤지고 있다.
+      엄청난 토큰을 소모하면서.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      지금 현재 우리 회사 ERP를 <span class="r">어떻게 까고, 부수고,
+      자기가 원하는 자료를 마음대로 가져올 것인가</span> —
+      스스로 엄청나게 돌리고 있다.
+      계속 문자가 날아온다.
+    </p>
+  </div>
+
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="term-dot r"></div>
+      <div class="term-dot y"></div>
+      <div class="term-dot g"></div>
+      <span class="term-name">재무팀 *** 프로 — ERP 자동화 진행 중</span>
+    </div>
+    <div class="term-body">
+      <div class="term-line"><span class="info">→ WEHAGO ERP 데이터 추출 시도 #47...</span></div>
+      <div class="term-line"><span class="warn">⚠ 세션 만료 — 재로그인 처리 중</span></div>
+      <div class="term-line"><span class="info">→ 거래처원장 크롤링 재시도...</span></div>
+      <div class="term-line"><span class="success">✓ 3월 매입 데이터 156건 추출 성공</span></div>
+      <div class="term-line"><span class="info">→ 다음 대상: 자금일보 자동화...</span></div>
+      <div class="term-line"><span class="comment"># 토큰 소모량: ████████████ (진행 중)</span></div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>다 이 과정을 거쳐야만</strong> AI도 똑똑해지는 거고,
+      AI도 이 사람이 뭘 하는 사람인지 알게 되는 거다.
+      그걸 메모리하고, 기억하고, 전파하고 —
+    </p>
+  </div>
+
+  <div class="bq amber">
+    <p>무서운 거다.<br>
+    <strong>한 명의 똑똑한 AI를 만들면,<br>
+    나머지는 순간적으로 복사하면 똑같아지는 것이 이 세상이다.</strong><br><br>
+    그럼 어떻게 해야 할까?</p>
+    <div class="bq-attr">— AI 시대의 무서운 진실</div>
+  </div>
+</section>
+
+<!-- ===== CH06: 깨달음 ===== -->
+<section class="section dark">
+  <div class="ch-label purple">Chapter 06</div>
+  <h2 class="ch-title">
+    OS <span style="color:#c084fc">하나</span>에서 얻은<br>
+    엄청난 깨달음
+  </h2>
+
+  <div class="prose">
+    <p>
+      리눅스.
+      OS 하나를 가지고 — <strong>엄청나게 많은 깨달음을 얻은 한 주</strong>였다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="g">생각의 깊이를 바꾸고,</span><br>
+      <span class="a">생각하는 방식의 기준이 바뀌고,</span><br>
+      <span class="b">기준이 바뀌면 — 모든 게 바뀐다.</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>이게 AI 시대다.</strong>
+    </p>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">이번 주의 깨달음</div>
+    <p>
+      <strong>1.</strong> 비싼 것이 최선이 아니다. 목적에 맞는 것이 최선이다.<br>
+      <strong>2.</strong> 오픈소스 생태계는 이미 충분히 강력하다.<br>
+      <strong>3.</strong> 모르면 사진 찍고 물어보면 된다. AI가 답해준다.<br>
+      <strong>4.</strong> 40년 전 기억도 되살아난다. 사람은 대단하다.<br>
+      <strong>5.</strong> 한 명의 똑똑한 AI를 만들면, 전파는 순간이다.<br>
+      <strong>6.</strong> "안 된다"가 아니라 "어떻게 하면 되는가"를 물어야 한다.<br>
+      <strong>7.</strong> 77만 중소기업의 답은 — 이미 무료로 존재한다.
+    </p>
+  </div>
+
+  <div class="bq">
+    <p>안정성이 필요하면? 배우면 된다.<br>
+    배우는 방법을 모르면? 물어보면 된다.<br>
+    물어볼 사람이 없으면? <strong>AI가 있다.</strong><br>
+    AI가 비싸면? <strong>단돈 몇십 달러다.</strong><br>
+    그래도 못 하겠으면? <strong>그건 의지의 문제다.</strong></p>
+    <div class="bq-attr">— 2026년, AI 시대의 진실</div>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section class="closing">
+  <h2 class="closing-title">
+    <span class="g">$ _</span><br>
+    기준이 바뀌면<br>
+    <span class="a">모든 게 바뀐다</span>
+  </h2>
+  <p class="closing-sub">
+    새카만 화면. 녹색 글자. 깜빡이는 커서.<br><br>
+    40년 전에는 그것이 전부였다.<br>
+    20년 동안 잊고 살았다.<br>
+    그리고 다시 만났을 때 —<br><br>
+    <strong style="color:#fff;">세상을 보는 기준이 바뀌었다.</strong><br><br>
+    비싼 것이 최선이 아니다.<br>
+    내가 아는 것이 전부가 아니다.<br>
+    안 되는 것은 없다 — 방법을 모를 뿐이다.<br><br>
+    리눅스 OS 하나에서 얻은 깨달음이<br>
+    77만 중소기업의 답이 될 수 있다.
+  </p>
+
+  <div class="divider" style="margin-top:60px;margin-bottom:32px;"></div>
+
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">
+    개발자 박대표 시즌2 — 계속됩니다
+  </p>
+  <p style="font-family:'Noto Sans KR',sans-serif;font-size:.7rem;color:rgba(255,255,255,.2);margin-top:16px;">
+    (주)데코페이브 | 대표이사 박문석 | DECOPAVE Co., LTD.<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&D: 서울<br><br>
+    ⚠️ 이 블로그는 Claude AI를 기반으로 하는 (주)데코페이브 경영지원실장 문돌봇의 도움으로 작성되었습니다.<br>
+    AI가 만든 글이니 실수할 수 있습니다. 다시 한번 잘 확인해주세요. ㅎㅎㅎ
+  </p>
+</section>
+
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(234,179,8,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.65rem;">
+  <a href="ep002.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">←</a>
+  <a href="index.html" style="color:#eab308;text-decoration:none;padding:4px 8px;font-weight:700;">☰</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">02</a>
+  <a href="ep003.html" style="color:#fff;text-decoration:none;padding:4px 6px;font-weight:700;border-bottom:2px solid #eab308;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">05</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">07</a>
+  <a href="epilogue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">EP</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">FIN</a>
+  <a href="ep004.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">→</a>
+</nav>
+</body>
+</html>

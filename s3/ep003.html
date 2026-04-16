@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP003 — 채널이 죽었다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;700&family=DM+Mono:ital@0;1&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --void: #04050a;
+  --deep-navy: #080e1e;
+  --dawn-navy: #0d1b3e;
+  --indigo: #1a2f6e;
+  --dawn: #c8922a;
+  --amber: #e8a83a;
+  --gold: #f5c842;
+  --cream: #f0e8d0;
+  --mist: rgba(240,232,208,0.55);
+  --fog: rgba(240,232,208,0.25);
+  --ghost: rgba(240,232,208,0.08);
+  --dawn-glow: rgba(232,168,58,0.18);
+  --red: #c0392b;
+  --red-glow: rgba(192,57,43,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--void);
+  color: var(--cream);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 300;
+  line-height: 1.9;
+  overflow-x: hidden;
+  padding-top: 40px;
+  padding-bottom: 50px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.6;
+}
+
+/* ─── DAWN BAR ─── */
+.dawn-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--red), var(--amber), var(--gold));
+  width: 0%;
+  z-index: 1000;
+  box-shadow: 0 0 8px rgba(232,168,58,0.5);
+  transition: width 0.1s linear;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed;
+  top: 36px; left: 0; right: 0;
+  z-index: 100;
+  padding: 1.5rem 6vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(4,5,10,0.95) 0%, transparent 100%);
+  backdrop-filter: blur(4px);
+}
+.nav-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--amber);
+  text-transform: uppercase;
+}
+.nav-ep {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--fog);
+  text-transform: uppercase;
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 6vw 10vh;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 0%, #1a0808 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 90%, rgba(200,146,42,0.08) 0%, transparent 60%),
+    linear-gradient(180deg, #0a0303 0%, #060508 40%, #05060e 70%, #060a18 100%);
+  z-index: 0;
+}
+
+/* 에러 스캔라인 효과 */
+.hero-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(192,57,43,0.015) 2px,
+    rgba(192,57,43,0.015) 4px
+  );
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-horizon {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--red) 20%, var(--amber) 50%, var(--red) 80%, transparent 100%);
+  opacity: 0.35;
+  z-index: 1;
+}
+
+.hero-meta {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 3rem;
+}
+
+.series-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+.series-badge::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--amber);
+}
+
+.ep-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: var(--mist);
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.8rem, 8vw, 7rem);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+  opacity: 0;
+  animation: fadeUp 1s ease 0.5s forwards;
+}
+.hero-title em {
+  font-style: normal;
+  color: #e05545;
+  text-shadow: 0 0 40px rgba(192,57,43,0.5);
+}
+
+.hero-subtitle {
+  margin-top: 1.6rem;
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  font-weight: 300;
+  color: var(--mist);
+  max-width: 48ch;
+  line-height: 1.8;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.8s forwards;
+}
+
+.hero-date {
+  margin-top: 2.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--fog);
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1s forwards;
+}
+
+/* 에러 코드 플래시 */
+.hero-error {
+  position: absolute;
+  top: 8rem;
+  right: 6vw;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: rgba(192,57,43,0.4);
+  text-transform: uppercase;
+  z-index: 2;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.2s forwards;
+  line-height: 2;
+  text-align: right;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 3vh;
+  right: 6vw;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.5s forwards;
+}
+.scroll-cue span {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  color: var(--fog);
+  writing-mode: vertical-rl;
+  text-transform: uppercase;
+}
+.scroll-line {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(180deg, var(--amber) 0%, transparent 100%);
+  animation: scrollPulse 2s ease infinite;
+}
+
+/* ─── CONTENT ─── */
+.content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 6vw;
+}
+
+section {
+  padding: 7rem 0;
+  border-bottom: 1px solid var(--ghost);
+  position: relative;
+}
+section:last-child { border-bottom: none; }
+
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.section-num::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--dawn-glow), transparent);
+  max-width: 80px;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  line-height: 1.15;
+  color: var(--cream);
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.01em;
+}
+.section-title em {
+  font-style: normal;
+  color: var(--amber);
+}
+.section-title em.red {
+  color: #e05545;
+}
+
+p {
+  font-size: 1rem;
+  line-height: 2;
+  color: rgba(240,232,208,0.75);
+  margin-bottom: 1.6rem;
+}
+p strong { color: var(--cream); font-weight: 700; }
+
+/* ─── PULL QUOTE ─── */
+.pull-quote {
+  margin: 3rem 0;
+  padding: 2rem 2.5rem;
+  border-left: 2px solid var(--amber);
+  background: linear-gradient(90deg, rgba(200,146,42,0.06) 0%, transparent 100%);
+  position: relative;
+}
+.pull-quote.red-quote {
+  border-left-color: #e05545;
+  background: linear-gradient(90deg, var(--red-glow) 0%, transparent 100%);
+}
+.pull-quote::before {
+  content: '"';
+  position: absolute;
+  top: -1rem;
+  left: 1.5rem;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 4rem;
+  color: var(--amber);
+  opacity: 0.3;
+  line-height: 1;
+}
+.pull-quote.red-quote::before { color: #e05545; }
+.pull-quote p {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--cream);
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ─── ERROR LOG BLOCK ─── */
+.error-log {
+  margin: 2rem 0;
+  background: #06030a;
+  border: 1px solid rgba(192,57,43,0.25);
+  padding: 1.8rem 2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 2;
+  position: relative;
+}
+.error-log::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -0.6rem;
+  left: 1.5rem;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #e05545;
+  background: #06030a;
+  padding: 0 0.5rem;
+}
+.log-time { color: rgba(240,232,208,0.25); }
+.log-ok { color: rgba(100,200,100,0.7); }
+.log-warn { color: var(--amber); }
+.log-err { color: #e05545; }
+.log-comment { color: rgba(192,57,43,0.3); font-style: italic; }
+
+/* ─── CODE MOMENT ─── */
+.code-moment {
+  margin: 2.5rem 0;
+  background: #080d1a;
+  border: 1px solid rgba(240,232,208,0.06);
+  padding: 1.8rem 2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.8rem;
+  line-height: 2.1;
+  color: rgba(240,232,208,0.5);
+  position: relative;
+}
+.code-moment::before {
+  content: attr(data-label);
+  position: absolute;
+  top: -0.6rem;
+  left: 1.5rem;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: #080d1a;
+  padding: 0 0.5rem;
+}
+.code-cmd { color: var(--cream); }
+.code-out { color: var(--amber); }
+.code-fix { color: rgba(100,200,100,0.8); }
+.code-comment { color: rgba(200,146,42,0.35); font-style: italic; }
+
+/* ─── BUG CARDS ─── */
+.bug-list {
+  margin: 2.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: rgba(192,57,43,0.1);
+}
+
+.bug-card {
+  background: var(--void);
+  padding: 1.8rem 2rem;
+  display: grid;
+  grid-template-columns: 2.5rem 1fr;
+  gap: 1.4rem;
+  align-items: start;
+  transition: background 0.3s ease;
+  border-left: 3px solid transparent;
+}
+.bug-card:hover {
+  background: rgba(192,57,43,0.04);
+  border-left-color: rgba(192,57,43,0.4);
+}
+.bug-card.resolved {
+  border-left-color: rgba(100,180,100,0.3);
+}
+.bug-card.resolved:hover {
+  background: rgba(100,180,100,0.03);
+}
+
+.bug-icon {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: #e05545;
+  letter-spacing: 0.1em;
+  padding-top: 0.15rem;
+  line-height: 1.4;
+  text-align: center;
+}
+.bug-icon.ok { color: rgba(100,200,100,0.7); }
+
+.bug-body {}
+.bug-tag {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: #e05545;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.bug-tag.ok { color: rgba(100,200,100,0.7); }
+.bug-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+.bug-desc {
+  font-size: 0.85rem;
+  color: rgba(240,232,208,0.55);
+  line-height: 1.7;
+  margin: 0 0 0.5rem 0;
+}
+.bug-fix {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: rgba(100,200,100,0.6);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ─── INSIGHT ─── */
+.insight {
+  margin: 3rem 0;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, rgba(26,47,110,0.2) 0%, rgba(200,146,42,0.06) 100%);
+  border: 1px solid rgba(232,168,58,0.15);
+  text-align: center;
+}
+.insight p {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--cream);
+  margin: 0;
+  line-height: 1.8;
+}
+.insight .insight-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-top: 1.2rem;
+  margin-bottom: 0;
+}
+
+/* ─── DAWN DIVIDER ─── */
+.dawn-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--amber) 50%, transparent 100%);
+  opacity: 0.2;
+}
+
+/* ─── STAT ROW ─── */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin: 2.5rem 0;
+  background: rgba(240,232,208,0.06);
+}
+.stat-cell {
+  background: var(--void);
+  padding: 1.8rem 1.4rem;
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 2rem;
+  color: var(--amber);
+  display: block;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.stat-num.red { color: #e05545; }
+.stat-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.15em;
+  color: var(--fog);
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+
+/* ─── FOOTER ─── */
+.footer-section {
+  padding: 6rem 6vw 4rem;
+  text-align: center;
+  background: linear-gradient(0deg, rgba(200,146,42,0.04) 0%, transparent 100%);
+}
+.footer-ep {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.footer-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 1.5rem;
+}
+.footer-body {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.9rem;
+  color: var(--mist);
+  max-width: 42ch;
+  margin: 0 auto 3rem;
+  line-height: 1.9;
+}
+.footer-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--fog);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.footer-line::before, .footer-line::after {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--fog);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  nav { padding: 1rem 4vw; }
+  .hero { padding: 0 4vw 8vh; }
+  section { padding: 4rem 0; }
+  .content { padding: 0 4vw; }
+  .stat-row { grid-template-columns: 1fr; }
+  .hero-error { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+
+<div class="dawn-bar" id="dawnBar"></div>
+
+<nav>
+  <span class="nav-logo">개발자 박대표 · S3</span>
+  <span class="nav-ep">EP003</span>
+</nav>
+
+<!-- ────────── HERO ────────── -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-scanlines"></div>
+  <div class="hero-horizon"></div>
+
+  <div class="hero-error">
+    ERR · channel_message_lost<br>
+    ERR · zombie_process_cpu100<br>
+    ERR · tengu_harbor_gate<br>
+    WARN · no_retry_logic<br>
+    WARN · offline_msg_drop
+  </div>
+
+  <div class="hero-meta">
+    <div class="series-badge">Season 3 · DECOHUB Chronicles</div>
+    <div class="ep-label">Episode 003</div>
+    <h1 class="hero-title">채널이<br><em>죽었다</em></h1>
+    <p class="hero-subtitle">
+      Claude Code Channels를 켰다.<br>
+      작동하지 않았다. 밤새 싸웠다.<br>
+      그리고 배웠다.
+    </p>
+    <div class="hero-date">2026 · Claude Code Channels · 에러 실전 기록</div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- ────────── MAIN CONTENT ────────── -->
+<main class="content">
+
+  <!-- 01 배경 -->
+  <section>
+    <div class="section-num reveal">01 · 그날의 시작</div>
+    <h2 class="section-title reveal">Anthropic이<br>채널 기능을 <em>열었다</em></h2>
+
+    <p class="reveal">Claude Code에 채널(Channels) 기능이 생겼다는 소식을 접했다. Telegram과 연동해 AI 에이전트를 채널로 운영할 수 있다는 이야기였다. 문실장을 텔레그램에 올려놓고 있던 입장에서 이건 놓칠 수 없는 기능이었다.</p>
+
+    <p class="reveal">바로 설치했다. 하지만 세상은 그렇게 호락호락하지 않았다.</p>
+
+    <div class="stat-row reveal">
+      <div class="stat-cell">
+        <span class="stat-num red">5+</span>
+        <span class="stat-label">마주친<br>에러 유형</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-num">1</span>
+        <span class="stat-label">결국<br>해결된 것</span>
+      </div>
+      <div class="stat-cell">
+        <span class="stat-num red">∞</span>
+        <span class="stat-label">사라진<br>메시지들</span>
+      </div>
+    </div>
+
+    <p class="reveal">설치는 됐다. 연결은 됐다. 타이핑 인디케이터도 떴다. 그런데 Claude는 아무 말도 하지 않았다. 그게 밤새 이어졌다.</p>
+  </section>
+
+  <!-- 02 에러 목록 -->
+  <section>
+    <div class="section-num reveal">02 · 에러 실전 기록</div>
+    <h2 class="section-title reveal">하나씩<br><em class="red">무너졌다</em></h2>
+
+    <p class="reveal">Claude Code Channels를 운영하면서 실제로 마주친 에러들이다. 공식 GitHub 이슈에도 올라와 있었고, 커뮤니티에서도 같은 문제를 겪고 있었다. 나만의 문제가 아니었다. 그게 그나마 위안이었다.</p>
+
+    <div class="bug-list reveal">
+
+      <div class="bug-card">
+        <div class="bug-icon">ERR<br>01</div>
+        <div class="bug-body">
+          <div class="bug-tag">메시지 소실</div>
+          <div class="bug-title">타이핑 인디케이터는 뜨는데 Claude가 무응답</div>
+          <p class="bug-desc">Telegram 플러그인이 메시지를 정상 수신하고 MCP 알림까지 발송했다. 하지만 Claude Code 세션에 전달이 안 됐다. 화면에는 "입력 중..." 표시가 뜨는데 아무 응답도 오지 않는 상태가 반복됐다.</p>
+          <p class="bug-fix">→ 근본 원인 미해결. 세션 재시작 반복으로 임시 대응.</p>
+        </div>
+      </div>
+
+      <div class="bug-card">
+        <div class="bug-icon">ERR<br>02</div>
+        <div class="bug-body">
+          <div class="bug-tag">좀비 프로세스</div>
+          <div class="bug-title">이전 세션의 bun 프로세스가 CPU 100% 점유</div>
+          <p class="bug-desc">세션을 종료해도 이전 Telegram bun 프로세스가 살아남았다. CPU를 100% 먹으면서 현재 세션과 Telegram 폴링 슬롯을 두고 충돌했다. 메시지가 두 프로세스 사이에 무작위로 분산됐고, 재처리 방법도 없었다.</p>
+          <p class="bug-fix">→ 수동으로 좀비 bun 프로세스를 kill한 뒤 재시작. 매번 반복.</p>
+        </div>
+      </div>
+
+      <div class="bug-card">
+        <div class="bug-icon">ERR<br>03</div>
+        <div class="bug-body">
+          <div class="bug-tag">자동 로드 버그</div>
+          <div class="bug-title">--channels 없이 실행해도 플러그인이 자동으로 붙음</div>
+          <p class="bug-desc"><code>claude -c</code>로 일반 세션을 열었는데 Telegram 플러그인이 자동 로드됐다. 여러 개의 bun 프로세스가 동시에 폴링을 시작하면서 메시지가 세션들 사이로 분산되어 사라졌다.</p>
+          <p class="bug-fix">→ 여분의 bun 프로세스를 수동으로 찾아 kill. 근본 해결책 없음.</p>
+        </div>
+      </div>
+
+      <div class="bug-card">
+        <div class="bug-icon">ERR<br>04</div>
+        <div class="bug-body">
+          <div class="bug-tag">서버사이드 게이팅</div>
+          <div class="bug-title">tengu_harbor — Anthropic이 내 계정을 아직 열어주지 않았다</div>
+          <p class="bug-desc">플러그인도 설치됐고 설정도 맞는데 봇이 무응답인 경우가 있었다. 알고 보니 Anthropic이 서버사이드 기능 플래그 <code>tengu_harbor</code>로 단계적으로 배포하고 있었다. 계정이 범위에 포함되지 않으면 핸들러가 등록 자체가 안 됐다. 설정 문제가 아니라 서버사이드 제한이었다.</p>
+          <p class="bug-fix">→ 해결 방법 없음. 배포 범위에 포함될 때까지 기다리는 것 외에는.</p>
+        </div>
+      </div>
+
+      <div class="bug-card">
+        <div class="bug-icon">ERR<br>05</div>
+        <div class="bug-body">
+          <div class="bug-tag">설정 함정</div>
+          <div class="bug-title">DISABLE_TELEMETRY=0 설정이 Channels를 막는다</div>
+          <p class="bug-desc"><code>DISABLE_TELEMETRY=0</code>으로 설정했는데 Channels가 작동하지 않았다. 0이면 텔레메트리를 켠다는 뜻이라 문제없을 것 같았는데, 해당 키가 존재하는 것 자체가 문제였다. 키를 완전히 삭제해야 정상 작동했다.</p>
+          <p class="bug-fix">→ .env에서 DISABLE_TELEMETRY 키 자체를 삭제 후 해결.</p>
+        </div>
+      </div>
+
+      <div class="bug-card">
+        <div class="bug-icon">ERR<br>06</div>
+        <div class="bug-body">
+          <div class="bug-tag">구조적 한계</div>
+          <div class="bug-title">오프라인 상태에서 온 메시지는 영구 소실</div>
+          <p class="bug-desc">세션이 닫혀있는 동안 들어온 메시지는 전부 사라졌다. 메시지 큐 자체가 없었다. MCP 알림에 재시도 로직도 없었다. Telegram은 이미 업데이트 큐에서 소비해버렸기 때문에 재처리도 불가능했다.</p>
+          <p class="bug-fix">→ tmux로 세션을 항상 유지하는 것이 유일한 완화책.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 03 에러 로그 -->
+  <section>
+    <div class="section-num reveal">03 · 그날 밤의 기록</div>
+    <h2 class="section-title reveal">새벽까지<br><em>화면을 보았다</em></h2>
+
+    <p class="reveal">에러를 마주할 때마다 포기하지 않았다. 공식 문서를 뒤지고, GitHub 이슈를 읽고, AI에게 물어보고, 다시 시도했다. 그 과정이 이런 모습이었다.</p>
+
+    <div class="error-log data-label="채널 에러 — 실시간 대응 기록" reveal>
+      <div><span class="log-time">[02:14]</span> <span class="log-ok">✓</span> Telegram MCP 플러그인 설치 완료</div>
+      <div><span class="log-time">[02:21]</span> <span class="log-ok">✓</span> 봇 토큰 연결 확인</div>
+      <div><span class="log-time">[02:22]</span> <span class="log-warn">!</span> 메시지 전송 → 타이핑 인디케이터 표시</div>
+      <div><span class="log-time">[02:23]</span> <span class="log-err">✗</span> 응답 없음</div>
+      <div><span class="log-time">[02:35]</span> <span class="log-err">✗</span> 재시도 — 동일 증상</div>
+      <div><span class="log-time">[03:01]</span> <span class="log-comment">// bun 프로세스 4개 발견 → 수동 kill</span></div>
+      <div><span class="log-time">[03:04]</span> <span class="log-ok">✓</span> 세션 재시작 → 응답 확인</div>
+      <div><span class="log-time">[03:18]</span> <span class="log-err">✗</span> 다시 무응답. 좀비 프로세스 재발생</div>
+      <div><span class="log-time">[04:40]</span> <span class="log-comment">// DISABLE_TELEMETRY 키 삭제 후 테스트</span></div>
+      <div><span class="log-time">[04:42]</span> <span class="log-ok">✓</span> 부분 해결 확인</div>
+      <div><span class="log-time">[05:30]</span> <span class="log-warn">!</span> tmux 세션 고정 운영으로 전환</div>
+    </div>
+
+    <div class="pull-quote red-quote reveal">
+      <p>Anthropic 자체의 버그가 있었고<br>
+      내가 통제할 수 없는 서버사이드 게이팅이 있었다.<br>
+      그래도 할 수 있는 데까지 했다.</p>
+    </div>
+  </section>
+
+  <!-- 04 배운 것 -->
+  <section>
+    <div class="section-num reveal">04 · 좌충우돌이 남긴 것</div>
+    <h2 class="section-title reveal">에러는 선생이다.<br>단, <em>포기하지 않으면</em></h2>
+
+    <p class="reveal">밤새 에러와 싸우면서 배운 것들이 있다. 기술적인 해결책보다 더 중요한 것들이었다.</p>
+
+    <div class="pull-quote reveal">
+      <p>기술이라는 게 그런 거다.<br>
+      배우는 데 시간이 소요된다.<br>
+      밤을 버텨낸 사람만 그 다음 날 아침을 맞는다.</p>
+    </div>
+
+    <p class="reveal">Claude Code Channels는 아직 성숙하지 않은 기능이다. 공식 GitHub에 이슈가 올라와 있고, 같은 에러를 겪는 사람들이 세계 각지에 있다. 내가 특별히 못 한 게 아니었다. 하지만 그 에러를 마주하고 기록하고 계속 시도한 것은 나였다.</p>
+
+    <p class="reveal">그리고 결국 tmux로 세션을 고정하고, 좀비 프로세스를 수동으로 관리하고, DISABLE_TELEMETRY 함정을 피하는 방법을 알게 됐다. 문서 어디에도 없던 것들을 몸으로 배웠다.</p>
+
+    <div class="insight reveal">
+      <p>에러 로그는 실패의 기록이 아니다.<br>
+      포기하지 않은 사람의 흔적이다.</p>
+      <p class="insight-sub">Claude Code Channels · 실전 운영 기록 · 2026</p>
+    </div>
+  </section>
+
+  <!-- 05 현재 운영 방식 -->
+  <section>
+    <div class="section-num reveal">05 · 지금의 운영 방식</div>
+    <h2 class="section-title reveal">에러를 안고<br><em>계속 돌린다</em></h2>
+
+    <p class="reveal">완벽하지 않다. 지금도 가끔 좀비 프로세스가 생기고, 가끔 메시지가 사라진다. 그래도 tmux 세션 위에서 채널은 돌아가고 있다. 문실장은 오늘도 텔레그램에서 직원들의 업무일지에 피드백을 달고, 아침마다 보고를 올린다.</p>
+
+    <div class="code-moment" data-label="현재 운영 명령어" class="reveal">
+      <div class="code-comment"># 세션 유지 — tmux 필수</div>
+      <div class="code-cmd">tmux new -s moonsiljang</div>
+      <br>
+      <div class="code-comment"># Channels 실행 전 좀비 확인</div>
+      <div class="code-cmd">ps aux | grep bun | grep -v grep</div>
+      <div class="code-cmd">kill -9 [좀비 PID]</div>
+      <br>
+      <div class="code-comment"># DISABLE_TELEMETRY 키 없는 상태 확인 후</div>
+      <div class="code-cmd">claude --channels</div>
+      <br>
+      <div class="code-fix">✓ 이 순서대로 하면 그나마 안정적으로 돌아간다</div>
+    </div>
+
+    <p class="reveal">완벽한 시스템은 없다. 문제가 없는 기술도 없다. 중요한 것은 문제를 만났을 때 어떻게 대응하느냐다. 그리고 그 대응의 기록이 다음 사람에게 도움이 된다.</p>
+
+    <p class="reveal">이게 이 에피소드를 쓰는 이유다.</p>
+  </section>
+
+</main>
+
+<!-- ────────── FOOTER ────────── -->
+<footer class="footer-section">
+  <div class="dawn-divider" style="margin-bottom:3rem;"></div>
+  <div class="footer-ep">Season 3 · Episode 003</div>
+  <div class="footer-title">다음 에피소드를 기다려 주세요.</div>
+  <p class="footer-body">
+    에러를 안고도 시스템은 돌아간다.<br>
+    그 다음 이야기를 이어갑니다.
+  </p>
+  <div class="footer-line">Decopave Co., Ltd. · 데코페이브㈜ · 2026</div>
+  <div class="footer-line" style="font-size:0.45rem;">개발자 박대표 · AI로 회사를 바꾸는 중소기업 대표의 기록</div>
+</footer>
+
+<script>
+const bar = document.getElementById('dawnBar');
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  bar.style.width = pct + '%';
+});
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+reveals.forEach(el => observer.observe(el));
+</script>
+
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
+  <a href="ep002.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep004.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+</nav>
+</body>
+</html>

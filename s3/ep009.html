@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP009 — 데이터 주권</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;700&family=DM+Mono:ital@0;1&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#04050a;--dawn:#c8922a;--amber:#e8a83a;--gold:#f5c842;
+  --cream:#f0e8d0;--mist:rgba(240,232,208,0.55);--fog:rgba(240,232,208,0.25);
+  --ghost:rgba(240,232,208,0.08);--dawn-glow:rgba(232,168,58,0.18);
+  --green:#2a7a4a;--green-dim:rgba(42,122,74,0.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background-color:var(--void);color:var(--cream);font-family:"Noto Sans KR",sans-serif;font-weight:300;line-height:1.9;overflow-x:hidden;padding-top:40px;padding-bottom:50px;}
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.6;}
+.dawn-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--green),var(--amber),var(--gold));width:0%;z-index:1000;box-shadow:0 0 8px rgba(232,168,58,0.5);transition:width 0.1s linear;}
+nav{position:fixed;top:36px;left:0;right:0;z-index:100;padding:1.5rem 6vw;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(4,5,10,0.95) 0%,transparent 100%);backdrop-filter:blur(4px);}
+.nav-logo{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.25em;color:var(--amber);text-transform:uppercase;}
+.nav-ep{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--fog);text-transform:uppercase;}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 6vw 10vh;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 20% 60%,rgba(42,122,74,0.07) 0%,transparent 60%),radial-gradient(ellipse 50% 50% at 80% 10%,#080e20 0%,transparent 70%),radial-gradient(ellipse 40% 30% at 50% 100%,rgba(200,146,42,0.06) 0%,transparent 60%),linear-gradient(180deg,#060810 0%,#05070f 50%,#060912 100%);z-index:0;}
+.hero-horizon{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,var(--green) 20%,var(--amber) 50%,var(--green) 80%,transparent 100%);opacity:0.3;z-index:1;}
+.hero-meta{position:relative;z-index:2;margin-bottom:3rem;}
+.series-badge{display:inline-flex;align-items:center;gap:0.6rem;font-family:"DM Mono",monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--amber);text-transform:uppercase;margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s ease 0.2s forwards;}
+.series-badge::before{content:"";display:block;width:28px;height:1px;background:var(--amber);}
+.ep-label{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.3em;color:var(--mist);text-transform:uppercase;margin-bottom:1.2rem;opacity:0;animation:fadeUp 0.8s ease 0.4s forwards;}
+.hero-title{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(2.8rem,8vw,7rem);line-height:1.0;letter-spacing:-0.02em;color:var(--cream);opacity:0;animation:fadeUp 1s ease 0.5s forwards;}
+.hero-title em{font-style:normal;color:var(--amber);text-shadow:0 0 40px rgba(232,168,58,0.4);}
+.hero-subtitle{margin-top:1.6rem;font-family:"Noto Serif KR",serif;font-size:clamp(0.95rem,2vw,1.1rem);font-weight:300;color:var(--mist);max-width:46ch;line-height:1.8;opacity:0;animation:fadeUp 0.8s ease 0.8s forwards;}
+.hero-date{margin-top:2.5rem;font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;color:var(--fog);opacity:0;animation:fadeUp 0.8s ease 1s forwards;}
+.scroll-cue{position:absolute;bottom:3vh;right:6vw;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0.4rem;opacity:0;animation:fadeIn 1s ease 1.5s forwards;}
+.scroll-cue span{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.3em;color:var(--fog);writing-mode:vertical-rl;text-transform:uppercase;}
+.scroll-line{width:1px;height:50px;background:linear-gradient(180deg,var(--amber) 0%,transparent 100%);animation:scrollPulse 2s ease infinite;}
+
+/* CONTENT */
+.content{max-width:720px;margin:0 auto;padding:0 6vw;}
+section{padding:7rem 0;border-bottom:1px solid var(--ghost);}
+section:last-child{border-bottom:none;}
+.section-num{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.3em;color:var(--amber);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:0.8rem;}
+.section-num::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--dawn-glow),transparent);max-width:80px;}
+.section-title{font-family:"Syne",sans-serif;font-weight:700;font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.15;color:var(--cream);margin-bottom:2.5rem;letter-spacing:-0.01em;}
+.section-title em{font-style:normal;color:var(--amber);}
+p{font-size:1rem;line-height:2;color:rgba(240,232,208,0.75);margin-bottom:1.6rem;}
+p strong{color:var(--cream);font-weight:700;}
+
+/* PULL QUOTE */
+.pull-quote{margin:3rem 0;padding:2rem 2.5rem;border-left:2px solid var(--amber);background:linear-gradient(90deg,rgba(200,146,42,0.06) 0%,transparent 100%);position:relative;}
+.pull-quote::before{content:"\201C";position:absolute;top:-1rem;left:1.5rem;font-family:"Noto Serif KR",serif;font-size:4rem;color:var(--amber);opacity:0.3;line-height:1;}
+.pull-quote p{font-family:"Noto Serif KR",serif;font-size:1.1rem;font-weight:400;color:var(--cream);margin:0;line-height:1.8;}
+
+/* 데이터 파이프라인 */
+.data-pipeline{margin:2.5rem 0;display:flex;flex-direction:column;gap:1px;background:rgba(240,232,208,0.04);}
+.dp-row{background:var(--void);display:grid;grid-template-columns:7rem 1fr;gap:0;transition:background 0.3s ease;}
+.dp-row:hover{background:rgba(42,122,74,0.04);}
+.dp-source{padding:1.4rem 1.2rem;font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.12em;color:rgba(42,122,74,0.8);text-transform:uppercase;border-right:1px solid rgba(240,232,208,0.04);display:flex;align-items:center;}
+.dp-desc{padding:1.4rem 1.6rem;font-size:0.85rem;color:rgba(240,232,208,0.65);line-height:1.7;}
+.dp-desc strong{color:var(--cream);}
+
+/* API 비용 시각화 */
+.cost-block{margin:2.5rem 0;background:#06080f;border:1px solid rgba(240,232,208,0.06);padding:2rem;position:relative;}
+.cost-block::before{content:"API \BE44\C6A9 \BB3C\B9AC\AC10 \2014 \C2E4\C81C \C9C0\CD9C";position:absolute;top:-0.6rem;left:1.5rem;font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);background:#06080f;padding:0 0.5rem;}
+.cost-row{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.2rem;}
+.cost-row:last-child{margin-bottom:0;}
+.cost-label{font-family:"DM Mono",monospace;font-size:0.58rem;color:var(--fog);min-width:7rem;line-height:1.5;}
+.cost-bar-wrap{flex:1;height:4px;background:rgba(240,232,208,0.05);position:relative;}
+.cost-fill{position:absolute;left:0;top:0;bottom:0;width:0%;transition:width 1.8s ease;}
+.cost-fill.day{background:linear-gradient(90deg,var(--green),var(--amber));box-shadow:0 0 6px rgba(232,168,58,0.3);}
+.cost-fill.month{background:linear-gradient(90deg,var(--amber),#e05545);box-shadow:0 0 6px rgba(224,85,69,0.3);}
+.cost-fill.day.animated{width:3%;}
+.cost-fill.month.animated{width:100%;}
+.cost-val{font-family:"Syne",sans-serif;font-weight:800;font-size:1rem;min-width:4.5rem;text-align:right;}
+.cost-val.day{color:var(--amber);}
+.cost-val.month{color:#e05545;}
+.cost-note{font-family:"DM Mono",monospace;font-size:0.55rem;color:rgba(240,232,208,0.2);font-style:italic;margin-top:0.3rem;}
+
+/* 분석 결과 예시 */
+.insight-list{margin:2.5rem 0;display:flex;flex-direction:column;gap:1px;background:rgba(42,122,74,0.08);}
+.insight-item{background:var(--void);padding:1.4rem 1.8rem;display:grid;grid-template-columns:1.5rem 1fr;gap:1rem;align-items:start;}
+.insight-dot{width:6px;height:6px;border-radius:50%;background:var(--amber);box-shadow:0 0 6px rgba(232,168,58,0.5);margin-top:0.6rem;flex-shrink:0;}
+.insight-text{font-size:0.88rem;color:rgba(240,232,208,0.7);line-height:1.75;}
+.insight-text strong{color:var(--cream);}
+
+/* 주권 선언 */
+.sovereignty{margin:3rem 0;padding:2.5rem;background:linear-gradient(135deg,rgba(42,122,74,0.08) 0%,rgba(200,146,42,0.06) 100%);border:1px solid rgba(232,168,58,0.15);text-align:center;}
+.sovereignty p{font-family:"Noto Serif KR",serif;font-size:1.15rem;font-weight:400;color:var(--cream);margin:0;line-height:1.8;}
+.sovereignty-sub{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;color:var(--amber);text-transform:uppercase;margin-top:1.2rem;display:block;}
+
+/* 조건 카드 */
+.condition-cards{margin:2.5rem 0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(240,232,208,0.05);}
+.cond-card{background:var(--void);padding:1.8rem 1.6rem;}
+.cond-card.yes{background:rgba(42,122,74,0.04);}
+.cond-label{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1rem;}
+.cond-label.no{color:rgba(192,57,43,0.6);}
+.cond-label.yes{color:rgba(42,122,74,0.8);}
+.cond-item{font-size:0.82rem;color:rgba(240,232,208,0.55);line-height:1.8;margin-bottom:0.5rem;padding-left:1rem;position:relative;}
+.cond-item::before{content:"—";position:absolute;left:0;color:rgba(240,232,208,0.2);font-family:"DM Mono",monospace;font-size:0.7rem;}
+.cond-item.yes{color:rgba(240,232,208,0.8);}
+.cond-item.yes::before{color:rgba(42,122,74,0.6);}
+
+.dawn-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent 0%,var(--amber) 50%,transparent 100%);opacity:0.2;}
+.footer-section{padding:6rem 6vw 4rem;text-align:center;background:linear-gradient(0deg,rgba(200,146,42,0.04) 0%,transparent 100%);}
+.footer-ep{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.3em;color:var(--amber);text-transform:uppercase;margin-bottom:1rem;}
+.footer-title{font-family:"Syne",sans-serif;font-size:clamp(1.4rem,4vw,2rem);font-weight:700;color:var(--cream);margin-bottom:1.5rem;}
+.footer-body{font-family:"Noto Serif KR",serif;font-size:0.9rem;color:var(--mist);max-width:42ch;margin:0 auto 3rem;line-height:1.9;}
+.footer-line{display:flex;align-items:center;justify-content:center;gap:1rem;font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--fog);text-transform:uppercase;margin-bottom:1rem;}
+.footer-line::before,.footer-line::after{content:"";width:40px;height:1px;background:var(--fog);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes scrollPulse{0%,100%{opacity:0.3;}50%{opacity:1;}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.8s ease,transform 0.8s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+@media(max-width:600px){nav{padding:1rem 4vw;}.hero{padding:0 4vw 8vh;}section{padding:4rem 0;}.content{padding:0 4vw;}.condition-cards{grid-template-columns:1fr;}.dp-row{grid-template-columns:1fr;}.dp-source{border-right:none;border-bottom:1px solid rgba(240,232,208,0.04);}}
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+<div class="dawn-bar" id="dawnBar"></div>
+<nav>
+  <span class="nav-logo">개발자 박대표 &middot; S3</span>
+  <span class="nav-ep">EP009</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-horizon"></div>
+  <div class="hero-meta">
+    <div class="series-badge">Season 3 &middot; DECOHUB Chronicles</div>
+    <div class="ep-label">Episode 009</div>
+    <h1 class="hero-title">데이터<br><em>주권</em></h1>
+    <p class="hero-subtitle">
+      AI는 데이터를 먹고 산다.<br>
+      데이터가 없으면 AI는 일할 수 없다.<br>
+      데이터 주권이 공장의 미래다.
+    </p>
+    <div class="hero-date">2026 &middot; MES &middot; ERP &middot; DECOHUB DB &middot; 데이터 주권 선언</div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
+</div>
+
+<main class="content">
+
+  <section>
+    <div class="section-num reveal">01 &middot; 주말의 작업</div>
+    <h2 class="section-title reveal">AI 에이전트가<br><em>진가를 발휘하기 시작했다</em></h2>
+    <p class="reveal">주말 동안 에이전트들을 안정화시켰다. 코드를 분석해서 최적화시켰다. 업무일지를 분석하다 맥락을 잃고 헤매던 문제들의 80~90%가 없어졌다.</p>
+    <p class="reveal">그리고 오늘, 다음 단계로 넘어갔다. 단양 공장 허브의 MES와 ERP 데이터베이스를 열고 문실장 서버와 연결했다. AI 에이전트들이 진짜 자기의 일을 하기 시작했다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">02 &middot; 데이터 파이프라인 구축</div>
+    <h2 class="section-title reveal">세 가지 데이터를<br><em>하나로 합쳤다</em></h2>
+    <p class="reveal">MES 데이터, 단양 공장 허브에서 실시간으로 생성되는 데이터, ERP의 경영 데이터. 이 세 가지를 문실장 서버의 DB로 통합하고, 각 에이전트에게 자신의 업무에 맞는 데이터를 가져오게 했다.</p>
+    <div class="data-pipeline reveal">
+      <div class="dp-row">
+        <div class="dp-source">MES DB</div>
+        <div class="dp-desc">단양 공장 생산 데이터. <strong>소프트웨어 유지관리사 서버에 있지만 데이터 주권은 우리 것.</strong> API 연결로 직접 사용.</div>
+      </div>
+      <div class="dp-row">
+        <div class="dp-source">허브 데이터</div>
+        <div class="dp-desc">단양 허브에서 실시간 생성되는 운영 데이터. <strong>100개 엔드포인트를 모두 열고 AI가 직접 읽는다.</strong></div>
+      </div>
+      <div class="dp-row">
+        <div class="dp-source">ERP</div>
+        <div class="dp-desc">위하고 ERP 경영 정보. <strong>현재 전체 DB를 문실장 서버로 옮기는 프로젝트 계획 완료.</strong> 소유권 확보가 우선.</div>
+      </div>
+      <div class="dp-row">
+        <div class="dp-source">문실장 DB</div>
+        <div class="dp-desc"><strong>통합 DB.</strong> 세 개의 데이터가 합쳐지고, 에이전트들이 분석하고, 보고서로 만들어 텔레그램으로 공유한다.</div>
+      </div>
+    </div>
+    <p class="reveal">처음에는 틀린 부분이 생겼다. 기초값이 없어서 문제가 됐던 부분들이 있었다. 기초값 데이터를 DB에 통째로 실어줬다. 그러자 결과가 달라졌다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">03 &middot; 데이터가 말하는 것들</div>
+    <h2 class="section-title reveal">AI가 스스로<br><em>발견한 것들</em></h2>
+    <p class="reveal">데이터가 하나로 합쳐지자, 누구도 지시하지 않았는데 AI가 스스로 분석을 시작했다. 처음부터 시키지 않았던 인사이트들이 나왔다.</p>
+    <div class="insight-list reveal">
+      <div class="insight-item">
+        <div class="insight-dot"></div>
+        <div class="insight-text"><strong>원자재 입고 데이터</strong>를 매일 넣어야 하는데 특정 직원이 주에 모아서 넣고 있다. 특정 날에는 아예 안 넣었다.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-dot"></div>
+        <div class="insight-text"><strong>데이터 입력</strong>이 특정 사람에게 편중되고 있다. 얼마나 넣었는지, 누가 어느 비율로 넣고 있는지까지 수치로 나온다.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-dot"></div>
+        <div class="insight-text"><strong>메일 데이터 입력 딜레이</strong>가 습관적으로 발생하고 있다. 우연이 아니라 반복되는 업무 습관임을 데이터가 드러냈다.</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-dot"></div>
+        <div class="insight-text">직원들의 <strong>업무 패턴 전체</strong>가 데이터로 보인다. 날카롭게 여길 수도 있다. 하지만 그게 AI를 도입한 이유다.</div>
+      </div>
+    </div>
+    <div class="pull-quote reveal">
+      <p>데이터를 분석해서 인사이트를 만들어간다는 게<br>
+      그게 AI를 도입한 이유 아닌가?<br>
+      AI들이 이제 진짜 진가를 발휘하기 시작했다.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-num reveal">04 &middot; 돈이 쓰이기 시작했다</div>
+    <h2 class="section-title reveal">Claude Opus를<br><em>돌리자 API가 탄다</em></h2>
+    <p class="reveal">Claude Opus 4.6 수준의 모델을 쓰면 분석 능력이 엄청나다. LLM에 숫자를 주면 실제로 일을 잘 한다는 것을 오늘 다시 한번 느꼈다. 물론 그만큼 API도 많이 쓰기 시작했다.</p>
+    <div class="cost-block reveal" id="costBlock">
+      <div class="cost-row">
+        <div class="cost-label">오늘 하루<br>API 비용</div>
+        <div class="cost-bar-wrap"><div class="cost-fill day" id="fillDay"></div></div>
+        <div>
+          <div class="cost-val day">~$30~40</div>
+          <div class="cost-note">10불 &times; 3~4회</div>
+        </div>
+      </div>
+      <div class="cost-row">
+        <div class="cost-label">월 예상<br>지출</div>
+        <div class="cost-bar-wrap"><div class="cost-fill month" id="fillMonth"></div></div>
+        <div>
+          <div class="cost-val month">~$1,000</div>
+          <div class="cost-note">이제 돈을 쓰기 시작했다는 것. 그 결과가 나오고 있다는 것.</div>
+        </div>
+      </div>
+    </div>
+    <p class="reveal">돈을 쓰기 시작했다는 건, 좋은 데이터도 나오기 시작했다는 의미다. 아무것도 나오지 않는 AI는 탁 빈 서비스다. 결과가 나온다는 건 제대로 작동하고 있다는 증거다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">05 &middot; 미래는 데이터 주권이다</div>
+    <h2 class="section-title reveal">AI가 일하려면<br><em>데이터가 자기 것이어야 한다</em></h2>
+    <p class="reveal">MES는 소프트웨어 개발회사가 데이터 센터에 넣어 관리하고 있다. 유지관리비를 매달 낸다. 하지만 데이터의 주권은 우리에게 있다. 그래서 바로 가져올 수 있었다.</p>
+    <p class="reveal">ERP는 다르다. 그래서 오늘 ERP 전체 데이터베이스를 문실장 서버로 옮기는 프로젝트를 계획했다. 데코허브도, WEHAGO도 우리 자체 서버의 DB로 옮길 생각이다.</p>
+    <div class="sovereignty reveal">
+      <p>데이터의 주권을 지켜서<br>AI가 정확하게 일할 수 있는<br>환경을 만들어주는 것.<br>이게 매우 중요하다.</p>
+      <span class="sovereignty-sub">Data Sovereignty &middot; Season 3 EP009</span>
+    </div>
+
+    <p class="reveal">오늘 우리 회사의 AI 환경을 보러 온 회사가 있었다. 2시간 30분을 자리를 지키며 하나하나 들었다. 돌아가면서 이렇게 이야기했다. AI 도입은 할 수 있는데, 지금 당장은 모르겠다고.</p>
+
+    <p class="reveal">이유가 있다. 아무리 개발자가 있어도, AI가 알아먹을 수 있는 디지털 형태의 데이터 체계가 잡혀 있지 않으면 AI는 그 회사에서 일할 수 없다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">06 &middot; AI 도입의 전제조건</div>
+    <h2 class="section-title reveal">AI가 일할 수 있는<br><em>조건은 단 하나다</em></h2>
+    <p class="reveal">데코페이브에서 AI 에이전트를 구축하고 회사 업무를 시킬 수 있는 이유. 데이터를 가지고 있기 때문이고, 그 데이터를 일찍부터 체계화하고 정규화해 놓았기 때문이다.</p>
+    <div class="condition-cards reveal">
+      <div class="cond-card">
+        <div class="cond-label no">AI가 일 못 하는 회사</div>
+        <div class="cond-item">ERP 데이터가 소프트웨어사에 갇혀 있음</div>
+        <div class="cond-item">업무 기록이 서로 다른 형식으로 흩어져 있음</div>
+        <div class="cond-item">데이터가 종이 문서에만 존재함</div>
+        <div class="cond-item">AI가 읽을 수 있는 디지털 형태 없음</div>
+      </div>
+      <div class="cond-card yes">
+        <div class="cond-label yes">AI가 일 할 수 있는 회사</div>
+        <div class="cond-item yes">데이터의 주권이 회사에 있다</div>
+        <div class="cond-item yes">모든 데이터가 디지털화되어 있다</div>
+        <div class="cond-item yes">데이터가 정규화되어 있다</div>
+        <div class="cond-item yes">AI가 직접 접근할 수 있는 파이프라인이 있다</div>
+      </div>
+    </div>
+    <p class="reveal">AI는 데이터를 어떻게 관리하고 어떻게 써먹느냐에 달려 있다. 데이터 주권을 확보하고, AI가 읽을 수 있는 형태로 만들고, AI가 직접 작업할 수 있는 환경을 만들어주는 것. 이게 AI 도입에서 선행되어야 하는 작업이다.</p>
+  </section>
+
+</main>
+
+<footer class="footer-section">
+  <div class="dawn-divider" style="margin-bottom:3rem;"></div>
+  <div class="footer-ep">Season 3 &middot; Episode 009</div>
+  <div class="footer-title">다음 에피소드를 기다려 주세요.</div>
+  <p class="footer-body">데이터 주권이 확보되면<br>AI는 더 강력해지기 시작합니다.</p>
+  <div class="footer-line">Decopave Co., Ltd. &middot; 데코페이브&#x338E; &middot; 2026</div>
+  <div class="footer-line" style="font-size:0.45rem;">개발자 박대표 &middot; AI로 회사를 바꾸는 중소기업 대표의 기록</div>
+</footer>
+
+<script>
+const bar=document.getElementById("dawnBar");
+window.addEventListener("scroll",()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  bar.style.width=pct+"%";
+});
+const reveals=document.querySelectorAll(".reveal");
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){setTimeout(()=>e.target.classList.add("visible"),i*60);obs.unobserve(e.target);}
+  });
+},{threshold:0.1,rootMargin:"0px 0px -40px 0px"});
+reveals.forEach(el=>obs.observe(el));
+const costObs=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      document.getElementById("fillDay").classList.add("animated");
+      document.getElementById("fillMonth").classList.add("animated");
+      costObs.unobserve(entry.target);
+    }
+  });
+},{threshold:0.4});
+const cb=document.getElementById("costBlock");
+if(cb)costObs.observe(cb);
+</script>
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
+  <a href="ep008.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep010.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+</nav>
+</body>
+</html>

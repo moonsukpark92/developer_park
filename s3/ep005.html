@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP005 — AI 에이전트를 키운다는 것</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;700&family=DM+Mono:ital@0;1&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --void: #04050a;
+  --dawn-navy: #0d1b3e;
+  --dawn: #c8922a;
+  --amber: #e8a83a;
+  --gold: #f5c842;
+  --cream: #f0e8d0;
+  --mist: rgba(240,232,208,0.55);
+  --fog: rgba(240,232,208,0.25);
+  --ghost: rgba(240,232,208,0.08);
+  --dawn-glow: rgba(232,168,58,0.18);
+  --teal: #2a8a7a;
+  --teal-glow: rgba(42,138,122,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--void);
+  color: var(--cream);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 300;
+  line-height: 1.9;
+  overflow-x: hidden;
+  padding-top: 40px;
+  padding-bottom: 50px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.6;
+}
+
+.dawn-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), var(--amber), var(--gold));
+  width: 0%;
+  z-index: 1000;
+  box-shadow: 0 0 8px rgba(232,168,58,0.5);
+  transition: width 0.1s linear;
+}
+
+nav {
+  position: fixed;
+  top: 36px; left: 0; right: 0;
+  z-index: 100;
+  padding: 1.5rem 6vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(4,5,10,0.95) 0%, transparent 100%);
+  backdrop-filter: blur(4px);
+}
+.nav-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--amber);
+  text-transform: uppercase;
+}
+.nav-ep {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--fog);
+  text-transform: uppercase;
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 6vw 10vh;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 50%, rgba(42,138,122,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 85% 10%, #080e20 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 60% 100%, rgba(200,146,42,0.07) 0%, transparent 60%),
+    linear-gradient(180deg, #060810 0%, #05070f 50%, #080c18 100%);
+  z-index: 0;
+}
+
+/* 네트워크 노드 느낌 */
+.hero-network {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hero-network svg {
+  width: 100%;
+  height: 100%;
+  opacity: 0.04;
+}
+
+.hero-horizon {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--teal) 20%, var(--amber) 50%, var(--teal) 80%, transparent 100%);
+  opacity: 0.3;
+  z-index: 1;
+}
+
+.hero-meta {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 3rem;
+}
+
+.series-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+.series-badge::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--amber);
+}
+
+.ep-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: var(--mist);
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.4rem, 7vw, 6.5rem);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+  opacity: 0;
+  animation: fadeUp 1s ease 0.5s forwards;
+}
+.hero-title em {
+  font-style: normal;
+  color: var(--amber);
+  text-shadow: 0 0 40px rgba(232,168,58,0.4);
+}
+
+.hero-subtitle {
+  margin-top: 1.6rem;
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  font-weight: 300;
+  color: var(--mist);
+  max-width: 48ch;
+  line-height: 1.8;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.8s forwards;
+}
+
+.hero-date {
+  margin-top: 2.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--fog);
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1s forwards;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 3vh; right: 6vw;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.5s forwards;
+}
+.scroll-cue span {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  color: var(--fog);
+  writing-mode: vertical-rl;
+  text-transform: uppercase;
+}
+.scroll-line {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(180deg, var(--amber) 0%, transparent 100%);
+  animation: scrollPulse 2s ease infinite;
+}
+
+/* ─── CONTENT ─── */
+.content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 6vw;
+}
+
+section {
+  padding: 7rem 0;
+  border-bottom: 1px solid var(--ghost);
+}
+section:last-child { border-bottom: none; }
+
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.section-num::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--dawn-glow), transparent);
+  max-width: 80px;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  line-height: 1.15;
+  color: var(--cream);
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.01em;
+}
+.section-title em { font-style: normal; color: var(--amber); }
+
+p {
+  font-size: 1rem;
+  line-height: 2;
+  color: rgba(240,232,208,0.75);
+  margin-bottom: 1.6rem;
+}
+p strong { color: var(--cream); font-weight: 700; }
+
+/* ─── PULL QUOTE ─── */
+.pull-quote {
+  margin: 3rem 0;
+  padding: 2rem 2.5rem;
+  border-left: 2px solid var(--amber);
+  background: linear-gradient(90deg, rgba(200,146,42,0.06) 0%, transparent 100%);
+  position: relative;
+}
+.pull-quote::before {
+  content: '"';
+  position: absolute;
+  top: -1rem; left: 1.5rem;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 4rem;
+  color: var(--amber);
+  opacity: 0.3;
+  line-height: 1;
+}
+.pull-quote p {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--cream);
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ─── 신입사원 vs AI 에이전트 비유 ─── */
+.analogy {
+  margin: 2.5rem 0;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 0;
+  align-items: center;
+}
+.analogy-col {
+  padding: 2rem 1.6rem;
+  background: var(--ghost);
+  border: 1px solid rgba(240,232,208,0.05);
+}
+.analogy-col.right {
+  background: rgba(42,138,122,0.06);
+  border-color: rgba(42,138,122,0.12);
+}
+.analogy-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--fog);
+  margin-bottom: 1rem;
+}
+.analogy-badge.right { color: rgba(42,138,122,0.8); }
+.analogy-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--cream);
+  margin-bottom: 1rem;
+}
+.analogy-item {
+  font-size: 0.82rem;
+  color: rgba(240,232,208,0.55);
+  line-height: 1.8;
+  margin-bottom: 0.4rem;
+  padding-left: 1rem;
+  position: relative;
+}
+.analogy-item::before {
+  content: '·';
+  position: absolute;
+  left: 0;
+  color: var(--fog);
+}
+.analogy-item.right::before { color: rgba(42,138,122,0.6); }
+.analogy-item.right { color: rgba(240,232,208,0.7); }
+
+.analogy-arrow {
+  padding: 0 1.2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 1rem;
+  color: var(--amber);
+  text-align: center;
+}
+
+/* ─── MCP 도구 카드 ─── */
+.mcp-grid {
+  margin: 2.5rem 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 1px;
+  background: rgba(240,232,208,0.05);
+}
+
+.mcp-card {
+  background: var(--void);
+  padding: 1.6rem;
+  position: relative;
+  transition: all 0.3s ease;
+}
+.mcp-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--teal), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.mcp-card:hover {
+  background: var(--teal-glow);
+}
+.mcp-card:hover::before { opacity: 1; }
+
+.mcp-role {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: rgba(42,138,122,0.8);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.mcp-name {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
+.mcp-desc {
+  font-size: 0.8rem;
+  color: var(--fog);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ─── 신체 비유 다이어그램 ─── */
+.body-diagram {
+  margin: 2.5rem 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px;
+  background: rgba(240,232,208,0.05);
+}
+.body-cell {
+  background: var(--void);
+  padding: 1.6rem 1.2rem;
+  text-align: center;
+  transition: background 0.3s ease;
+}
+.body-cell:hover { background: rgba(200,146,42,0.04); }
+.body-icon {
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+.body-part {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.15em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+.body-tool {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--cream);
+  margin-bottom: 0.4rem;
+}
+.body-desc {
+  font-size: 0.72rem;
+  color: var(--fog);
+  line-height: 1.5;
+}
+
+/* ─── 이메일 소통 블록 ─── */
+.email-block {
+  margin: 2.5rem 0;
+  background: #06080f;
+  border: 1px solid rgba(240,232,208,0.06);
+  padding: 2rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  line-height: 1.9;
+  position: relative;
+}
+.email-block::before {
+  content: 'AI 이메일 소통 — 개념도';
+  position: absolute;
+  top: -0.6rem; left: 1.5rem;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: #06080f;
+  padding: 0 0.5rem;
+}
+.email-from { color: var(--amber); }
+.email-to { color: rgba(42,138,122,0.9); }
+.email-body { color: rgba(240,232,208,0.6); }
+.email-comment { color: rgba(240,232,208,0.2); font-style: italic; }
+
+/* ─── 인사이트 ─── */
+.insight {
+  margin: 3rem 0;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, rgba(42,138,122,0.08) 0%, rgba(200,146,42,0.06) 100%);
+  border: 1px solid rgba(232,168,58,0.15);
+  text-align: center;
+}
+.insight p {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--cream);
+  margin: 0;
+  line-height: 1.8;
+}
+.insight-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-top: 1.2rem;
+  display: block;
+}
+
+/* ─── DAWN DIVIDER ─── */
+.dawn-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--amber) 50%, transparent 100%);
+  opacity: 0.2;
+}
+
+/* ─── FOOTER ─── */
+.footer-section {
+  padding: 6rem 6vw 4rem;
+  text-align: center;
+  background: linear-gradient(0deg, rgba(200,146,42,0.04) 0%, transparent 100%);
+}
+.footer-ep {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.footer-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 1.5rem;
+}
+.footer-body {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.9rem;
+  color: var(--mist);
+  max-width: 42ch;
+  margin: 0 auto 3rem;
+  line-height: 1.9;
+}
+.footer-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--fog);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.footer-line::before, .footer-line::after {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--fog);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 600px) {
+  nav { padding: 1rem 4vw; }
+  .hero { padding: 0 4vw 8vh; }
+  section { padding: 4rem 0; }
+  .content { padding: 0 4vw; }
+  .analogy { grid-template-columns: 1fr; }
+  .analogy-arrow { padding: 0.5rem; transform: rotate(90deg); text-align: center; }
+  .body-diagram { grid-template-columns: 1fr 1fr; }
+  .mcp-grid { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+
+<div class="dawn-bar" id="dawnBar"></div>
+
+<nav>
+  <span class="nav-logo">개발자 박대표 · S3</span>
+  <span class="nav-ep">EP005</span>
+</nav>
+
+<!-- ────────── HERO ────────── -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-network">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+      <line x1="200" y1="150" x2="500" y2="300" stroke="#e8a83a" stroke-width="0.5"/>
+      <line x1="500" y1="300" x2="800" y2="200" stroke="#e8a83a" stroke-width="0.5"/>
+      <line x1="500" y1="300" x2="600" y2="500" stroke="#2a8a7a" stroke-width="0.5"/>
+      <line x1="800" y1="200" x2="1000" y2="400" stroke="#e8a83a" stroke-width="0.5"/>
+      <line x1="600" y1="500" x2="900" y2="600" stroke="#2a8a7a" stroke-width="0.5"/>
+      <line x1="100" y1="400" x2="500" y2="300" stroke="#2a8a7a" stroke-width="0.5"/>
+      <circle cx="500" cy="300" r="6" fill="#e8a83a"/>
+      <circle cx="200" cy="150" r="4" fill="#2a8a7a"/>
+      <circle cx="800" cy="200" r="4" fill="#2a8a7a"/>
+      <circle cx="600" cy="500" r="4" fill="#2a8a7a"/>
+      <circle cx="1000" cy="400" r="3" fill="#e8a83a"/>
+      <circle cx="900" cy="600" r="3" fill="#e8a83a"/>
+      <circle cx="100" cy="400" r="3" fill="#2a8a7a"/>
+    </svg>
+  </div>
+  <div class="hero-horizon"></div>
+
+  <div class="hero-meta">
+    <div class="series-badge">Season 3 · DECOHUB Chronicles</div>
+    <div class="ep-label">Episode 005</div>
+    <h1 class="hero-title">AI 에이전트를<br><em>키운다</em>는 것</h1>
+    <p class="hero-subtitle">
+      신입사원을 교육하듯, AI 에이전트도 가르쳐야 한다.<br>
+      머리만 있어서는 일을 못 한다.<br>
+      눈도, 손도, 발도 달아줘야 한다.
+    </p>
+    <div class="hero-date">2026 · MCP · Claude Code Channels · AI 에이전트 운영론</div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- ────────── MAIN ────────── -->
+<main class="content">
+
+  <!-- 01 LLM이란 -->
+  <section>
+    <div class="section-num reveal">01 · 먼저, 개념부터</div>
+    <h2 class="section-title reveal">LLM은 그냥<br><em>머리</em>다</h2>
+
+    <p class="reveal">Claude는 LLM이다. Large Language Model. 단순하게 말하면 그냥 머리다. 두뇌가 아무리 좋아도 손이 없으면 일을 못 한다. 눈이 없으면 화면을 못 본다.</p>
+
+    <p class="reveal">우리가 아는 Genspark 같은 AI 서비스들은 LLM이라는 머리에 엑셀을 잘하는 기능, 파워포인트를 잘 만드는 기능을 붙여놓은 것이다. 그게 AI 에이전트다. 특정 분야의 일을 잘하도록 특화해 만든 것.</p>
+
+    <div class="analogy reveal">
+      <div class="analogy-col">
+        <div class="analogy-badge">신입사원</div>
+        <div class="analogy-title">사람</div>
+        <div class="analogy-item">적성과 수준이 다 다르다</div>
+        <div class="analogy-item">회사 업무를 교육해야 한다</div>
+        <div class="analogy-item">컴퓨터, 마우스를 사줘야 한다</div>
+        <div class="analogy-item">우리 회사 방식을 가르쳐야 한다</div>
+        <div class="analogy-item">ERP 사용법을 알려줘야 한다</div>
+      </div>
+      <div class="analogy-arrow">→</div>
+      <div class="analogy-col right">
+        <div class="analogy-badge right">AI 에이전트</div>
+        <div class="analogy-title">우리 회사 일을 잘하는 AI</div>
+        <div class="analogy-item right">모델마다 성격과 수준이 다르다</div>
+        <div class="analogy-item right">우리 회사 업무를 학습시켜야 한다</div>
+        <div class="analogy-item right">MCP — 도구를 달아줘야 한다</div>
+        <div class="analogy-item right">결재 방식, 대표 성향을 학습시켜야 한다</div>
+        <div class="analogy-item right">ERP API 연동 또는 웹 자동화 필요</div>
+      </div>
+    </div>
+
+    <p class="reveal">ERP 프로그램은 회사마다 다 다르다. 아무리 AI라도 그 ERP를 100% 이해하고 있지 않다. 업무를 결재받는 방식도, 대표의 성향도, 조직의 문화도 다 다르다. 그 다름을 AI에게 학습시켜야 한다. 그게 AI 에이전트를 키운다는 것의 본질이다.</p>
+  </section>
+
+  <!-- 02 도구 장착 -->
+  <section>
+    <div class="section-num reveal">02 · 신체를 달아준다</div>
+    <h2 class="section-title reveal">머리에<br><em>손과 눈을</em> 달아주다</h2>
+
+    <p class="reveal">AI가 웹 브라우저 기반 프로그램을 다룰 수 있으려면 눈과 손이 필요하다. 그 도구들을 AI에 연결하는 방식이 MCP — Model Context Protocol이다. MCP를 통해 AI에게 마우스, 눈, 크롤링 능력 같은 신체를 하나씩 달아줄 수 있다.</p>
+
+    <div class="body-diagram reveal">
+      <div class="body-cell">
+        <span class="body-icon">🧠</span>
+        <div class="body-part">두뇌</div>
+        <div class="body-tool">Claude (LLM)</div>
+        <div class="body-desc">생각하고 판단한다. 모든 것의 중심.</div>
+      </div>
+      <div class="body-cell">
+        <span class="body-icon">👁️</span>
+        <div class="body-part">눈</div>
+        <div class="body-tool">SKYVERN MCP</div>
+        <div class="body-desc">화면을 캡처해 분석한다. 버튼이 어디 있는지 본다.</div>
+      </div>
+      <div class="body-cell">
+        <span class="body-icon">🖱️</span>
+        <div class="body-part">손 / 마우스</div>
+        <div class="body-tool">Playwright MCP</div>
+        <div class="body-desc">좌표를 찍고 클릭한다. 웹 자동화의 손.</div>
+      </div>
+      <div class="body-cell">
+        <span class="body-icon">🕷️</span>
+        <div class="body-part">정보 수집</div>
+        <div class="body-tool">Firecrawl MCP</div>
+        <div class="body-desc">웹사이트 전체를 크롤링한다. 데이터를 가져온다.</div>
+      </div>
+      <div class="body-cell">
+        <span class="body-icon">📬</span>
+        <div class="body-part">소통</div>
+        <div class="body-tool">Gmail MCP</div>
+        <div class="body-desc">이메일을 읽고 쓴다. 기록이 남는 소통.</div>
+      </div>
+      <div class="body-cell">
+        <span class="body-icon">📅</span>
+        <div class="body-part">일정</div>
+        <div class="body-tool">Calendar MCP</div>
+        <div class="body-desc">일정을 보고 잡는다. 대표 캘린더와 연동.</div>
+      </div>
+    </div>
+
+    <p class="reveal">Playwright가 마우스라면 SKYVERN은 눈이다. Playwright는 모든 좌표를 찍어가며 "이게 뭔지" 탐색하는 방식이었다면, SKYVERN은 화면 캡처를 분석해서 "이 버튼을 클릭하면 다운로드가 되고, 저 버튼을 클릭하면 다음 페이지로 넘어간다"는 것을 스스로 인식한다.</p>
+
+    <div class="pull-quote reveal">
+      <p>SKYVERN을 달아주는 순간<br>
+      성공 확률이 엄청나게 높아지고<br>
+      일하는 방식 자체가 바뀌더라.</p>
+    </div>
+  </section>
+
+  <!-- 03 MCP 도구 목록 -->
+  <section>
+    <div class="section-num reveal">03 · 지금 달아준 도구들</div>
+    <h2 class="section-title reveal">에이전트의<br><em>장비 목록</em></h2>
+
+    <p class="reveal">Claude 고수들이 이미 쓰고 있는 MCP 네 가지를 소개한 영상을 보면서 공부를 시작했다. 이 MCP들을 에이전트에게 달아주고, 어떻게 활용할 것인지 계속 연구 중이다.</p>
+
+    <div class="mcp-grid reveal">
+      <div class="mcp-card">
+        <div class="mcp-role">웹 자동화 · 마우스</div>
+        <div class="mcp-name">Playwright MCP</div>
+        <p class="mcp-desc">웹 브라우저를 자동으로 조작한다. ERP, MES, G2B 등 웹 기반 프로그램의 손이 된다.</p>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-role">웹 자동화 · 눈</div>
+        <div class="mcp-name">SKYVERN MCP</div>
+        <p class="mcp-desc">화면을 캡처해 AI가 직접 분석한다. 화면 구조를 이해하고 클릭 위치를 스스로 판단한다.</p>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-role">웹 크롤링</div>
+        <div class="mcp-name">Firecrawl MCP</div>
+        <p class="mcp-desc">웹사이트 전체를 크롤링한다. 프로그램 구조 분석, 데이터 수집, 경쟁사 분석 등에 활용.</p>
+      </div>
+      <div class="mcp-card">
+        <div class="mcp-role">이메일 소통</div>
+        <div class="mcp-name">Gmail MCP</div>
+        <p class="mcp-desc">이메일을 읽고 작성하고 발송한다. 텔레그램 메시지와 달리 기록이 남고 책임이 생긴다.</p>
+      </div>
+    </div>
+
+    <p class="reveal">이 MCP들을 공부하고, 내가 하는 업무에 어떻게 활용할 것인지 연구하는 일을 멈출 수 없다. 도구가 계속 나오고, 세상이 계속 바뀌고 있기 때문이다.</p>
+  </section>
+
+  <!-- 04 이메일 소통론 -->
+  <section>
+    <div class="section-num reveal">04 · AI와의 소통 방식</div>
+    <h2 class="section-title reveal">텔레그램이 아니라<br><em>이메일</em>로 일한다</h2>
+
+    <p class="reveal">AI 에이전트와 일하면서 느낀 것 중 하나. 텔레그램 메시지는 휘발된다. 맥락이 끊어지고, 책임이 흐릿해진다. 해외에서 일하는 방식을 보면 다르다. 이메일로 소통하고, 결정하고, 그 기록에 책임을 진다.</p>
+
+    <div class="email-block reveal">
+      <div class="email-comment">// AI 에이전트의 이메일 소통 흐름</div>
+      <br>
+      <div class="email-from">FROM: hr-bot@decopave.ai</div>
+      <div class="email-to">TO: moonsuk@decopave.co.kr</div>
+      <div class="email-body">SUBJECT: [채용 보고] 오늘 지원자 분석 완료</div>
+      <br>
+      <div class="email-body">영업지원팀 3명, 공장관리 2명 지원.</div>
+      <div class="email-body">7점 이상 상위 2명 세부 분석 첨부.</div>
+      <div class="email-body">사전 질문지 초안 Draft함에 저장 완료.</div>
+      <div class="email-body">발송을 원하시면 확인 후 클릭하시면 됩니다.</div>
+      <br>
+      <div class="email-comment">// → 기록이 남는다. 책임이 생긴다. 휘발되지 않는다.</div>
+    </div>
+
+    <p class="reveal">AI가 자기 이메일 계정으로 들어가서 메일을 발송하는 체계. 그 메일함에 들어오는 내용을 AI가 읽고 이해하고 처리하는 구조. 이게 앞으로의 AI 업무 소통 방식이 될 것 같다는 생각이 들었다.</p>
+
+    <div class="pull-quote reveal">
+      <p>미국 사람들이 이메일로 소통하고<br>
+      결정하고, 기록하고, 책임지는 방식 —<br>
+      AI 에이전트도 똑같은 방법이 될 것 같다는<br>
+      생각을 하게 됐습니다.</p>
+    </div>
+  </section>
+
+  <!-- 05 결론 -->
+  <section>
+    <div class="section-num reveal">05 · 공생의 조건</div>
+    <h2 class="section-title reveal">AI 에이전트와<br><em>공생</em>하는 법</h2>
+
+    <p class="reveal">누군가는 말한다. "돈만 주면 다 해줄 거야." 맞는 말일 수도 있다. Anthropic에서 곧 월 38달러 수준의 비용으로 업무용 AI 에이전트 서비스를 출시한다고 한다. 그렇게 되면 접근은 더 쉬워질 것이다.</p>
+
+    <p class="reveal">그래도 방법이 없는 게 하나 있다. AI 에이전트에게 우리 회사의 것을 가르치는 일. 우리 회사 ERP가 어떻게 생겼는지, 대표가 어떤 방식으로 보고받는 것을 좋아하는지, 직원들의 업무 습관이 어떤지. 이건 외부 서비스가 대신해줄 수 없다. 직접 해야 한다.</p>
+
+    <div class="insight reveal">
+      <p>AI 에이전트를 키운다는 것은<br>
+      신입사원을 교육하는 것과 같다.<br>
+      가르치지 않으면 일을 못 한다.<br>
+      잘 가르쳐야 잘 일한다.</p>
+      <span class="insight-sub">AI와 공생하는 방법 · Season 3 EP005</span>
+    </div>
+
+    <p class="reveal">이걸 우리 회사에서 완성하면, WEHAGO ERP를 쓰는 대한민국 모든 중소기업이 쓸 수 있다. 프로그래머를 시켜 제품화해서 팔면 된다. 앞으로 더 돈이 될 것 같다는 생각도 해봤다. 하지만 지금은 그 전 단계다.</p>
+
+    <p class="reveal">AI 에이전트를 잘 키워야 한다. 잘 가르쳐야 한다. AI 에이전트와 공생할 수 있는 방법이 무엇인지, 이 심도 있는 고민을 멈출 수 없다.</p>
+  </section>
+
+</main>
+
+<!-- ────────── FOOTER ────────── -->
+<footer class="footer-section">
+  <div class="dawn-divider" style="margin-bottom:3rem;"></div>
+  <div class="footer-ep">Season 3 · Episode 005</div>
+  <div class="footer-title">다음 에피소드를 기다려 주세요.</div>
+  <p class="footer-body">
+    에이전트를 키우는 이야기는 계속됩니다.<br>
+    공생의 방법을 찾아가는 여정.
+  </p>
+  <div class="footer-line">Decopave Co., Ltd. · 데코페이브㈜ · 2026</div>
+  <div class="footer-line" style="font-size:0.45rem;">개발자 박대표 · AI로 회사를 바꾸는 중소기업 대표의 기록</div>
+</footer>
+
+<script>
+const bar = document.getElementById('dawnBar');
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  bar.style.width = pct + '%';
+});
+
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+</script>
+
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
+  <a href="ep004.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="interlude.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+</nav>
+</body>
+</html>

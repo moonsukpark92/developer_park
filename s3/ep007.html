@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP007 — 진짜 자비스를 만들다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;700&family=DM+Mono:ital@0;1&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void:#04050a;--dawn:#c8922a;--amber:#e8a83a;--gold:#f5c842;
+  --cream:#f0e8d0;--mist:rgba(240,232,208,0.55);--fog:rgba(240,232,208,0.25);
+  --ghost:rgba(240,232,208,0.08);--dawn-glow:rgba(232,168,58,0.18);
+  --blue:#2a5aaa;--blue-glow:rgba(42,90,170,0.12);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background-color:var(--void);color:var(--cream);font-family:"Noto Sans KR",sans-serif;font-weight:300;line-height:1.9;overflow-x:hidden;padding-top:40px;padding-bottom:50px;}
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.6;}
+.dawn-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--amber),var(--gold));width:0%;z-index:1000;box-shadow:0 0 8px rgba(232,168,58,0.5);transition:width 0.1s linear;}
+nav{position:fixed;top:36px;left:0;right:0;z-index:100;padding:1.5rem 6vw;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(4,5,10,0.95) 0%,transparent 100%);backdrop-filter:blur(4px);}
+.nav-logo{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.25em;color:var(--amber);text-transform:uppercase;}
+.nav-ep{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--fog);text-transform:uppercase;}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 6vw 10vh;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 70% 30%,rgba(42,90,170,0.1) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 20% 80%,rgba(200,146,42,0.07) 0%,transparent 60%),linear-gradient(180deg,#060810 0%,#05070f 50%,#07090f 100%);z-index:0;}
+.hero-hud{position:absolute;top:50%;right:8vw;transform:translateY(-55%);width:min(38vw,340px);aspect-ratio:1;z-index:0;pointer-events:none;opacity:0;animation:fadeIn 1.2s ease 0.8s forwards;}
+.hero-hud svg{width:100%;height:100%;}
+.hud-ring1{animation:spin 12s linear infinite;transform-origin:center;}
+.hud-ring2{animation:spinR 8s linear infinite;transform-origin:center;}
+.hud-ring3{animation:spin 20s linear infinite;transform-origin:center;}
+.hero-horizon{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,var(--blue) 20%,var(--amber) 50%,var(--blue) 80%,transparent 100%);opacity:0.3;z-index:1;}
+.hero-meta{position:relative;z-index:2;margin-bottom:3rem;}
+.series-badge{display:inline-flex;align-items:center;gap:0.6rem;font-family:"DM Mono",monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--amber);text-transform:uppercase;margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s ease 0.2s forwards;}
+.series-badge::before{content:"";display:block;width:28px;height:1px;background:var(--amber);}
+.ep-label{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.3em;color:var(--mist);text-transform:uppercase;margin-bottom:1.2rem;opacity:0;animation:fadeUp 0.8s ease 0.4s forwards;}
+.hero-title{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(2.6rem,7.5vw,6.5rem);line-height:1.0;letter-spacing:-0.02em;color:var(--cream);opacity:0;animation:fadeUp 1s ease 0.5s forwards;}
+.hero-title em{font-style:normal;color:var(--amber);text-shadow:0 0 40px rgba(232,168,58,0.4);}
+.hero-subtitle{margin-top:1.6rem;font-family:"Noto Serif KR",serif;font-size:clamp(0.95rem,2vw,1.1rem);font-weight:300;color:var(--mist);max-width:46ch;line-height:1.8;opacity:0;animation:fadeUp 0.8s ease 0.8s forwards;}
+.hero-date{margin-top:2.5rem;font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;color:var(--fog);opacity:0;animation:fadeUp 0.8s ease 1s forwards;}
+.scroll-cue{position:absolute;bottom:3vh;right:6vw;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0.4rem;opacity:0;animation:fadeIn 1s ease 1.5s forwards;}
+.scroll-cue span{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.3em;color:var(--fog);writing-mode:vertical-rl;text-transform:uppercase;}
+.scroll-line{width:1px;height:50px;background:linear-gradient(180deg,var(--amber) 0%,transparent 100%);animation:scrollPulse 2s ease infinite;}
+
+/* CONTENT */
+.content{max-width:720px;margin:0 auto;padding:0 6vw;}
+section{padding:7rem 0;border-bottom:1px solid var(--ghost);}
+section:last-child{border-bottom:none;}
+.section-num{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.3em;color:var(--amber);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:0.8rem;}
+.section-num::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--dawn-glow),transparent);max-width:80px;}
+.section-title{font-family:"Syne",sans-serif;font-weight:700;font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.15;color:var(--cream);margin-bottom:2.5rem;letter-spacing:-0.01em;}
+.section-title em{font-style:normal;color:var(--amber);}
+p{font-size:1rem;line-height:2;color:rgba(240,232,208,0.75);margin-bottom:1.6rem;}
+p strong{color:var(--cream);font-weight:700;}
+
+.pull-quote{margin:3rem 0;padding:2rem 2.5rem;border-left:2px solid var(--amber);background:linear-gradient(90deg,rgba(200,146,42,0.06) 0%,transparent 100%);position:relative;}
+.pull-quote::before{content:"C";position:absolute;top:-1rem;left:1.5rem;font-family:"Noto Serif KR",serif;font-size:4rem;color:var(--amber);opacity:0.3;line-height:1;}
+.pull-quote p{font-family:"Noto Serif KR",serif;font-size:1.1rem;font-weight:400;color:var(--cream);margin:0;line-height:1.8;}
+
+/* 크레딧 바 */
+.credit-burn{margin:2.5rem 0;background:#06080f;border:1px solid rgba(240,232,208,0.06);padding:2rem;position:relative;}
+.credit-burn::before{content:"Genspark \C218\D37C \C5D0\C774\C804\D2B8 — \D06C\B808\B527 \C18C\C9C4 \D604\D669";position:absolute;top:-0.6rem;left:1.5rem;font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);background:#06080f;padding:0 0.5rem;}
+.credit-row{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.2rem;}
+.credit-row:last-child{margin-bottom:0;}
+.credit-label{font-family:"DM Mono",monospace;font-size:0.6rem;color:var(--fog);min-width:8rem;line-height:1.4;}
+.credit-bar-wrap{flex:1;height:4px;background:rgba(240,232,208,0.06);position:relative;}
+.credit-fill{position:absolute;left:0;top:0;bottom:0;width:0%;transition:width 1.5s ease;}
+.credit-fill.full{background:rgba(42,90,170,0.6);}
+.credit-fill.gone{background:rgba(192,57,43,0.8);}
+.credit-fill.full.animated{width:100%;}
+.credit-fill.gone.animated{width:100%;}
+.credit-val{font-family:"Syne",sans-serif;font-weight:800;font-size:1rem;min-width:5.5rem;text-align:right;}
+.credit-val.blue{color:rgba(42,90,170,0.9);}
+.credit-val.red{color:rgba(192,57,43,0.9);}
+
+/* 아이디어 플로우 */
+.idea-flow{margin:2.5rem 0;display:flex;flex-direction:column;border-left:1px solid rgba(232,168,58,0.2);}
+.idea-step{display:grid;grid-template-columns:1.8rem 1fr;gap:1rem;padding-bottom:2rem;}
+.idea-dot-wrap{display:flex;flex-direction:column;align-items:center;position:relative;left:-0.55rem;}
+.idea-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px rgba(232,168,58,0.5);flex-shrink:0;margin-top:0.35rem;}
+.idea-dot.blue{background:var(--blue);box-shadow:0 0 8px rgba(42,90,170,0.5);}
+.idea-line{width:1px;flex:1;background:linear-gradient(180deg,rgba(232,168,58,0.3),rgba(232,168,58,0.05));min-height:1rem;}
+.idea-tag{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;color:var(--amber);text-transform:uppercase;margin-bottom:0.3rem;}
+.idea-body p{font-size:0.9rem;line-height:1.75;margin:0;color:rgba(240,232,208,0.7);}
+.idea-body p strong{color:var(--cream);}
+
+/* JARVIS 스펙 */
+.jarvis-spec{margin:2.5rem 0;background:linear-gradient(135deg,rgba(42,90,170,0.06) 0%,rgba(200,146,42,0.04) 100%);border:1px solid rgba(42,90,170,0.2);padding:2.5rem;position:relative;}
+.jarvis-spec::before{content:"JARVIS CC \B7F7 Project Spec";position:absolute;top:-0.6rem;left:1.5rem;font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:rgba(42,90,170,0.9);background:var(--void);padding:0 0.5rem;}
+.jarvis-title{font-family:"Syne",sans-serif;font-weight:800;font-size:1.6rem;color:var(--cream);margin-bottom:0.4rem;letter-spacing:-0.01em;}
+.jarvis-sub{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.15em;color:rgba(42,90,170,0.8);text-transform:uppercase;margin-bottom:2rem;}
+.jarvis-features{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.jarvis-feat{padding:1rem 1.2rem;background:rgba(240,232,208,0.03);border:1px solid rgba(240,232,208,0.05);}
+.jarvis-feat-label{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.15em;color:rgba(42,90,170,0.7);text-transform:uppercase;margin-bottom:0.3rem;}
+.jarvis-feat-text{font-size:0.85rem;color:rgba(240,232,208,0.75);line-height:1.6;}
+
+/* 빌드 상태 */
+.build-status{margin:2.5rem 0;background:#06080f;border:1px solid rgba(240,232,208,0.06);padding:1.8rem 2rem;font-family:"DM Mono",monospace;font-size:0.78rem;line-height:2.1;position:relative;}
+.build-status::before{content:"JARVIS CC — \BE4C\B4DC \C9C4\D589 \D604\D669";position:absolute;top:-0.6rem;left:1.5rem;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);background:#06080f;padding:0 0.5rem;}
+.bs-done{color:rgba(100,200,100,0.8);}
+.bs-run{color:var(--amber);}
+.bs-wait{color:rgba(240,232,208,0.2);}
+.bs-note{color:rgba(240,232,208,0.2);font-style:italic;}
+
+/* 인사이트 */
+.insight{margin:3rem 0;padding:2.5rem;background:linear-gradient(135deg,rgba(42,90,170,0.08) 0%,rgba(200,146,42,0.06) 100%);border:1px solid rgba(232,168,58,0.15);text-align:center;}
+.insight p{font-family:"Noto Serif KR",serif;font-size:1.15rem;font-weight:400;color:var(--cream);margin:0;line-height:1.8;}
+.insight-sub{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;color:var(--amber);text-transform:uppercase;margin-top:1.2rem;display:block;}
+.dawn-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent 0%,var(--amber) 50%,transparent 100%);opacity:0.2;}
+
+/* footer */
+.footer-section{padding:6rem 6vw 4rem;text-align:center;background:linear-gradient(0deg,rgba(200,146,42,0.04) 0%,transparent 100%);}
+.footer-ep{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.3em;color:var(--amber);text-transform:uppercase;margin-bottom:1rem;}
+.footer-title{font-family:"Syne",sans-serif;font-size:clamp(1.4rem,4vw,2rem);font-weight:700;color:var(--cream);margin-bottom:1.5rem;}
+.footer-body{font-family:"Noto Serif KR",serif;font-size:0.9rem;color:var(--mist);max-width:42ch;margin:0 auto 3rem;line-height:1.9;}
+.footer-line{display:flex;align-items:center;justify-content:center;gap:1rem;font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--fog);text-transform:uppercase;margin-bottom:1rem;}
+.footer-line::before,.footer-line::after{content:"";width:40px;height:1px;background:var(--fog);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes scrollPulse{0%,100%{opacity:0.3;}50%{opacity:1;}}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+@keyframes spinR{from{transform:rotate(0deg);}to{transform:rotate(-360deg);}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.8s ease,transform 0.8s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+@media(max-width:700px){nav{padding:1rem 4vw;}.hero{padding:0 4vw 8vh;}section{padding:4rem 0;}.content{padding:0 4vw;}.hero-hud{display:none;}.jarvis-features{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+<div class="dawn-bar" id="dawnBar"></div>
+<nav>
+  <span class="nav-logo">개발자 박대표 · S3</span>
+  <span class="nav-ep">EP007</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-hud" aria-hidden="true">
+    <svg viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="200" cy="200" r="185" stroke="rgba(42,90,170,0.12)" stroke-width="1"/>
+      <g class="hud-ring1"><circle cx="200" cy="200" r="185" stroke="rgba(42,90,170,0.25)" stroke-width="0.5" stroke-dasharray="8 16"/></g>
+      <circle cx="200" cy="200" r="150" stroke="rgba(42,90,170,0.08)" stroke-width="1"/>
+      <g class="hud-ring2"><circle cx="200" cy="200" r="150" stroke="rgba(232,168,58,0.2)" stroke-width="0.5" stroke-dasharray="4 20"/></g>
+      <circle cx="200" cy="200" r="110" stroke="rgba(42,90,170,0.15)" stroke-width="0.5"/>
+      <g class="hud-ring3"><circle cx="200" cy="200" r="110" stroke="rgba(42,90,170,0.3)" stroke-width="0.5" stroke-dasharray="2 12"/></g>
+      <line x1="200" y1="10" x2="200" y2="390" stroke="rgba(42,90,170,0.08)" stroke-width="0.5"/>
+      <line x1="10" y1="200" x2="390" y2="200" stroke="rgba(42,90,170,0.08)" stroke-width="0.5"/>
+      <circle cx="200" cy="200" r="6" fill="rgba(232,168,58,0.6)"/>
+      <circle cx="200" cy="200" r="14" stroke="rgba(232,168,58,0.3)" stroke-width="0.5"/>
+      <text x="200" y="178" text-anchor="middle" font-family="monospace" font-size="8" fill="rgba(42,90,170,0.5)" letter-spacing="2">JARVIS</text>
+      <text x="200" y="226" text-anchor="middle" font-family="monospace" font-size="7" fill="rgba(42,90,170,0.4)" letter-spacing="2">CLAUDE CODE</text>
+      <circle cx="200" cy="50" r="3" fill="rgba(232,168,58,0.4)"/>
+      <circle cx="200" cy="350" r="3" fill="rgba(42,90,170,0.4)"/>
+      <circle cx="50" cy="200" r="3" fill="rgba(42,90,170,0.4)"/>
+      <circle cx="350" cy="200" r="3" fill="rgba(232,168,58,0.4)"/>
+    </svg>
+  </div>
+  <div class="hero-horizon"></div>
+  <div class="hero-meta">
+    <div class="series-badge">Season 3 · DECOHUB Chronicles</div>
+    <div class="ep-label">Episode 007</div>
+    <h1 class="hero-title">진짜<br><em>자비스</em>를<br>만들다</h1>
+    <p class="hero-subtitle">아이언맨의 자비스가 부러웠다.<br>말 한마디로 모든 것이 처리되는 세상.<br>그걸 직접 만들어보기로 했다.</p>
+    <div class="hero-date">2026 · JARVIS CC · Jarvis for Claude Code · 개인 AI 비서 프로젝트</div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
+</div>
+
+<main class="content">
+
+  <section>
+    <div class="section-num reveal">01 · 롤모델</div>
+    <h2 class="section-title reveal">목표는<br><em>Genspark</em>이었다</h2>
+    <p class="reveal">Genspark의 슈퍼 에이전트에는 대화 모드가 있다. 직접 써봤다. 대화가 자연스럽고 매끄럽게 잘 된다. 단순히 말하면 받아쓰는 수준이 아니라, 실질적인 AI 에이전트와 대화하는 느낌이었다.</p>
+    <p class="reveal">목표가 생겼다. <strong>저 수준의 대화가 되는 자비스를 만들어야겠다.</strong> 단순히 음성을 인식해서 명령을 전달하는 것이 아니라, 진짜 대화가 되는 형태. 그게 JARVIS CC 프로젝트의 롤모델이 됐다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">02 · 생각의 확장</div>
+    <h2 class="section-title reveal">말 한마디로<br><em>코딩이 되면</em> 어떨까</h2>
+    <p class="reveal">처음 아이디어는 단순했다. VS Code에서 직접 타이핑하는 대신 말로 시키면 안 될까. 그게 점점 커졌다.</p>
+    <div class="idea-flow reveal">
+      <div class="idea-step">
+        <div class="idea-dot-wrap"><div class="idea-dot"></div><div class="idea-line"></div></div>
+        <div class="idea-body">
+          <div class="idea-tag">1단계 · 출발</div>
+          <p>VS Code에서 타이핑할 내용을 <strong>말로 시킬 수 없을까?</strong></p>
+        </div>
+      </div>
+      <div class="idea-step">
+        <div class="idea-dot-wrap"><div class="idea-dot"></div><div class="idea-line"></div></div>
+        <div class="idea-body">
+          <div class="idea-tag">2단계 · 확장</div>
+          <p>VS Code가 아니라 <strong>Claude Code 자체에게 말로 대화하게 만들어버리면</strong> 되는 거 아닌가?</p>
+        </div>
+      </div>
+      <div class="idea-step">
+        <div class="idea-dot-wrap"><div class="idea-dot"></div><div class="idea-line"></div></div>
+        <div class="idea-body">
+          <div class="idea-tag">3단계 · 결정</div>
+          <p>그렇다면 <strong>프로그램으로 완전히 만들어보자.</strong> 구글링하고, 유튜브 뒤지고, GitHub 탐색 시작.</p>
+        </div>
+      </div>
+      <div class="idea-step">
+        <div class="idea-dot-wrap"><div class="idea-dot blue"></div><div class="idea-line"></div></div>
+        <div class="idea-body">
+          <div class="idea-tag">4단계 · 탄생</div>
+          <p>GitHub에서 유사 프로젝트를 찾아 전부 클론해 다운로드했다. EP006 방법론대로 소스코드 분석, 계획서 작성, 현재 프로젝트에 반영. <strong>JARVIS CC 프로젝트가 시작됐다.</strong></p>
+        </div>
+      </div>
+    </div>
+    <p class="reveal">계획서는 Genspark과 Claude를 활용해 정리했다. 차량 운행 중 녹음한 파일로 메모하면서 생각을 다듬었다. 그 결과물이 오늘 아침 빌드 지시로 이어졌다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">03 · 프로젝트 스펙</div>
+    <h2 class="section-title reveal">JARVIS CC —<br><em>무엇을 만드는가</em></h2>
+    <p class="reveal">JARVIS CC. Jarvis for Claude Code. 개인 PC와 노트북에서 단독으로 작동하는 음성 대화형 AI 비서 프로그램이다.</p>
+    <div class="jarvis-spec reveal">
+      <div class="jarvis-title">JARVIS CC</div>
+      <div class="jarvis-sub">Jarvis for Claude Code · 개인 AI 비서 · 자체 개발 중</div>
+      <div class="jarvis-features">
+        <div class="jarvis-feat">
+          <div class="jarvis-feat-label">핵심 기능</div>
+          <div class="jarvis-feat-text">말로 Claude Code와 대화. 타이핑 없이 음성으로 지시하고 결과를 받는다.</div>
+        </div>
+        <div class="jarvis-feat">
+          <div class="jarvis-feat-label">운영 환경</div>
+          <div class="jarvis-feat-text">개인 PC / 노트북 단독 모듈. 별도 서버 없이 로컬에서 완전히 작동한다.</div>
+        </div>
+        <div class="jarvis-feat">
+          <div class="jarvis-feat-label">확장 목표</div>
+          <div class="jarvis-feat-text">VS Code 등 일상 업무 프로그램까지 음성으로 제어. 모든 작업을 말 한마디로.</div>
+        </div>
+        <div class="jarvis-feat">
+          <div class="jarvis-feat-label">메모리 · 맥락</div>
+          <div class="jarvis-feat-text">대화 내용 전체를 기억하고 정리. 과거 맥락까지 이해해 더 정확한 지시가 가능해진다.</div>
+        </div>
+        <div class="jarvis-feat">
+          <div class="jarvis-feat-label">개발 방식</div>
+          <div class="jarvis-feat-text">GitHub 클론 + Anthropic 공식 문서 + 인터넷 서칭 → 소스코드 분석 → 계획서 → 빌드.</div>
+        </div>
+        <div class="jarvis-feat">
+          <div class="jarvis-feat-label">최종 비전</div>
+          <div class="jarvis-feat-text">완성되면 제품화. 같은 환경의 누구든 쓸 수 있는 독립 모듈로 만든다.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-num reveal">04 · 오늘 아침</div>
+    <h2 class="section-title reveal">빌딩을<br><em>시작하라</em></h2>
+    <p class="reveal">오늘 아침, Claude Code에게 빌드를 시작하라고 지시했다. 실제로 초창기 모델을 한두 시간 만에 만들어 바로 테스트해봤다. 결과는 냉정했다.</p>
+    <div class="build-status reveal">
+      <div class="bs-done">&#x2713;&nbsp; 초창기 모델 빌드 완료 (약 1~2시간)</div>
+      <div class="bs-done">&#x2713;&nbsp; 테스트 진행</div>
+      <div class="bs-run" >&#x26A0;&nbsp; 한글 인식 불량 &mdash; 음성 인식 정확도 낮음</div>
+      <div class="bs-run" >&#x26A0;&nbsp; 반응 속도 느림 &mdash; 실사용 수준 미달</div>
+      <div class="bs-run" >&#x26A0;&nbsp; 명령 오작동 &mdash; 의도한 대로 처리 안 됨</div>
+      <div class="bs-wait">&#x25CB;&nbsp; 개선 작업 진행 중</div>
+      <div class="bs-wait">&#x25CB;&nbsp; 완료 후 GitHub 푸시 예정</div>
+      <div class="bs-note">// 단순히 말하고 받아쓰는 게 아니라, 진짜 대화가 되는 자비스가 목표다.</div>
+    </div>
+    <p class="reveal">이 문제들을 해결하기 위해 Anthropic API와 OpenAI API 키를 두 개 모두 세팅했다. 각 월 100달러씩, 예산 범위 안에서 집행 가능하도록 설정하고 키 두 개를 주고 나왔다. 두 API를 함께 활용해 한글 인식과 응답 품질 양쪽을 잡는 것이 다음 목표다.</p>
+    <p class="reveal">과정은 AI가 처리한다. 중요한 것은 내가 무엇을 만들려고 하는지, 그 방향과 아이디어였다. 그것만 명확하면 AI가 나머지를 해낸다. 그게 지금 AI 시대다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">05 · 생각의 확장</div>
+    <h2 class="section-title reveal">AI 시대는<br><em>생각의 크기</em>가 결정한다</h2>
+    <p class="reveal">JARVIS CC 프로젝트를 진행하면서 이런 생각이 들었다. 지금 AI 시대는 뭔가를 만들려는 아이디어가 중요한 것이지, 그 과정은 별로 중요하지 않다. 내 아이디어를 현실로 바꾸는 것. 그게 지금 AI 시대의 본질이다.</p>
+    <div class="pull-quote reveal">
+      <p>AI 시대는 있는 모든 시간을 쪼개고<br>내 생각을 얼마나 확장하느냐에 따라<br>엄청난 변화가 될 것 같습니다.</p>
+    </div>
+    <p class="reveal">JARVIS CC가 완성되어 개인 PC에서 단독 모듈로 가동된다면 제품이 된다. VS Code 같은 일상 업무 프로그램에도 이식 가능한 수준으로 발전하고, 대화 내용을 메모리해서 과거 맥락까지 이해한다면 — 그것은 진짜 자비스가 된다.</p>
+    <div class="insight reveal">
+      <p>이 시대에 진정 필요한 것이 무엇인가.<br>JARVIS CC 프로젝트가 그 질문을<br>다시 생각하게 만들었다.<br>오늘 밤, 잘 되어 있기를 바란다.</p>
+      <span class="insight-sub">JARVIS CC Project · Season 3 EP007</span>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer-section">
+  <div class="dawn-divider" style="margin-bottom:3rem;"></div>
+  <div class="footer-ep">Season 3 · Episode 007</div>
+  <div class="footer-title">다음 에피소드를 기다려 주세요.</div>
+  <p class="footer-body">자비스는 오늘 밤 태어날지도 모릅니다.<br>그 다음 이야기를 이어갑니다.</p>
+  <div class="footer-line">Decopave Co., Ltd. · 데코페이브㈜ · 2026</div>
+  <div class="footer-line" style="font-size:0.45rem;">개발자 박대표 · AI로 회사를 바꾸는 중소기업 대표의 기록</div>
+</footer>
+
+<script>
+const bar=document.getElementById("dawnBar");
+window.addEventListener("scroll",()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  bar.style.width=pct+"%";
+});
+const reveals=document.querySelectorAll(".reveal");
+const revealObs=new IntersectionObserver((entries)=>{
+  entries.forEach((entry,i)=>{
+    if(entry.isIntersecting){setTimeout(()=>entry.target.classList.add("visible"),i*60);revealObs.unobserve(entry.target);}
+  });
+},{threshold:0.1,rootMargin:"0px 0px -40px 0px"});
+reveals.forEach(el=>revealObs.observe(el));
+const creditObs=new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      document.getElementById("fillFull").classList.add("animated");
+      document.getElementById("fillGone").classList.add("animated");
+      creditObs.unobserve(entry.target);
+    }
+  });
+},{threshold:0.4});
+const cb=document.getElementById("creditBlock");
+if(cb)creditObs.observe(cb);
+</script>
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
+  <a href="ep006.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep008.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+</nav>
+</body>
+</html>

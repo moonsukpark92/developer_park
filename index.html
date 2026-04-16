@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 — AI로 회사를 바꾸는 중소기업 대표의 기록</title>
+<meta name="description" content="코딩을 모르는 CEO가 AI 에이전트 군단을 만들기까지. 데코페이브 박문석 대표의 실전 기록.">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --void:#04050a;
+  --surface:#0a0b12;
+  --amber:#e8a83a;
+  --gold:#f5c842;
+  --cream:#f0e8d0;
+  --mist:rgba(240,232,208,.55);
+  --fog:rgba(240,232,208,.25);
+  --ghost:rgba(240,232,208,.08);
+  --red:#c0392b;
+  --s1:#c0392b;
+  --s2:#eab308;
+  --s3:#e8a83a;
+}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--void);
+  color:var(--cream);
+  font-family:'Noto Serif KR',serif;
+  line-height:1.8;
+  overflow-x:hidden;
+}
+
+/* ─── HERO ─── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+  padding:60px 24px;
+  position:relative;
+  overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 50%, rgba(232,168,58,.06) 0%, transparent 70%),
+    repeating-linear-gradient(0deg,transparent,transparent 59px,rgba(255,255,255,.015) 60px),
+    repeating-linear-gradient(90deg,transparent,transparent 59px,rgba(255,255,255,.015) 60px);
+  pointer-events:none;
+}
+.hero-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;letter-spacing:6px;text-transform:uppercase;
+  color:var(--amber);opacity:.7;
+  margin-bottom:24px;
+  animation:fadeUp .8s ease both;
+}
+.hero-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.2rem,6vw,4.5rem);
+  font-weight:800;
+  line-height:1.15;
+  color:var(--cream);
+  margin-bottom:16px;
+  animation:fadeUp .8s ease .15s both;
+}
+.hero-title em{
+  font-style:normal;
+  background:linear-gradient(135deg,var(--amber),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(.95rem,2vw,1.15rem);
+  color:var(--mist);
+  max-width:600px;
+  margin-bottom:40px;
+  animation:fadeUp .8s ease .3s both;
+}
+.hero-meta{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;letter-spacing:2px;
+  color:var(--fog);
+  animation:fadeUp .8s ease .45s both;
+}
+.scroll-hint{
+  position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  color:var(--fog);letter-spacing:2px;
+  animation:scrollPulse 2s ease infinite;
+}
+
+/* ─── STATS ─── */
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--ghost);border-bottom:1px solid var(--ghost);
+  max-width:900px;margin:0 auto 80px;
+}
+.stat{
+  text-align:center;padding:28px 16px;
+  border-right:1px solid var(--ghost);
+}
+.stat:last-child{border-right:none;}
+.stat-num{
+  font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;
+  color:var(--amber);
+}
+.stat-label{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;
+  letter-spacing:2px;text-transform:uppercase;
+  color:var(--fog);margin-top:4px;
+}
+
+/* ─── SEASONS ─── */
+.seasons{
+  max-width:960px;margin:0 auto;padding:0 24px 80px;
+}
+.seasons-title{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.7rem;letter-spacing:4px;text-transform:uppercase;
+  color:var(--fog);margin-bottom:48px;
+}
+
+.season-card{
+  display:block;text-decoration:none;color:inherit;
+  background:var(--surface);
+  border:1px solid var(--ghost);
+  border-radius:8px;
+  padding:40px;
+  margin-bottom:32px;
+  position:relative;
+  overflow:hidden;
+  transition:all .3s ease;
+}
+.season-card:hover{
+  border-color:rgba(232,168,58,.2);
+  transform:translateY(-2px);
+  box-shadow:0 12px 40px rgba(0,0,0,.4);
+}
+.season-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  opacity:0;transition:opacity .3s ease;
+}
+.season-card:hover::before{opacity:1;}
+.season-card.s1::before{background:linear-gradient(90deg,var(--s1),transparent);}
+.season-card.s2::before{background:linear-gradient(90deg,var(--s2),transparent);}
+.season-card.s3::before{background:linear-gradient(90deg,var(--s3),transparent);}
+
+.season-badge{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;letter-spacing:3px;text-transform:uppercase;
+  padding:4px 10px;border-radius:3px;
+  display:inline-block;margin-bottom:16px;
+}
+.s1 .season-badge{background:rgba(192,57,43,.15);color:var(--s1);}
+.s2 .season-badge{background:rgba(234,179,8,.15);color:var(--s2);}
+.s3 .season-badge{background:rgba(232,168,58,.15);color:var(--s3);}
+
+.season-title{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(1.4rem,3vw,1.8rem);
+  font-weight:700;color:var(--cream);
+  margin-bottom:8px;
+}
+.season-desc{
+  font-size:.95rem;color:var(--mist);
+  margin-bottom:20px;line-height:1.7;
+}
+.season-meta{
+  display:flex;gap:20px;flex-wrap:wrap;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.6rem;letter-spacing:1px;
+  color:var(--fog);
+}
+.season-meta span{display:flex;align-items:center;gap:6px;}
+
+.season-episodes{
+  margin-top:20px;padding-top:20px;
+  border-top:1px solid var(--ghost);
+  display:flex;flex-wrap:wrap;gap:6px;
+}
+.ep-chip{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.55rem;letter-spacing:1px;
+  padding:4px 8px;border-radius:3px;
+  background:var(--ghost);color:var(--fog);
+  text-decoration:none;
+  transition:all .2s ease;
+}
+.ep-chip:hover{background:rgba(232,168,58,.15);color:var(--amber);}
+
+/* ─── ABOUT ─── */
+.about{
+  max-width:700px;margin:0 auto;padding:80px 24px;
+  text-align:center;
+  border-top:1px solid var(--ghost);
+}
+.about-quote{
+  font-size:clamp(1.1rem,2.5vw,1.4rem);
+  color:var(--cream);font-weight:300;
+  line-height:1.9;margin-bottom:24px;
+}
+.about-quote em{
+  font-style:normal;color:var(--amber);
+}
+.about-attr{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.65rem;letter-spacing:2px;
+  color:var(--fog);
+}
+
+/* ─── FOOTER ─── */
+footer{
+  text-align:center;padding:40px 24px 60px;
+  border-top:1px solid var(--ghost);
+}
+.footer-logo{
+  font-family:'Syne',sans-serif;
+  font-size:1rem;font-weight:700;
+  color:var(--amber);margin-bottom:8px;
+}
+.footer-text{
+  font-family:'JetBrains Mono',monospace;
+  font-size:.55rem;letter-spacing:2px;
+  color:var(--fog);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes scrollPulse{
+  0%,100%{opacity:.3;}
+  50%{opacity:.7;}
+}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:600px){
+  .stats{grid-template-columns:repeat(2,1fr);}
+  .stat{border-bottom:1px solid var(--ghost);}
+  .season-card{padding:28px 20px;}
+  .season-meta{flex-direction:column;gap:8px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ────────── HERO ────────── -->
+<section class="hero">
+  <div class="hero-label">The Record of a CEO Who Can't Code</div>
+  <h1 class="hero-title">개발자 <em>박대표</em></h1>
+  <p class="hero-sub">코딩을 모르는 CEO가 AI 에이전트 군단을 만들기까지.<br>데코페이브 박문석 대표의 실전 기록.</p>
+  <div class="hero-meta">3 SEASONS · 31 EPISODES · 2025–2026</div>
+  <div class="scroll-hint">SCROLL ▼</div>
+</section>
+
+<!-- ────────── STATS ────────── -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">3</div>
+    <div class="stat-label">Seasons</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">31</div>
+    <div class="stat-label">Episodes</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">22+</div>
+    <div class="stat-label">Projects</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">100+</div>
+    <div class="stat-label">Days</div>
+  </div>
+</div>
+
+<!-- ────────── SEASONS ────────── -->
+<section class="seasons">
+  <div class="seasons-title">All Seasons</div>
+
+  <!-- SEASON 1 -->
+  <a href="s1/index.html" class="season-card s1">
+    <div class="season-badge">Season 1</div>
+    <h2 class="season-title">개발자 박대표</h2>
+    <p class="season-desc">코딩을 모르는 CEO가 한 달 만에 22개 프로젝트를 만들고, AI 비서 '문실장'을 탄생시킨 이야기. 에러와 싸우며 배운 첫 번째 기록.</p>
+    <div class="season-meta">
+      <span>8 EPISODES</span>
+      <span>Python · FastAPI · Claude</span>
+      <span>2025.03</span>
+    </div>
+    <div class="season-episodes">
+      <span class="ep-chip">EP001</span><span class="ep-chip">EP002</span><span class="ep-chip">EP003</span><span class="ep-chip">EP004</span>
+      <span class="ep-chip">EP005</span><span class="ep-chip">EP006</span><span class="ep-chip">EP007</span><span class="ep-chip">EP008</span>
+    </div>
+  </a>
+
+  <!-- SEASON 2 -->
+  <a href="s2/index.html" class="season-card s2">
+    <div class="season-badge">Season 2</div>
+    <h2 class="season-title">100일의 AI 도입기</h2>
+    <p class="season-desc">시스템 다운, 리눅스 서버 구축, GitHub 발견, 5대의 컴퓨터와 열 시간의 사투. 100일간의 AI 도입 여정과 "또라이가 세상을 바꾼다"는 믿음.</p>
+    <div class="season-meta">
+      <span>7 EPISODES + EPILOGUE + FINAL</span>
+      <span>Linux · GitHub · n8n</span>
+      <span>2025.04–06</span>
+    </div>
+    <div class="season-episodes">
+      <span class="ep-chip">EP001</span><span class="ep-chip">EP002</span><span class="ep-chip">EP003</span><span class="ep-chip">EP004</span>
+      <span class="ep-chip">EP005</span><span class="ep-chip">EP006</span><span class="ep-chip">EP007</span>
+      <span class="ep-chip" style="color:rgba(168,85,247,.6);">EPILOGUE</span>
+      <span class="ep-chip" style="color:rgba(236,72,153,.6);">FINAL</span>
+    </div>
+  </a>
+
+  <!-- SEASON 3 -->
+  <a href="s3/index.html" class="season-card s3">
+    <div class="season-badge">Season 3</div>
+    <h2 class="season-title">문실장의 탄생</h2>
+    <p class="season-desc">AI 에이전트 군단의 시작. Taskworld MCP, JARVIS CC, FactoryMbot. 에이전트에게 신체를 달아주고, 업무를 가르치고, 데이터 주권을 선언하기까지.</p>
+    <div class="season-meta">
+      <span>10 EPISODES + PROLOGUE + INTERLUDE</span>
+      <span>MCP · JARVIS · GitHub</span>
+      <span>2025.07–</span>
+    </div>
+    <div class="season-episodes">
+      <span class="ep-chip" style="color:rgba(168,85,247,.6);">PROLOGUE</span>
+      <span class="ep-chip">EP001</span><span class="ep-chip">EP002</span><span class="ep-chip">EP003</span><span class="ep-chip">EP004</span><span class="ep-chip">EP005</span>
+      <span class="ep-chip" style="color:rgba(168,85,247,.6);">INTERLUDE</span>
+      <span class="ep-chip">EP006</span><span class="ep-chip">EP007</span><span class="ep-chip">EP008</span><span class="ep-chip">EP009</span><span class="ep-chip">EP010</span>
+    </div>
+  </a>
+</section>
+
+<!-- ────────── ABOUT ────────── -->
+<section class="about">
+  <p class="about-quote">"코딩을 모르는 CEO가 개발자가 됐다.<br>중요한 건 코드가 아니라 <em>이해하는 기술</em>이었다."</p>
+  <div class="about-attr">— 박문석, 데코페이브 대표</div>
+</section>
+
+<!-- ────────── FOOTER ────────── -->
+<footer>
+  <div class="footer-logo">개발자 박대표</div>
+  <div class="footer-text">Decopave Co., Ltd. · 데코페이브 주식회사 · 2025–2026</div>
+  <div class="footer-text" style="margin-top:4px;">AI로 회사를 바꾸는 중소기업 대표의 기록</div>
+</footer>
+
+</body>
+</html>

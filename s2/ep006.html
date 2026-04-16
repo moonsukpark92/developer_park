@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 시즌2 #006 — 열 시간, 다섯 대의 컴퓨터</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --bg: #07060a;
+    --surface: #0e0d14;
+    --accent: #f97316;
+    --accent-dim: #9a3412;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --amber: #f59e0b;
+    --purple: #8b5cf6;
+    --teal: #14b8a6;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(249,115,22,.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Noto Serif KR',serif; overflow-x:hidden; padding-top:40px; padding-bottom:50px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes pulse { 0%,100%{opacity:.5} 50%{opacity:1} }
+  @keyframes typing { from{width:0} to{width:100%} }
+
+  .hero {
+    min-height:100vh; display:flex; flex-direction:column;
+    justify-content:center; padding:80px 8vw;
+    position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 50% 50% at 30% 40%, rgba(249,115,22,.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 70% 70%, rgba(59,130,246,.04) 0%, transparent 60%);
+  }
+  .hero-season {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:6px; color:var(--accent-dim); text-transform:uppercase;
+    margin-bottom:12px; opacity:0; animation:fadeUp .7s .1s forwards;
+  }
+  .hero-ep {
+    font-family:'JetBrains Mono',monospace; font-size:.65rem;
+    letter-spacing:5px; color:var(--accent); text-transform:uppercase;
+    margin-bottom:36px; opacity:0; animation:fadeUp .7s .3s forwards;
+  }
+  .hero-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(2rem,5.5vw,4.5rem); line-height:1.15;
+    opacity:0; animation:fadeUp .7s .5s forwards; max-width:800px;
+  }
+  .hero-title .o { color:var(--accent); }
+  .hero-title .b { color:var(--blue); }
+  .hero-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:clamp(.85rem,1.5vw,1.05rem); line-height:2;
+    color:rgba(255,255,255,.45); margin-top:32px; max-width:620px;
+    opacity:0; animation:fadeUp .7s .7s forwards;
+  }
+  .hero-date {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:3px; color:var(--muted);
+    margin-top:48px; opacity:0; animation:fadeUp .7s .9s forwards;
+  }
+
+  .section { padding:100px 8vw; position:relative; }
+  .section.dark { background:var(--bg); }
+  .section.surface { background:var(--surface); }
+  .section.gradient { background:linear-gradient(180deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%); }
+
+  .ch-label {
+    font-family:'JetBrains Mono',monospace; font-size:.58rem;
+    letter-spacing:4px; text-transform:uppercase; margin-bottom:14px;
+  }
+  .ch-label.orange { color:var(--accent); }
+  .ch-label.blue { color:var(--blue); }
+  .ch-label.green { color:var(--green); }
+  .ch-label.red { color:var(--red); }
+  .ch-label.purple { color:var(--purple); }
+  .ch-label.teal { color:var(--teal); }
+  .ch-label.amber { color:var(--amber); }
+
+  .ch-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.6rem,4vw,3rem); line-height:1.2;
+    margin-bottom:40px; max-width:700px;
+  }
+
+  .prose {
+    font-family:'Noto Serif KR',serif; font-weight:300;
+    font-size:1.02rem; line-height:2.1;
+    color:rgba(255,255,255,.72); max-width:680px;
+  }
+  .prose strong { color:#fff; font-weight:700; }
+  .prose .o { color:var(--accent); font-weight:700; }
+  .prose .b { color:#60a5fa; font-weight:700; }
+  .prose .g { color:var(--green); font-weight:700; }
+  .prose .r { color:var(--red); font-weight:700; }
+  .prose .v { color:var(--purple); font-weight:700; }
+  .prose .a { color:var(--amber); font-weight:700; }
+  .prose + .prose { margin-top:28px; }
+
+  .terminal {
+    background:#0d1117; border:1px solid rgba(255,255,255,.08);
+    border-radius:12px; overflow:hidden;
+    margin:40px auto; max-width:700px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .term-bar {
+    background:#161b22; padding:10px 16px;
+    display:flex; align-items:center; gap:7px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .term-dot { width:10px; height:10px; border-radius:50%; }
+  .term-dot.r { background:#ff5f57; }
+  .term-dot.y { background:#febc2e; }
+  .term-dot.g { background:#28c840; }
+  .term-name { font-size:.65rem; color:var(--muted); margin-left:auto; letter-spacing:1px; }
+  .term-body { padding:20px; }
+  .term-line { font-size:.78rem; line-height:1.9; color:rgba(255,255,255,.6); }
+  .term-line .prompt { color:var(--green); }
+  .term-line .cmd { color:#fff; }
+  .term-line .comment { color:var(--muted); font-style:italic; }
+  .term-line .success { color:var(--green); }
+  .term-line .warn { color:var(--amber); }
+  .term-line .err { color:var(--red); }
+  .term-line .info { color:var(--blue); }
+
+  .bq {
+    border-left:3px solid var(--accent);
+    padding:20px 28px; margin:36px 0;
+    background:rgba(249,115,22,.04);
+    border-radius:0 10px 10px 0; max-width:680px;
+  }
+  .bq.blue { border-left-color:var(--blue); background:rgba(59,130,246,.04); }
+  .bq.green { border-left-color:var(--green); background:rgba(34,197,94,.04); }
+  .bq.red { border-left-color:var(--red); background:rgba(239,68,68,.04); }
+  .bq.purple { border-left-color:var(--purple); background:rgba(139,92,246,.04); }
+  .bq.amber { border-left-color:var(--amber); background:rgba(245,158,11,.04); }
+  .bq p {
+    font-family:'Noto Serif KR',serif; font-size:1rem;
+    line-height:1.85; font-style:italic; color:rgba(255,255,255,.85);
+  }
+  .bq-attr {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    color:rgba(255,255,255,.25); letter-spacing:2px; margin-top:10px;
+  }
+
+  /* WORKFLOW CYCLE */
+  .cycle-wrap {
+    margin:48px auto; max-width:560px;
+    display:flex; flex-direction:column; gap:0; align-items:center;
+  }
+  .cycle-node {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:18px 24px;
+    text-align:center; width:100%; max-width:380px;
+  }
+  .cycle-node .cn-num {
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:.65rem; letter-spacing:2px; margin-bottom:6px;
+  }
+  .cycle-node .cn-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:.9rem; color:#fff; margin-bottom:4px;
+  }
+  .cycle-node .cn-desc {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:.72rem; color:var(--muted); line-height:1.5;
+  }
+  .cycle-node.o { border-color:rgba(249,115,22,.25); }
+  .cycle-node.o .cn-num { color:var(--accent); }
+  .cycle-node.b { border-color:rgba(59,130,246,.25); }
+  .cycle-node.b .cn-num { color:var(--blue); }
+  .cycle-node.g { border-color:rgba(34,197,94,.25); }
+  .cycle-node.g .cn-num { color:var(--green); }
+  .cycle-node.r { border-color:rgba(239,68,68,.25); }
+  .cycle-node.r .cn-num { color:var(--red); }
+  .cycle-node.v { border-color:rgba(139,92,246,.25); }
+  .cycle-node.v .cn-num { color:var(--purple); }
+  .cycle-node.a { border-color:rgba(245,158,11,.25); }
+  .cycle-node.a .cn-num { color:var(--amber); }
+
+  .cycle-arrow {
+    width:2px; height:28px;
+    background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+    position:relative;
+  }
+  .cycle-arrow::after {
+    content:'▼'; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%);
+    font-size:.45rem; color:rgba(255,255,255,.12);
+  }
+  .cycle-loop {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    color:var(--accent); letter-spacing:3px; text-transform:uppercase;
+    margin-top:8px; text-align:center; animation:pulse 2s infinite;
+  }
+
+  /* 5 PC GRID */
+  .pc-grid {
+    display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
+    margin:40px 0; max-width:680px;
+  }
+  .pc-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:16px 14px; text-align:center;
+    width:110px; position:relative;
+  }
+  .pc-card.active { border-color:rgba(34,197,94,.3); }
+  .pc-icon { font-size:1.6rem; margin-bottom:8px; }
+  .pc-label {
+    font-family:'JetBrains Mono',monospace; font-size:.58rem;
+    color:var(--muted); letter-spacing:1px;
+  }
+  .pc-card.active .pc-label { color:var(--green); }
+  .pc-status {
+    font-family:'JetBrains Mono',monospace; font-size:.5rem;
+    margin-top:6px; letter-spacing:1px;
+  }
+  .pc-card.active .pc-status { color:var(--green); }
+
+  /* STAT GRID */
+  .stat-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:16px; margin:40px 0; max-width:680px;
+  }
+  .stat-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:22px; text-align:center;
+  }
+  .stat-num {
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:1.6rem; margin-bottom:6px;
+  }
+  .stat-num.orange { color:var(--accent); }
+  .stat-num.blue { color:var(--blue); }
+  .stat-num.green { color:var(--green); }
+  .stat-num.amber { color:var(--amber); }
+  .stat-label {
+    font-family:'Noto Sans KR',sans-serif; font-size:.7rem;
+    color:var(--muted); letter-spacing:1px;
+  }
+
+  .divider {
+    width:60px; height:2px; margin:60px auto;
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  .closing {
+    min-height:80vh; display:flex; flex-direction:column;
+    justify-content:center; align-items:center;
+    text-align:center; padding:80px 8vw;
+    background:
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(249,115,22,.04) 0%, transparent 70%),
+      var(--bg);
+  }
+  .closing-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.8rem,5vw,3.6rem); line-height:1.25; margin-bottom:28px;
+  }
+  .closing-title .o { color:var(--accent); }
+  .closing-title .g { color:var(--green); }
+  .closing-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:1rem; line-height:2; color:rgba(255,255,255,.5); max-width:560px;
+  }
+
+  @media(max-width:768px){
+    .hero,.section,.closing { padding-left:6vw; padding-right:6vw; }
+    .stat-grid { grid-template-columns:1fr 1fr; }
+    .terminal { max-width:100%; }
+    .pc-card { width:90px; }
+  }
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(234,179,8,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#eab308;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">│</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #eab308;padding-bottom:2px;">S2</a>
+  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-season">SEASON 2 — 실전</div>
+  <div class="hero-ep">Episode 006</div>
+  <h1 class="hero-title">
+    <span class="o">열 시간</span>,<br>
+    <span class="b">다섯 대</span>의 컴퓨터
+  </h1>
+  <p class="hero-sub">
+    토요일. 커피 하나로 버티면서<br>
+    컴퓨터 다섯 대를 왔다 갔다 하며<br>
+    엔터 키를 치고, 확인하고, 또 엔터 키를 쳤다.<br>
+    열 시간이 날아갔다. 아깝지 않았다.
+  </p>
+  <div class="hero-date">2026.04.06 — DECOPAVE Inc.</div>
+</section>
+
+<!-- ===== CH01: 봇들의 문제를 파악하다 ===== -->
+<section class="section gradient">
+  <div class="ch-label orange">Chapter 01</div>
+  <h2 class="ch-title">
+    VS Code를 열고<br>
+    <span style="color:var(--accent)">봇들</span>에 접속했다
+  </h2>
+
+  <div class="prose">
+    <p>
+      어제. 우리 회사 각 업무별 AI 봇들한테 직접 접속했다.
+      VS Code에서 하나하나 불러왔다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="o">문제점을 파악하라고 했다.</span><br>
+      교육시키고, 발생될 수 있는 문제점들을 찾으라고 했다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>많이 보였다.</strong>
+    </p>
+  </div>
+
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="term-dot r"></div>
+      <div class="term-dot y"></div>
+      <div class="term-dot g"></div>
+      <span class="term-name">vscode — bot diagnostics</span>
+    </div>
+    <div class="term-body">
+      <div class="term-line"><span class="info">→ 생산관리봇 접속...</span></div>
+      <div class="term-line"><span class="err">✗ 채팅방 인식 오류 — 그룹 ID 불일치</span></div>
+      <div class="term-line"><span class="err">✗ 스케줄러 누락 — 업무일지 점검 미실행</span></div>
+      <div class="term-line"><span class="warn">⚠ MD 파일 버전 충돌</span></div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="info">→ 회계봇 접속...</span></div>
+      <div class="term-line"><span class="err">✗ ERP 연동 실패 — 세션 만료 미처리</span></div>
+      <div class="term-line"><span class="warn">⚠ 자금일보 자동화 미완성</span></div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="info">→ 품질관리봇 접속...</span></div>
+      <div class="term-line"><span class="err">✗ 불량 데이터 수집 로직 없음</span></div>
+      <div class="term-line"><span class="warn">⚠ 역할 정의 불명확</span></div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      이 문제점들을 다시 <span class="b">다른 AI 에이전트한테 분석시켰다.</span>
+      문제가 뭔지를 다시 확인받았다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      "만약 네가 이 봇의 역할이라면 —
+      <strong>어떤 기능이 있어야 되고,
+      어떻게 재설계하는 게 더 좋은지</strong> 말해봐."
+    </p>
+  </div>
+
+  <div class="bq">
+    <p>AI 봇을 만드는 것보다 더 중요한 것.<br>
+    <strong>AI 봇이 정확하게 무슨 일을 할 거고,<br>
+    어떤 일을 할 건지에 대한 이야기를 만들어 줘야 한다.</strong></p>
+    <div class="bq-attr">— AI 봇 진단, 첫 번째 교훈</div>
+  </div>
+</section>
+
+<!-- ===== CH02: 프로그램을 개발시키다 ===== -->
+<section class="section dark">
+  <div class="ch-label blue">Chapter 02</div>
+  <h2 class="ch-title">
+    봇이 일하려면<br>
+    <span style="color:#60a5fa">도구</span>가 필요하다
+  </h2>
+
+  <div class="prose">
+    <p>
+      봇이 일을 하려면 — <span class="b">프로그램이 필요하다. 도구가 필요하다.</span>
+      맨손으로는 아무것도 못 한다.
+      사람도 마찬가지 아닌가.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      그래서 <strong>직접 개발을 시켰다.</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      먼저 <span class="b">프로그램 계획서부터 만들라고 했다.</span>
+      그 계획서는 내가 꼼꼼하게 검토했다.
+    </p>
+  </div>
+
+  <div class="bq blue">
+    <p>"이런 기능이 빠졌네. 더 넣어줘."<br>
+    "이런 기능은 있었으면 좋겠는데, 요렇게 만드는 게 더 좋지 않아?"<br><br>
+    이런 시간이었다.</p>
+    <div class="bq-attr">— 프로그램 계획서 리뷰 중</div>
+  </div>
+
+  <div class="cycle-wrap">
+    <div class="cycle-node o">
+      <div class="cn-num">STEP 1</div>
+      <div class="cn-title">봇 역할 정의</div>
+      <div class="cn-desc">이 봇이 뭘 하는 놈인지 명확하게</div>
+    </div>
+    <div class="cycle-arrow"></div>
+    <div class="cycle-node b">
+      <div class="cn-num">STEP 2</div>
+      <div class="cn-title">필요 기능 도출</div>
+      <div class="cn-desc">역할을 하려면 뭐가 필요한지</div>
+    </div>
+    <div class="cycle-arrow"></div>
+    <div class="cycle-node g">
+      <div class="cn-num">STEP 3</div>
+      <div class="cn-title">프로그램 계획서</div>
+      <div class="cn-desc">AI가 계획서 작성 → CEO 검토</div>
+    </div>
+    <div class="cycle-arrow"></div>
+    <div class="cycle-node v">
+      <div class="cn-num">STEP 4</div>
+      <div class="cn-title">개발 + 테스트</div>
+      <div class="cn-desc">AI가 코딩 → 버그 발견 → 수정</div>
+    </div>
+    <div class="cycle-arrow"></div>
+    <div class="cycle-node r">
+      <div class="cn-num">STEP 5</div>
+      <div class="cn-title">실전 투입 + 피드백</div>
+      <div class="cn-desc">테스트 결과로 다시 스토리를 만든다</div>
+    </div>
+    <div class="cycle-arrow"></div>
+    <div class="cycle-loop">↻ REPEAT</div>
+  </div>
+
+  <div class="prose">
+    <p>
+      프로그램에 <span class="r">분명히 버그가 있다.</span>
+      테스트해야 된다.
+      테스트하고, 그 결과를 가지고 다시 스토리를 만들어야 한다.
+      <strong>이 사이클이 끝없이 반복된다.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH03: 열 시간 ===== -->
+<section class="section surface">
+  <div class="ch-label red">Chapter 03</div>
+  <h2 class="ch-title">
+    토요일,<br>
+    <span style="color:var(--red)">열 시간</span>이 날아갔다
+  </h2>
+
+  <div class="prose">
+    <p>
+      토요일. 열 시간.
+      오로지 AI하고 컴퓨터만.
+    </p>
+  </div>
+
+  <div class="pc-grid">
+    <div class="pc-card active">
+      <div class="pc-icon">🖥️</div>
+      <div class="pc-label">PC #1</div>
+      <div class="pc-status">문실장 서버</div>
+    </div>
+    <div class="pc-card active">
+      <div class="pc-icon">🖥️</div>
+      <div class="pc-label">PC #2</div>
+      <div class="pc-status">생산관리봇</div>
+    </div>
+    <div class="pc-card active">
+      <div class="pc-icon">🖥️</div>
+      <div class="pc-label">PC #3</div>
+      <div class="pc-status">회계봇</div>
+    </div>
+    <div class="pc-card active">
+      <div class="pc-icon">🖥️</div>
+      <div class="pc-label">PC #4</div>
+      <div class="pc-status">품질관리봇</div>
+    </div>
+    <div class="pc-card active">
+      <div class="pc-icon">💻</div>
+      <div class="pc-label">노트북</div>
+      <div class="pc-status">Claude 채팅</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      다섯 대를 왔다 갔다.
+      엔터 키 치고, 확인하고, 또 엔터 키 치고.
+      <strong>그냥 열 시간이 날아갔다.</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      근데 날아가는 열 시간이 <span class="o">아깝지가 않다.</span>
+    </p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num orange">10h</div>
+      <div class="stat-label">연속 작업 시간</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num blue">5대</div>
+      <div class="stat-label">동시 사용 PC</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num green">☕ 1</div>
+      <div class="stat-label">커피 한 잔으로 버팀</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num amber">∞</div>
+      <div class="stat-label">엔터 키 입력 횟수</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      정말 많은 부분이 단 하루 만에 <strong>엄청난 속도로 바뀌고 있다.</strong>
+    </p>
+  </div>
+
+  <div class="bq red">
+    <p>토요일 하루가 이렇게 길고 힘들지만<br>
+    커피 하나로 버티면서 —<br>
+    <strong>개발자의 삶이 이런 거구나.</strong></p>
+    <div class="bq-attr">— 코딩 모르는 CEO의 개발자 체험</div>
+  </div>
+</section>
+
+<!-- ===== CH04: 될 때까지 해봐 ===== -->
+<section class="section gradient">
+  <div class="ch-label green">Chapter 04</div>
+  <h2 class="ch-title">
+    <span style="color:var(--green)">될 때까지</span><br>
+    해봐
+  </h2>
+
+  <div class="prose">
+    <p>
+      다음 주 상황.
+      이제 메신저로 묻는다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <em>"어제 출하한 내용 보고서로 만들어줘."</em><br>
+      <em>"생산한 내역 알려줘."</em>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      이렇게 말만 해도 <span class="g">척척 알려준다.</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      WEHAGO ERP API가 있어야 되고, 뭐가 있어서 안 되고,
+      이래서 안 되고 —
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      그래서 말했다.
+    </p>
+  </div>
+
+  <div class="bq green">
+    <p><strong>"그럼 될 때까지 해봐."</strong></p>
+    <div class="bq-attr">— 박문석 대표</div>
+  </div>
+
+  <div class="prose">
+    <p>
+      나오면서 보니까 — <span class="g">절반은 했단다.</span>
+    </p>
+  </div>
+
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="term-dot r"></div>
+      <div class="term-dot y"></div>
+      <div class="term-dot g"></div>
+      <span class="term-name">문실장 — ERP 접근 시도 (자율 모드)</span>
+    </div>
+    <div class="term-body">
+      <div class="term-line"><span class="info">→ WEHAGO ERP 접근 시도 #1...</span></div>
+      <div class="term-line"><span class="err">✗ API 인증 실패</span></div>
+      <div class="term-line"><span class="info">→ 브라우저 자동화로 전환... 시도 #2...</span></div>
+      <div class="term-line"><span class="warn">⚠ 세션 만료 — 재로그인 처리</span></div>
+      <div class="term-line"><span class="info">→ 시도 #3... #4... #5...</span></div>
+      <div class="term-line"><span class="success">✓ ERP 접속 성공</span></div>
+      <div class="term-line"><span class="success">✓ 통장 현황 분석 완료</span></div>
+      <div class="term-line"><span class="success">✓ DB 다운로드 방법 파악</span></div>
+      <div class="term-line"><span class="info">→ API 자동 생성 중...</span></div>
+      <div class="term-line"><span class="comment"># "될 때까지 해봐" — 진행 중...</span></div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      들어가기도 하고, 통장 현황도 분석했고,
+      DB 다운로드도 방법을 찾았고, API도 만들고 있고 —
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>안 되는 건 없다.</strong><br>
+      <span class="o">생각을 어떻게 확장하느냐에 달려 있고,
+      어떤 방식으로 해보느냐에 달려 있다.</span>
+    </p>
+  </div>
+
+  <div class="bq amber">
+    <p>이게 AI 시대의 현실이다.<br>
+    안 되는 건 없다.<br>
+    <strong>생각을 어떻게 확장하느냐에 달려 있다.</strong></p>
+    <div class="bq-attr">— AI 시대의 진실</div>
+  </div>
+</section>
+
+<!-- ===== CH05: AI 봇의 완성 조건 ===== -->
+<section class="section dark">
+  <div class="ch-label purple">Chapter 05</div>
+  <h2 class="ch-title">
+    AI 봇이 일하려면<br>
+    <span style="color:#c084fc">이게 제일 중요하다</span>
+  </h2>
+
+  <div class="prose">
+    <p>
+      하루 종일 봇들과 씨름하면서 깨달은 것.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="v">AI 봇들도 정확하게 가르쳐야 되고,</span><br>
+      <span class="v">정확하게 필요한 프로그램을 만들어 줘야 되고,</span><br>
+      <span class="v">뭘 해야 되는지를 알려줘야 한다.</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>이게 제일 중요하다.</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      내가 만든 AI 봇들이 <span class="o">정확하게 무슨 일을 할 거고,
+      어떤 일을 할 건지</span> — 이거에 대한 이야기를 만들어 줘야 한다.
+      그리고 프로그램도 개발해 줘야 한다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      프로그램에 분명히 <span class="r">버그가 있다.</span>
+      테스트해야 된다.
+      테스트하고, 그 결과를 가지고 <strong>다시 스토리를 만들어야 한다.</strong>
+    </p>
+  </div>
+
+  <div class="bq purple">
+    <p>AI 봇을 만드는 건 코딩이 아니다.<br>
+    <strong>스토리를 만드는 것이다.</strong><br><br>
+    역할을 정의하고 → 도구를 만들어주고 →<br>
+    테스트하고 → 버그를 잡고 →<br>
+    그 결과로 다시 스토리를 쓰고 →<br>
+    <strong>이 사이클이 AI 봇 개발의 전부다.</strong></p>
+    <div class="bq-attr">— 열 시간의 깨달음</div>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section class="closing">
+  <h2 class="closing-title">
+    <span class="o">커피 한 잔</span>으로<br>
+    <span class="g">세상</span>을 바꾸는 중
+  </h2>
+  <p class="closing-sub">
+    토요일. 열 시간. 컴퓨터 다섯 대.<br>
+    커피 한 잔으로 버텼다.<br><br>
+    개발자의 삶이 이런 거구나.<br>
+    코딩을 모르는 CEO가 느낀 개발자의 일상.<br><br>
+    봇을 만들고, 교육시키고, 문제를 찾고,<br>
+    프로그램을 개발시키고, 테스트하고, 다시 고치고.<br><br>
+    <strong style="color:#fff;">안 되는 건 없다.</strong><br>
+    생각을 어떻게 확장하느냐에 달려 있다.<br><br>
+    엄청난 속도로 바뀌고 있다.<br>
+    단 하루 만에.<br>
+    <strong style="color:var(--accent);">내일은 또 어떤 일이 벌어질까.</strong>
+  </p>
+
+  <div class="divider" style="margin-top:60px;margin-bottom:32px;"></div>
+
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">
+    개발자 박대표 시즌2 — 계속됩니다
+  </p>
+  <p style="font-family:'Noto Sans KR',sans-serif;font-size:.7rem;color:rgba(255,255,255,.2);margin-top:16px;">
+    (주)데코페이브 | 대표이사 박문석 | DECOPAVE Co., LTD.<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&D: 서울<br><br>
+    ⚠️ 이 블로그는 Claude AI를 기반으로 하는 (주)데코페이브 경영지원실장 문돌봇의 도움으로 작성되었습니다.<br>
+    AI가 만든 글이니 실수할 수 있습니다. 다시 한번 잘 확인해주세요. ㅎㅎㅎ
+  </p>
+</section>
+
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(234,179,8,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.65rem;">
+  <a href="ep005.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">←</a>
+  <a href="index.html" style="color:#eab308;text-decoration:none;padding:4px 8px;font-weight:700;">☰</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">05</a>
+  <a href="ep006.html" style="color:#fff;text-decoration:none;padding:4px 6px;font-weight:700;border-bottom:2px solid #eab308;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">07</a>
+  <a href="epilogue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">EP</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">FIN</a>
+  <a href="ep007.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">→</a>
+</nav>
+</body>
+</html>

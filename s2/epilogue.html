@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 시즌2 — EPILOGUE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --bg: #050508;
+    --surface: #0c0c14;
+    --accent: #eab308;
+    --accent-dim: #854d0e;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --red: #ef4444;
+    --purple: #a855f7;
+    --orange: #f97316;
+    --teal: #14b8a6;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(234,179,8,.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Noto Serif KR',serif; overflow-x:hidden; padding-top:40px; padding-bottom:50px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes glow { 0%,100%{text-shadow:0 0 20px rgba(234,179,8,.2)} 50%{text-shadow:0 0 40px rgba(234,179,8,.4)} }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height:100vh; display:flex; flex-direction:column;
+    justify-content:center; align-items:center; text-align:center;
+    padding:80px 8vw; position:relative; overflow:hidden;
+  }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 50%, rgba(234,179,8,.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 80%, rgba(168,85,247,.04) 0%, transparent 60%);
+  }
+  .hero-season {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:6px; color:var(--accent-dim); text-transform:uppercase;
+    margin-bottom:14px; opacity:0; animation:fadeUp .8s .1s forwards;
+  }
+  .hero-label {
+    font-family:'JetBrains Mono',monospace; font-size:.65rem;
+    letter-spacing:5px; color:var(--accent); text-transform:uppercase;
+    margin-bottom:40px; opacity:0; animation:fadeUp .8s .3s forwards;
+  }
+  .hero-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(2.4rem,6.5vw,5.8rem); line-height:1.15;
+    opacity:0; animation:fadeUp .9s .5s forwards, glow 4s 1.4s infinite;
+    max-width:800px;
+  }
+  .hero-title .y { color:var(--accent); }
+  .hero-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:clamp(.9rem,1.7vw,1.1rem); line-height:2.1;
+    color:rgba(255,255,255,.5); margin-top:36px; max-width:580px;
+    opacity:0; animation:fadeUp .8s .7s forwards;
+  }
+  .hero-date {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:3px; color:var(--muted);
+    margin-top:52px; opacity:0; animation:fadeUp .8s .9s forwards;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section { padding:110px 8vw; position:relative; }
+  .section.dark { background:var(--bg); }
+  .section.surface { background:var(--surface); }
+  .section.gradient { background:linear-gradient(180deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%); }
+
+  .ch-label {
+    font-family:'JetBrains Mono',monospace; font-size:.58rem;
+    letter-spacing:4px; text-transform:uppercase; margin-bottom:14px;
+  }
+  .ch-label.gold { color:var(--accent); }
+  .ch-label.blue { color:var(--blue); }
+  .ch-label.red { color:var(--red); }
+  .ch-label.purple { color:var(--purple); }
+  .ch-label.orange { color:var(--orange); }
+  .ch-label.teal { color:var(--teal); }
+
+  .ch-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.7rem,4.2vw,3.2rem); line-height:1.2;
+    margin-bottom:42px; max-width:720px;
+  }
+
+  .prose {
+    font-family:'Noto Serif KR',serif; font-weight:300;
+    font-size:1.05rem; line-height:2.15;
+    color:rgba(255,255,255,.75); max-width:700px;
+  }
+  .prose strong { color:#fff; font-weight:700; }
+  .prose .y { color:var(--accent); font-weight:700; }
+  .prose .b { color:#60a5fa; font-weight:700; }
+  .prose .r { color:var(--red); font-weight:700; }
+  .prose .p { color:#c084fc; font-weight:700; }
+  .prose .o { color:var(--orange); font-weight:700; }
+  .prose + .prose { margin-top:30px; }
+
+  /* BLOCKQUOTE */
+  .bq {
+    border-left:3px solid var(--accent);
+    padding:24px 30px; margin:40px 0;
+    background:rgba(234,179,8,.04);
+    border-radius:0 10px 10px 0; max-width:700px;
+  }
+  .bq.blue { border-left-color:var(--blue); background:rgba(59,130,246,.04); }
+  .bq.red { border-left-color:var(--red); background:rgba(239,68,68,.04); }
+  .bq.purple { border-left-color:var(--purple); background:rgba(168,85,247,.04); }
+  .bq.orange { border-left-color:var(--orange); background:rgba(249,115,22,.04); }
+  .bq p {
+    font-family:'Noto Serif KR',serif; font-size:1.05rem;
+    line-height:1.9; font-style:italic; color:rgba(255,255,255,.9);
+  }
+  .bq-attr {
+    font-family:'JetBrains Mono',monospace; font-size:.62rem;
+    color:rgba(255,255,255,.3); letter-spacing:2px; margin-top:12px;
+  }
+
+  /* HIGHLIGHT BOX */
+  .highlight {
+    background:linear-gradient(135deg, rgba(234,179,8,.08) 0%, rgba(168,85,247,.04) 100%);
+    border:1px solid rgba(234,179,8,.18);
+    border-radius:16px; padding:38px 32px;
+    margin:50px 0; max-width:700px; position:relative;
+  }
+  .highlight-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:1rem; color:var(--accent); margin-bottom:16px;
+    letter-spacing:1px;
+  }
+  .highlight p {
+    font-family:'Noto Serif KR',serif; font-size:1.05rem;
+    line-height:2; color:rgba(255,255,255,.82);
+  }
+
+  /* BIG STATEMENT */
+  .statement {
+    margin:60px 0; text-align:center; max-width:800px;
+  }
+  .statement h3 {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.8rem,4.5vw,3.4rem); line-height:1.3;
+    color:#fff;
+  }
+  .statement h3 .y { color:var(--accent); }
+  .statement h3 .r { color:var(--red); }
+
+  /* CREDITS */
+  .credits-box {
+    margin:50px 0; max-width:680px;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:16px; padding:40px 32px; text-align:center;
+  }
+  .credits-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.4rem,3.2vw,2.2rem);
+    color:var(--accent); margin-bottom:32px;
+    letter-spacing:3px;
+  }
+  .credit-row {
+    padding:14px 0;
+    border-bottom:1px solid rgba(255,255,255,.04);
+  }
+  .credit-row:last-child { border-bottom:none; }
+  .credit-role {
+    font-family:'JetBrains Mono',monospace; font-size:.65rem;
+    letter-spacing:2px; color:var(--muted);
+    text-transform:uppercase; margin-bottom:4px;
+  }
+  .credit-name {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:1rem; color:#fff;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width:60px; height:2px; margin:70px auto;
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  /* CLOSING */
+  .closing {
+    min-height:90vh; display:flex; flex-direction:column;
+    justify-content:center; align-items:center;
+    text-align:center; padding:100px 8vw;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 50%, rgba(234,179,8,.05) 0%, transparent 70%),
+      var(--bg);
+  }
+  .closing-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(2rem,5.5vw,4rem); line-height:1.2;
+    margin-bottom:36px;
+  }
+  .closing-title .y { color:var(--accent); }
+  .closing-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:1.05rem; line-height:2.1; color:rgba(255,255,255,.55);
+    max-width:600px;
+  }
+
+  @media(max-width:768px){
+    .hero,.section,.closing { padding-left:6vw; padding-right:6vw; }
+    .section { padding-top:80px; padding-bottom:80px; }
+  }
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(234,179,8,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#eab308;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">│</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #eab308;padding-bottom:2px;">S2</a>
+  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-season">SEASON 2 — FINAL</div>
+  <div class="hero-label">Epilogue</div>
+  <h1 class="hero-title">
+    <span class="y">대전환</span>의 시점
+  </h1>
+  <p class="hero-sub">
+    이 이야기는 자랑이 아니다.<br>
+    50년 인생에서 느낀 가장 큰 변화의 순간에<br>
+    내 주변 사람들과 같이 가고 싶은<br>
+    마음에서 시작되었다.
+  </p>
+  <div class="hero-date">2026.04 — DECOPAVE Inc.</div>
+</section>
+
+<!-- ===== CH01: 시작 ===== -->
+<section class="section gradient">
+  <div class="ch-label gold">Prologue to Epilogue</div>
+  <h2 class="ch-title">
+    <span style="color:var(--accent)">골프 뒤풀이</span>에서<br>
+    시작된 이야기
+  </h2>
+
+  <div class="prose">
+    <p>
+      친구들과 골프 치다가 뒤풀이에서 말했다.
+      <em>"우리 회사 지금 이런 거 쓰고 있어."</em>
+      그게 시작이었다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>자랑이 아니었다.</strong>
+      내가 뭔가를 하고 있다는 걸
+      알리고 싶었던 게 아니다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="y">지금이 대전환의 시점이다.</span><br>
+      이 시기를 놓친다면 상당히 많은 것이 불편해질 것 같다는 생각.
+      거기에서 시작됐다.
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH02: 함께 가야 할 사람들 ===== -->
+<section class="section dark">
+  <div class="ch-label blue">Chapter 01</div>
+  <h2 class="ch-title">
+    <span style="color:#60a5fa">같이 가지 못한다면</span>
+  </h2>
+
+  <div class="prose">
+    <p>
+      내 주변 사람들이
+      이 변화에 동참하고 같이 가지 못한다면 —
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      결국 누군가는 낙오하게 될 것이고,
+      누군가는 다시 볼 수 없게 되겠지.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      50년을 살아오면서
+      주변의 사람들이 많이 변하고 바뀌었다.
+      <span class="b">올라가면 올라갈수록</span>
+      많은 사람들이 사라지고
+      새로운 사람을 만났다.
+    </p>
+  </div>
+
+  <div class="bq blue">
+    <p>20년, 30년을 함께 온 사람들.<br>
+    지금도 만나고 있는 그 사람들은 뭐냐 —<br>
+    <strong>자기 분야에서 다 성공한 사람들이다.</strong></p>
+    <div class="bq-attr">— 50년 인생이 가르쳐 준 것</div>
+  </div>
+</section>
+
+<!-- ===== CH03: 2~3년 후 ===== -->
+<section class="section surface">
+  <div class="ch-label red">Chapter 02</div>
+  <h2 class="ch-title">
+    5년, 10년이 아니라<br>
+    <span style="color:var(--red)">2~3년 후의 이야기</span>
+  </h2>
+
+  <div class="prose">
+    <p>
+      내 인생에서 가장 큰 대전환의 시점이
+      몇 번 있었다.
+      그 과정에서 가장 큰 임팩트가
+      <strong>지금 내 눈앞에 와 있다.</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="r">이건 5년, 10년 후의 이야기가 아니다.</span><br>
+      2~3년 후의 이야기다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      준비하지 않고,
+      지금 바뀌지 않고,
+      지금 생존 전략을 짜지 않는 사람들은 —
+    </p>
+  </div>
+
+  <div class="statement">
+    <h3>
+      <span class="r">중세</span>로<br>
+      돌아갈 것이다
+    </h3>
+  </div>
+</section>
+
+<!-- ===== CH04: 유토피아 vs 디스토피아 ===== -->
+<section class="section gradient">
+  <div class="ch-label purple">Chapter 03</div>
+  <h2 class="ch-title">
+    <span style="color:#c084fc">49 대 51</span>
+  </h2>
+
+  <div class="prose">
+    <p>
+      AI가 가져다주는 세상.<br>
+      <span class="y">유토피아</span>와 <span class="p">디스토피아</span>.<br>
+      <strong>49 대 51.</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      진짜 가진 자,
+      진짜 제대로 쥐고 있는 자들만이
+      모든 것을 얻는 세상.
+      나머지는 그 밑에서 생존하는 대로 사는 세상.
+    </p>
+  </div>
+
+  <div class="highlight">
+    <div class="highlight-title">개천에서 용 나는 시대는 끝났는가</div>
+    <p>
+      개천에서 용 나는 시대는 점점 끝나가고 있다.
+      AI를 이룬 자와 이루지 않은 자,
+      가진 자와 가지지 않은 자가
+      <strong>명확하게 나뉘는 세상이 오고 있다.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH05: 이 기록의 의미 ===== -->
+<section class="section dark">
+  <div class="ch-label orange">Chapter 04</div>
+  <h2 class="ch-title">
+    <span style="color:var(--orange)">나의 기록</span>
+  </h2>
+
+  <div class="prose">
+    <p>
+      그래서 —
+      내 주변 사람들에게
+      이 대전환의 시점에
+      같이 느끼고, 같이 공감하고,
+      <span class="o">같이 성장했으면 좋겠다.</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      이 시즌2의 기록은
+      <strong>누구에게도 오픈한 적이 없다.</strong>
+      에피소드 7편을 만들면서도
+      누구에게도 알려준 적이 없다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      왜?
+    </p>
+  </div>
+
+  <div class="bq orange">
+    <p>이건 나의 기록이고,<br>
+    내가 살아가는 삶에 있어서<br>
+    <strong>필요했던 기록을 남기고 있는 것뿐이다.</strong></p>
+    <div class="bq-attr">— 박문석 대표, 2026.04</div>
+  </div>
+</section>
+
+<!-- ===== CH06: 지금이다 ===== -->
+<section class="section gradient">
+  <div class="ch-label gold">Final Message</div>
+  <h2 class="ch-title">
+    이 대전환의 시점에<br>
+    같이 갈 수 있는 사람만이
+  </h2>
+
+  <div class="prose">
+    <p>
+      <strong>아마 살아남을 것이다.</strong>
+    </p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="statement">
+    <h3>
+      <span class="y">지금이다.</span>
+    </h3>
+  </div>
+</section>
+
+<!-- ===== CREDITS ===== -->
+<section class="section surface">
+  <div class="ch-label gold" style="text-align:center;">End Credits</div>
+  <h2 class="ch-title" style="text-align:center;margin:0 auto 50px;">
+    개발자 박대표<br>
+    <span style="color:var(--accent)">SEASON 2</span>
+  </h2>
+
+  <div class="credits-box" style="margin-left:auto;margin-right:auto;">
+    <div class="credit-row">
+      <div class="credit-role">기획 · 연출 · 제작</div>
+      <div class="credit-name">박문석</div>
+    </div>
+    <div class="credit-row">
+      <div class="credit-role">AI 경영지원실장</div>
+      <div class="credit-name">문돌 (문실장)</div>
+    </div>
+    <div class="credit-row">
+      <div class="credit-role">시나리오 · 디자인</div>
+      <div class="credit-name">Claude AI</div>
+    </div>
+    <div class="credit-row">
+      <div class="credit-role">촬영 · 편집</div>
+      <div class="credit-name">다섯 대의 컴퓨터와 커피 한 잔</div>
+    </div>
+  </div>
+
+  <div class="credits-box" style="margin-left:auto;margin-right:auto;">
+    <div class="credit-row">
+      <div class="credit-role">Production</div>
+      <div class="credit-name">(주)데코페이브 · DECOPAVE Co., LTD.</div>
+    </div>
+    <div class="credit-row">
+      <div class="credit-role">본사</div>
+      <div class="credit-name">부산</div>
+    </div>
+    <div class="credit-row">
+      <div class="credit-role">스마트팩토리</div>
+      <div class="credit-name">충북 단양</div>
+    </div>
+    <div class="credit-row">
+      <div class="credit-role">R&D</div>
+      <div class="credit-name">서울</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section class="closing">
+  <h2 class="closing-title">
+    <span class="y">THE END</span><br>
+    <span style="font-size:.6em;color:rgba(255,255,255,.5);">— OF SEASON 2</span>
+  </h2>
+  <p class="closing-sub">
+    개발자 박대표 프로젝트는 계속됩니다.<br><br>
+    <strong style="color:#fff;">SEASON 3 — Coming Soon.</strong>
+  </p>
+
+  <div class="divider" style="margin-top:70px;margin-bottom:32px;"></div>
+
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">
+    개발자 박대표 시즌2 — 에필로그
+  </p>
+  <p style="font-family:'Noto Sans KR',sans-serif;font-size:.7rem;color:rgba(255,255,255,.2);margin-top:16px;">
+    (주)데코페이브 | 대표이사 박문석 | DECOPAVE Co., LTD.<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&D: 서울<br><br>
+    ⚠️ 이 블로그는 Claude AI를 기반으로 하는 (주)데코페이브 경영지원실장 문돌봇의 도움으로 작성되었습니다.<br>
+    AI가 만든 글이니 실수할 수 있습니다. 다시 한번 잘 확인해주세요. ㅎㅎㅎ
+  </p>
+</section>
+
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(234,179,8,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.65rem;">
+  <a href="ep007.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">←</a>
+  <a href="index.html" style="color:#eab308;text-decoration:none;padding:4px 8px;font-weight:700;">☰</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">05</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">07</a>
+  <a href="epilogue.html" style="color:#fff;text-decoration:none;padding:4px 6px;font-weight:700;border-bottom:2px solid #eab308;">EP</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">FIN</a>
+  <a href="final.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">→</a>
+</nav>
+</body>
+</html>

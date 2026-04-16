@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP004 — 딸깍의 무게</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;700&family=DM+Mono:ital@0;1&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --void: #04050a;
+  --dawn-navy: #0d1b3e;
+  --dawn: #c8922a;
+  --amber: #e8a83a;
+  --gold: #f5c842;
+  --cream: #f0e8d0;
+  --mist: rgba(240,232,208,0.55);
+  --fog: rgba(240,232,208,0.25);
+  --ghost: rgba(240,232,208,0.08);
+  --dawn-glow: rgba(232,168,58,0.18);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--void);
+  color: var(--cream);
+  font-family: 'Noto Sans KR', sans-serif;
+  font-weight: 300;
+  line-height: 1.9;
+  overflow-x: hidden;
+  padding-top: 40px;
+  padding-bottom: 50px;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.6;
+}
+
+.dawn-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--dawn), var(--gold));
+  width: 0%;
+  z-index: 1000;
+  box-shadow: 0 0 8px rgba(232,168,58,0.5);
+  transition: width 0.1s linear;
+}
+
+nav {
+  position: fixed;
+  top: 36px; left: 0; right: 0;
+  z-index: 100;
+  padding: 1.5rem 6vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(180deg, rgba(4,5,10,0.95) 0%, transparent 100%);
+  backdrop-filter: blur(4px);
+}
+.nav-logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: var(--amber);
+  text-transform: uppercase;
+}
+.nav-ep {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--fog);
+  text-transform: uppercase;
+}
+
+/* ─── HERO ─── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 6vw 10vh;
+  overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 100%, rgba(200,146,42,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 60% at 80% 0%, #0a0e1f 0%, transparent 70%),
+    linear-gradient(180deg, #060810 0%, #05070f 40%, #060912 70%, #080d1c 100%);
+  z-index: 0;
+}
+
+/* 무한 반복의 느낌 — 수직 점선 */
+.hero-dots {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(232,168,58,0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+  z-index: 0;
+  mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.4) 40%, transparent 100%);
+}
+
+.hero-horizon {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--dawn) 30%, var(--amber) 50%, var(--dawn) 70%, transparent 100%);
+  opacity: 0.4;
+  z-index: 1;
+}
+
+.hero-meta {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 3rem;
+}
+
+.series-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.25em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+.series-badge::before {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--amber);
+}
+
+.ep-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.3em;
+  color: var(--mist);
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: clamp(2.8rem, 8vw, 7rem);
+  line-height: 1.0;
+  letter-spacing: -0.02em;
+  color: var(--cream);
+  opacity: 0;
+  animation: fadeUp 1s ease 0.5s forwards;
+}
+.hero-title em {
+  font-style: normal;
+  color: var(--amber);
+  text-shadow: 0 0 40px rgba(232,168,58,0.4);
+}
+
+.hero-subtitle {
+  margin-top: 1.6rem;
+  font-family: 'Noto Serif KR', serif;
+  font-size: clamp(0.95rem, 2vw, 1.1rem);
+  font-weight: 300;
+  color: var(--mist);
+  max-width: 48ch;
+  line-height: 1.8;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.8s forwards;
+}
+
+.hero-date {
+  margin-top: 2.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--fog);
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1s forwards;
+}
+
+.scroll-cue {
+  position: absolute;
+  bottom: 3vh;
+  right: 6vw;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  opacity: 0;
+  animation: fadeIn 1s ease 1.5s forwards;
+}
+.scroll-cue span {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  color: var(--fog);
+  writing-mode: vertical-rl;
+  text-transform: uppercase;
+}
+.scroll-line {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(180deg, var(--amber) 0%, transparent 100%);
+  animation: scrollPulse 2s ease infinite;
+}
+
+/* ─── CONTENT ─── */
+.content {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 0 6vw;
+}
+
+section {
+  padding: 7rem 0;
+  border-bottom: 1px solid var(--ghost);
+}
+section:last-child { border-bottom: none; }
+
+.section-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.section-num::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--dawn-glow), transparent);
+  max-width: 80px;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  line-height: 1.15;
+  color: var(--cream);
+  margin-bottom: 2.5rem;
+  letter-spacing: -0.01em;
+}
+.section-title em {
+  font-style: normal;
+  color: var(--amber);
+}
+
+p {
+  font-size: 1rem;
+  line-height: 2;
+  color: rgba(240,232,208,0.75);
+  margin-bottom: 1.6rem;
+}
+p strong { color: var(--cream); font-weight: 700; }
+
+/* ─── PULL QUOTE ─── */
+.pull-quote {
+  margin: 3rem 0;
+  padding: 2rem 2.5rem;
+  border-left: 2px solid var(--amber);
+  background: linear-gradient(90deg, rgba(200,146,42,0.06) 0%, transparent 100%);
+  position: relative;
+}
+.pull-quote::before {
+  content: '"';
+  position: absolute;
+  top: -1rem; left: 1.5rem;
+  font-family: 'Noto Serif KR', serif;
+  font-size: 4rem;
+  color: var(--amber);
+  opacity: 0.3;
+  line-height: 1;
+}
+.pull-quote p {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.1rem;
+  font-weight: 400;
+  color: var(--cream);
+  margin: 0;
+  line-height: 1.8;
+}
+
+/* ─── 반복 사이클 시각화 ─── */
+.cycle {
+  margin: 3rem 0;
+  position: relative;
+  padding: 2rem;
+  border: 1px solid var(--ghost);
+}
+.cycle::before {
+  content: 'THE LOOP — 아마추어의 반복';
+  position: absolute;
+  top: -0.6rem; left: 1.5rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  background: var(--void);
+  padding: 0 0.5rem;
+}
+
+.cycle-steps {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 1rem;
+}
+
+.cycle-step {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.cycle-box {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  color: var(--cream);
+  background: var(--ghost);
+  border: 1px solid rgba(240,232,208,0.08);
+  padding: 0.6rem 0.9rem;
+  text-align: center;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.cycle-box.highlight {
+  color: var(--amber);
+  border-color: rgba(232,168,58,0.2);
+  background: rgba(232,168,58,0.05);
+}
+
+.cycle-arrow {
+  font-family: 'DM Mono', monospace;
+  color: rgba(240,232,208,0.2);
+  font-size: 0.8rem;
+  padding: 0 0.4rem;
+}
+
+.cycle-loop {
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: rgba(232,168,58,0.4);
+  text-transform: uppercase;
+}
+.cycle-loop::before { content: '↺ '; }
+
+/* ─── 대비 카드 ─── */
+.contrast {
+  margin: 2.5rem 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: rgba(240,232,208,0.06);
+}
+
+.contrast-cell {
+  background: var(--void);
+  padding: 2rem 1.8rem;
+}
+
+.contrast-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  color: var(--fog);
+}
+.contrast-label.pro { color: var(--amber); }
+
+.contrast-item {
+  font-size: 0.88rem;
+  color: rgba(240,232,208,0.6);
+  line-height: 1.7;
+  margin-bottom: 0.7rem;
+  padding-left: 1rem;
+  position: relative;
+}
+.contrast-item::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: rgba(240,232,208,0.2);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+}
+.contrast-item.pro::before { color: var(--amber); }
+.contrast-item.pro { color: rgba(240,232,208,0.8); }
+
+/* ─── 인사이트 ─── */
+.insight {
+  margin: 3rem 0;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, rgba(26,47,110,0.2) 0%, rgba(200,146,42,0.06) 100%);
+  border: 1px solid rgba(232,168,58,0.15);
+  text-align: center;
+}
+.insight p {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 1.15rem;
+  font-weight: 400;
+  color: var(--cream);
+  margin: 0;
+  line-height: 1.8;
+}
+.insight-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-top: 1.2rem;
+  display: block;
+}
+
+/* ─── 1만 시간 바 ─── */
+.hour-bar {
+  margin: 3rem 0;
+  padding: 2rem;
+  background: var(--ghost);
+  border: 1px solid rgba(240,232,208,0.05);
+}
+.hour-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--fog);
+  text-transform: uppercase;
+  margin-bottom: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+}
+.hour-label span { color: var(--amber); }
+.hour-track {
+  height: 3px;
+  background: rgba(240,232,208,0.06);
+  position: relative;
+  margin-bottom: 0.8rem;
+}
+.hour-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  background: linear-gradient(90deg, var(--dawn), var(--gold));
+  width: 0%;
+  transition: width 1.5s ease;
+  box-shadow: 0 0 8px rgba(232,168,58,0.4);
+}
+.hour-fill.animated { width: 23%; }
+.hour-desc {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--fog);
+  letter-spacing: 0.1em;
+}
+
+/* ─── DAWN DIVIDER ─── */
+.dawn-divider {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, var(--amber) 50%, transparent 100%);
+  opacity: 0.2;
+}
+
+/* ─── FOOTER ─── */
+.footer-section {
+  padding: 6rem 6vw 4rem;
+  text-align: center;
+  background: linear-gradient(0deg, rgba(200,146,42,0.04) 0%, transparent 100%);
+}
+.footer-ep {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  color: var(--amber);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.footer-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  color: var(--cream);
+  margin-bottom: 1.5rem;
+}
+.footer-body {
+  font-family: 'Noto Serif KR', serif;
+  font-size: 0.9rem;
+  color: var(--mist);
+  max-width: 42ch;
+  margin: 0 auto 3rem;
+  line-height: 1.9;
+}
+.footer-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--fog);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.footer-line::before, .footer-line::after {
+  content: '';
+  width: 40px;
+  height: 1px;
+  background: var(--fog);
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scrollPulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 600px) {
+  nav { padding: 1rem 4vw; }
+  .hero { padding: 0 4vw 8vh; }
+  section { padding: 4rem 0; }
+  .content { padding: 0 4vw; }
+  .contrast { grid-template-columns: 1fr; }
+  .cycle-steps { flex-direction: column; align-items: flex-start; }
+  .cycle-arrow { transform: rotate(90deg); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+
+<div class="dawn-bar" id="dawnBar"></div>
+
+<nav>
+  <span class="nav-logo">개발자 박대표 · S3</span>
+  <span class="nav-ep">EP004</span>
+</nav>
+
+<!-- ────────── HERO ────────── -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-dots"></div>
+  <div class="hero-horizon"></div>
+
+  <div class="hero-meta">
+    <div class="series-badge">Season 3 · DECOHUB Chronicles</div>
+    <div class="ep-label">Episode 004</div>
+    <h1 class="hero-title"><em>딸깍</em>의<br>무게</h1>
+    <p class="hero-subtitle">
+      AI가 다 해준다고 했다.<br>
+      딸깍 한 번이면 된다고 했다.<br>
+      그 딸깍까지 오는 데 얼마나 걸리는지는 말하지 않았다.
+    </p>
+    <div class="hero-date">2026 · Vibe Coding · 프로와 아마추어의 경계</div>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- ────────── MAIN ────────── -->
+<main class="content">
+
+  <!-- 01 계기 -->
+  <section>
+    <div class="section-num reveal">01 · 그 질문</div>
+    <h2 class="section-title reveal">프로와 아마추어의<br>차이가 <em>뭡니까</em></h2>
+
+    <p class="reveal">이 프로젝트를 시작하면서 vibe coding이라는 걸 알았다. Claude에게 웬만한 건 다 물어보면서 진행했다. 그러다 어느 순간 확실하게 느꼈다. 전문가와 비전문가 사이에는 명확한 선이 있다는 것을.</p>
+
+    <p class="reveal">AI와 vibe coding으로 뭔가를 만들면 일단 작동한다. 작동은 된다. 그런데 에러가 나고 멈추면 <strong>왜 멈추는지를 모른다.</strong></p>
+
+    <div class="cycle reveal">
+      <div class="cycle-steps">
+        <div class="cycle-step">
+          <div class="cycle-box">작동한다</div>
+          <div class="cycle-arrow">→</div>
+        </div>
+        <div class="cycle-step">
+          <div class="cycle-box highlight">에러가 난다</div>
+          <div class="cycle-arrow">→</div>
+        </div>
+        <div class="cycle-step">
+          <div class="cycle-box">"에러 고쳐줘"</div>
+          <div class="cycle-arrow">→</div>
+        </div>
+        <div class="cycle-step">
+          <div class="cycle-box">또 작동한다</div>
+          <div class="cycle-arrow">→</div>
+        </div>
+        <div class="cycle-step">
+          <div class="cycle-box highlight">또 같은 에러</div>
+        </div>
+      </div>
+      <div class="cycle-loop">이 루프가 무한히 반복된다</div>
+    </div>
+
+    <p class="reveal">처음에는 "고쳤다, 패치했다" 했다. 그런데 똑같은 현상이 반복됐다. 반복되다 보니 의문이 생겼다. 잠깐, 이 시스템 자체에 에러가 있는 거 아닌가?</p>
+
+    <p class="reveal">그 의문이 시작이었다.</p>
+  </section>
+
+  <!-- 02 차이 -->
+  <section>
+    <div class="section-num reveal">02 · 그 선</div>
+    <h2 class="section-title reveal">전문가는<br><em>의심한다</em></h2>
+
+    <p class="reveal">비전문가는 에러를 고친다. 전문가는 에러를 의심한다. 왜 이 에러가 반복되는지, 시스템 자체의 문제는 아닌지. 그 한 걸음 차이가 전혀 다른 결과를 만든다.</p>
+
+    <div class="contrast reveal">
+      <div class="contrast-cell">
+        <div class="contrast-label">비전문가</div>
+        <div class="contrast-item">에러가 나면 AI에게 고쳐달라고 한다</div>
+        <div class="contrast-item">작동하면 됐다고 생각한다</div>
+        <div class="contrast-item">같은 에러가 반복돼도 반복 수정한다</div>
+        <div class="contrast-item">문서를 찾을 생각을 못 한다</div>
+        <div class="contrast-item">딸깍이 전부라고 믿는다</div>
+      </div>
+      <div class="contrast-cell">
+        <div class="contrast-label pro">전문가</div>
+        <div class="contrast-item pro">반복되는 에러에서 패턴을 찾는다</div>
+        <div class="contrast-item pro">시스템 자체를 의심한다</div>
+        <div class="contrast-item pro">공식 문서와 GitHub 이슈를 뒤진다</div>
+        <div class="contrast-item pro">모르는 것을 문서로 만들어 쌓는다</div>
+        <div class="contrast-item pro">딸깍 뒤에 무엇이 있는지 안다</div>
+      </div>
+    </div>
+
+    <p class="reveal">GitHub를 뒤지고, Anthropic 공식 문서를 찾아보고, 이런 현상들을 검색해달라고 하면서 알게 됐다. 실제 에러가 있었다. 내가 못 한 게 아니었다. 그리고 그걸 알게 되는 과정 자체가 전문가와 비전문가의 차이였다.</p>
+
+    <div class="pull-quote reveal">
+      <p>뭔가를 시키면 그 결과물로 뭔가를 해내는 건<br>AI 시대에 아무것도 아닌 겁니다.<br>모르면 사진 찍고, 동영상 만들고,<br>녹음해서 들려주고 — 어떤 결과든 얻을 수 있어요.<br>그건 과정일 뿐입니다.</p>
+    </div>
+  </section>
+
+  <!-- 03 지식 축적 -->
+  <section>
+    <div class="section-num reveal">03 · 반복이 쌓이면</div>
+    <h2 class="section-title reveal">모르니까<br><em>문서로 만든다</em></h2>
+
+    <p class="reveal">그 과정에서 습관이 하나 생겼다. 이해가 안 되면 "MD 파일로 만들어달라", "문서로 만들어달라", "모르니까 설명해달라"는 요청이었다. 그렇게 만들어진 문서들이 쌓이면서 지식이 됐다.</p>
+
+    <p class="reveal">이것도 과정이다. 비전문가라고 해서 몰라도 된다는 게 아니다. 몰라서 물어보고, 물어본 걸 기록하고, 기록이 쌓여서 이해가 생기고, 이해가 생기면서 다음 질문이 달라진다. 그게 성장이다.</p>
+
+    <div class="insight reveal">
+      <p>딸깍이 되는 과정까지<br>무한한 반복이 있었다.<br>그 반복을 통해 결과가 만들어지고,<br>결과를 통해 새로운 지식을 하나 더 알게 된다.</p>
+      <span class="insight-sub">반복 → 결과 → 지식 → 더 나은 반복</span>
+    </div>
+  </section>
+
+  <!-- 04 1만 시간 -->
+  <section>
+    <div class="section-num reveal">04 · 일만 시간의 법칙</div>
+    <h2 class="section-title reveal">vibe coding도<br><em>기술이다</em></h2>
+
+    <p class="reveal">일만 시간의 법칙이 있다. 어떤 일을 제대로 하려면 일만 시간 이상을 투자해야 그것에 대한 이해와 언어 수준에 도달할 수 있다.</p>
+
+    <div class="hour-bar reveal" id="hourBar">
+      <div class="hour-label">
+        <span>현재 투자 시간 추정</span>
+        <span>목표: 10,000h</span>
+      </div>
+      <div class="hour-track">
+        <div class="hour-fill" id="hourFill"></div>
+      </div>
+      <div class="hour-desc">≈ 2,300h · 여정의 시작. 아직 멀었지만, 방향은 맞다.</div>
+    </div>
+
+    <p class="reveal">vibe coding이 단순한 게 아니다. "전혀 몰라도 딸깍으로 된다"는 말은 반은 맞고 반은 틀렸다. 단순한 것은 그렇다. 하지만 어느 수준 이상의 것을 만들어내려면 vibe coding 또한 공부해야 하고, 체계가 있어야 하고, 뭔가를 알아야 한다.</p>
+
+    <div class="pull-quote reveal">
+      <p>코딩하는 기술은 배울 필요가 거의 없습니다.<br>그렇지만 이 과정과 스토리,<br>뭔가를 하기 위해 행하는 것들 —<br>이것들이 뭉쳐야 결론적으로 뭔가를 만들어낼 수 있습니다.</p>
+    </div>
+
+    <p class="reveal">AI에게 모든 것을 위임하고 "네가 알아서 해줘"로 단순한 건 된다. 하지만 체계를 가지고 진짜 뭔가를 만들어내기 위해서는 그 이상이 있어야 한다. 그 이상이 무엇인지 — 그걸 찾아가는 것이 시즌 3의 이야기다.</p>
+  </section>
+
+  <!-- 05 정리 -->
+  <section>
+    <div class="section-num reveal">05 · 이 에피소드의 의미</div>
+    <h2 class="section-title reveal">AI와 함께하는 사람의<br><em>한계와 가능성</em></h2>
+
+    <p class="reveal">이번 에피소드는 AI 이야기가 아니다. AI와 vibe coding을 하고, AI와 뭔가를 만들어내는 사람의 이야기다. 그 사람의 한계가 무엇이고, 그 한계를 어떻게 넘어가는지.</p>
+
+    <p class="reveal">딸깍 한 번으로 세상이 바뀐다는 이야기들이 많다. 틀린 말은 아니다. 하지만 그 딸깍 한 번이 가능해지기까지, 수백 번의 시도와 실패와 기록과 반복이 있었다는 것을 말하고 싶었다.</p>
+
+    <div class="insight reveal">
+      <p>전문가와 비전문가의 차이는<br>아는 것의 양이 아니다.<br>모르는 것을 마주쳤을 때<br>어떻게 반응하느냐의 차이다.</p>
+      <span class="insight-sub">Season 3 · EP004 · Vibe Coding의 진실</span>
+    </div>
+  </section>
+
+</main>
+
+<!-- ────────── FOOTER ────────── -->
+<footer class="footer-section">
+  <div class="dawn-divider" style="margin-bottom:3rem;"></div>
+  <div class="footer-ep">Season 3 · Episode 004</div>
+  <div class="footer-title">다음 에피소드를 기다려 주세요.</div>
+  <p class="footer-body">
+    반복이 지식이 되고, 지식이 체계가 된다.<br>
+    그 다음 이야기를 이어갑니다.
+  </p>
+  <div class="footer-line">Decopave Co., Ltd. · 데코페이브㈜ · 2026</div>
+  <div class="footer-line" style="font-size:0.45rem;">개발자 박대표 · AI로 회사를 바꾸는 중소기업 대표의 기록</div>
+</footer>
+
+<script>
+const bar = document.getElementById('dawnBar');
+window.addEventListener('scroll', () => {
+  const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100;
+  bar.style.width = pct + '%';
+});
+
+// 스크롤 reveal
+const reveals = document.querySelectorAll('.reveal');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry, i) => {
+    if (entry.isIntersecting) {
+      setTimeout(() => entry.target.classList.add('visible'), i * 60);
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+reveals.forEach(el => observer.observe(el));
+
+// 1만 시간 바 애니메이션
+const fillEl = document.getElementById('hourFill');
+const barObs = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      fillEl.classList.add('animated');
+      barObs.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.5 });
+if (document.getElementById('hourBar')) {
+  barObs.observe(document.getElementById('hourBar'));
+}
+</script>
+
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
+  <a href="ep003.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep005.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+</nav>
+</body>
+</html>

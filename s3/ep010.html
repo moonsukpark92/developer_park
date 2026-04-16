@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP010 — 프로그램은 정직하다</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;600;700&family=DM+Mono:ital@0;1&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#04050a;--dawn:#c8922a;--amber:#e8a83a;--gold:#f5c842;
+  --cream:#f0e8d0;--mist:rgba(240,232,208,0.55);--fog:rgba(240,232,208,0.25);
+  --ghost:rgba(240,232,208,0.08);--dawn-glow:rgba(232,168,58,0.18);
+  --red:#c0392b;--red-dim:rgba(192,57,43,0.12);
+  --green:#2d9e5f;
+  --tg-bg:#1c1c1e;--tg-border:rgba(255,255,255,0.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background-color:var(--void);color:var(--cream);font-family:"Noto Sans KR",sans-serif;font-weight:300;line-height:1.9;overflow-x:hidden;padding-top:40px;padding-bottom:50px;}
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.6;}
+.dawn-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--red),var(--amber),var(--gold));width:0%;z-index:1000;box-shadow:0 0 8px rgba(232,168,58,0.4);transition:width 0.1s linear;}
+nav{position:fixed;top:36px;left:0;right:0;z-index:100;padding:1.5rem 6vw;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(4,5,10,0.95) 0%,transparent 100%);backdrop-filter:blur(4px);}
+.nav-logo{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.25em;color:var(--amber);text-transform:uppercase;}
+.nav-ep{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--fog);text-transform:uppercase;}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 6vw 10vh;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 0%,rgba(14,8,8,0.9) 0%,transparent 70%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(192,57,43,0.06) 0%,transparent 60%),linear-gradient(180deg,#0a0404 0%,#070508 40%,#05060e 70%,#060a18 100%);z-index:0;}
+.hero-horizon{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,var(--red) 20%,var(--amber) 50%,var(--red) 80%,transparent 100%);opacity:0.3;z-index:1;}
+.hero-meta{position:relative;z-index:2;margin-bottom:3rem;}
+.series-badge{display:inline-flex;align-items:center;gap:0.6rem;font-family:"DM Mono",monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--amber);text-transform:uppercase;margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s ease 0.2s forwards;}
+.series-badge::before{content:"";display:block;width:28px;height:1px;background:var(--amber);}
+.ep-label{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.3em;color:var(--mist);text-transform:uppercase;margin-bottom:1.2rem;opacity:0;animation:fadeUp 0.8s ease 0.4s forwards;}
+.hero-title{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(2.6rem,7.5vw,6.5rem);line-height:1.0;letter-spacing:-0.02em;color:var(--cream);opacity:0;animation:fadeUp 1s ease 0.5s forwards;}
+.hero-title em{font-style:normal;color:var(--amber);text-shadow:0 0 40px rgba(232,168,58,0.4);}
+.hero-subtitle{margin-top:1.6rem;font-family:"Noto Serif KR",serif;font-size:clamp(0.95rem,2vw,1.1rem);font-weight:300;color:var(--mist);max-width:46ch;line-height:1.8;opacity:0;animation:fadeUp 0.8s ease 0.8s forwards;}
+.hero-date{margin-top:2.5rem;font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;color:var(--fog);opacity:0;animation:fadeUp 0.8s ease 1s forwards;}
+.scroll-cue{position:absolute;bottom:3vh;right:6vw;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0.4rem;opacity:0;animation:fadeIn 1s ease 1.5s forwards;}
+.scroll-cue span{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.3em;color:var(--fog);writing-mode:vertical-rl;text-transform:uppercase;}
+.scroll-line{width:1px;height:50px;background:linear-gradient(180deg,var(--amber) 0%,transparent 100%);animation:scrollPulse 2s ease infinite;}
+
+/* CONTENT */
+.content{max-width:720px;margin:0 auto;padding:0 6vw;}
+section{padding:7rem 0;border-bottom:1px solid var(--ghost);}
+section:last-child{border-bottom:none;}
+.section-num{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.3em;color:var(--amber);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:0.8rem;}
+.section-num::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--dawn-glow),transparent);max-width:80px;}
+.section-title{font-family:"Syne",sans-serif;font-weight:700;font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.15;color:var(--cream);margin-bottom:2.5rem;letter-spacing:-0.01em;}
+.section-title em{font-style:normal;color:var(--amber);}
+p{font-size:1rem;line-height:2;color:rgba(240,232,208,0.75);margin-bottom:1.6rem;}
+p strong{color:var(--cream);font-weight:700;}
+
+/* PULL QUOTE */
+.pull-quote{margin:3rem 0;padding:2rem 2.5rem;border-left:2px solid var(--amber);background:linear-gradient(90deg,rgba(200,146,42,0.06) 0%,transparent 100%);position:relative;}
+.pull-quote::before{content:"\201C";position:absolute;top:-1rem;left:1.5rem;font-family:"Noto Serif KR",serif;font-size:4rem;color:var(--amber);opacity:0.3;line-height:1;}
+.pull-quote p{font-family:"Noto Serif KR",serif;font-size:1.1rem;font-weight:400;color:var(--cream);margin:0;line-height:1.8;}
+
+/* 3단계 경고 시스템 */
+.strike-system{margin:2.5rem 0;display:flex;flex-direction:column;gap:1px;background:rgba(192,57,43,0.1);}
+.strike-row{background:var(--void);display:grid;grid-template-columns:3.5rem 1fr;gap:0;}
+.strike-num{padding:1.4rem 1rem;font-family:"Syne",sans-serif;font-weight:800;font-size:1.4rem;display:flex;align-items:center;justify-content:center;}
+.strike-num.s1{color:rgba(232,168,58,0.5);}
+.strike-num.s2{color:rgba(232,168,58,0.75);}
+.strike-num.s3{color:rgba(192,57,43,0.9);}
+.strike-body{padding:1.4rem 1.6rem;border-left:1px solid rgba(240,232,208,0.04);}
+.strike-label{font-family:"DM Mono",monospace;font-size:0.52rem;letter-spacing:0.2em;color:var(--fog);text-transform:uppercase;margin-bottom:0.3rem;}
+.strike-text{font-size:0.9rem;color:rgba(240,232,208,0.75);line-height:1.6;}
+
+/* 유럽 vs 한국 비교 */
+.contrast{margin:2.5rem 0;display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(240,232,208,0.05);}
+.contrast-col{background:var(--void);padding:2rem 1.8rem;}
+.contrast-col.eu{background:rgba(232,168,58,0.03);}
+.contrast-badge{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:1rem;color:var(--fog);}
+.contrast-badge.eu{color:rgba(232,168,58,0.6);}
+.contrast-item{font-size:0.85rem;color:rgba(240,232,208,0.55);line-height:1.8;margin-bottom:0.5rem;padding-left:1rem;position:relative;}
+.contrast-item::before{content:"—";position:absolute;left:0;color:rgba(240,232,208,0.15);font-family:"DM Mono",monospace;font-size:0.7rem;}
+.contrast-item.eu{color:rgba(240,232,208,0.8);}
+.contrast-item.eu::before{color:rgba(232,168,58,0.4);}
+
+/* 선언 박스 */
+.declaration{margin:3rem 0;padding:2.5rem;background:linear-gradient(135deg,rgba(192,57,43,0.06) 0%,rgba(200,146,42,0.06) 100%);border:1px solid rgba(232,168,58,0.15);text-align:center;}
+.declaration p{font-family:"Noto Serif KR",serif;font-size:1.15rem;font-weight:400;color:var(--cream);margin:0;line-height:1.9;}
+.declaration-sub{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;color:var(--amber);text-transform:uppercase;margin-top:1.2rem;display:block;}
+
+/* 인사이트 */
+.insight{margin:3rem 0;padding:2.5rem;background:linear-gradient(135deg,rgba(26,47,110,0.15) 0%,rgba(200,146,42,0.06) 100%);border:1px solid rgba(232,168,58,0.15);text-align:center;}
+.insight p{font-family:"Noto Serif KR",serif;font-size:1.15rem;font-weight:400;color:var(--cream);margin:0;line-height:1.8;}
+.insight-sub{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;color:var(--amber);text-transform:uppercase;margin-top:1.2rem;display:block;}
+
+.dawn-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent 0%,var(--amber) 50%,transparent 100%);opacity:0.2;}
+.footer-section{padding:6rem 6vw 4rem;text-align:center;background:linear-gradient(0deg,rgba(200,146,42,0.04) 0%,transparent 100%);}
+.footer-ep{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.3em;color:var(--amber);text-transform:uppercase;margin-bottom:1rem;}
+.footer-title{font-family:"Syne",sans-serif;font-size:clamp(1.4rem,4vw,2rem);font-weight:700;color:var(--cream);margin-bottom:1.5rem;}
+.footer-body{font-family:"Noto Serif KR",serif;font-size:0.9rem;color:var(--mist);max-width:42ch;margin:0 auto 3rem;line-height:1.9;}
+.footer-line{display:flex;align-items:center;justify-content:center;gap:1rem;font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--fog);text-transform:uppercase;margin-bottom:1rem;}
+.footer-line::before,.footer-line::after{content:"";width:40px;height:1px;background:var(--fog);}
+
+
+/* ── 텔레그램 메시지 UI ── */
+.tg-section-header{margin:5rem 0 1.5rem;display:flex;align-items:center;gap:1rem;}
+.tg-ch-icon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.tg-ch-icon.factory{background:rgba(45,158,95,0.15);border:1px solid rgba(45,158,95,0.3);}
+.tg-ch-icon.moonsil{background:rgba(232,168,58,0.12);border:1px solid rgba(232,168,58,0.25);}
+.tg-ch-name{font-family:"Syne",sans-serif;font-weight:700;font-size:1rem;color:var(--cream);line-height:1.2;}
+.tg-ch-tag{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.15em;color:var(--fog);text-transform:uppercase;margin-top:0.2rem;}
+.lang-tabs{display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;}
+.lang-tab{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.1em;padding:0.35rem 0.8rem;border:1px solid rgba(240,232,208,0.1);color:var(--fog);cursor:pointer;transition:all 0.2s;text-transform:uppercase;}
+.lang-tab.active{border-color:var(--amber);color:var(--amber);background:rgba(232,168,58,0.05);}
+.tg-window{background:#1c1c1e;border:1px solid rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin-bottom:1rem;}
+.tg-topbar{padding:0.7rem 1rem;background:#2a2a2d;display:flex;align-items:center;gap:0.6rem;border-bottom:1px solid rgba(255,255,255,0.06);}
+.tg-topbar-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;}
+.tg-topbar-icon.g{background:rgba(45,158,95,0.3);}
+.tg-topbar-icon.m{background:rgba(232,168,58,0.2);}
+.tg-topbar-title{font-family:"DM Mono",monospace;font-size:0.62rem;color:rgba(240,232,208,0.7);letter-spacing:0.05em;}
+.tg-topbar-sub{font-family:"DM Mono",monospace;font-size:0.48rem;color:var(--fog);margin-left:auto;letter-spacing:0.05em;}
+.tg-body{padding:1rem 1.2rem;font-size:0.82rem;line-height:1.8;color:rgba(240,232,208,0.82);font-family:"Noto Sans KR",sans-serif;font-weight:300;}
+.tg-body .tg-lang{display:none;}
+.tg-body .tg-lang.show{display:block;}
+.msg-section{margin-bottom:1.2rem;}
+.msg-h1{font-weight:700;color:var(--cream);font-size:0.85rem;margin-bottom:0.6rem;display:flex;align-items:center;gap:0.4rem;}
+.msg-h2{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.1em;color:rgba(240,232,208,0.45);text-transform:uppercase;margin-bottom:0.6rem;margin-top:1rem;}
+.msg-row{padding:0.3rem 0;border-bottom:1px solid rgba(240,232,208,0.04);font-size:0.8rem;color:rgba(240,232,208,0.7);line-height:1.6;}
+.msg-row:last-child{border-bottom:none;}
+.msg-row .key{color:rgba(240,232,208,0.4);font-family:"DM Mono",monospace;font-size:0.72rem;}
+.tg-ok{color:rgba(45,158,95,0.9);}.tg-warn{color:rgba(232,168,58,0.9);}.tg-err{color:rgba(192,57,43,0.85);}.tg-bold{font-weight:700;color:var(--cream);}
+.msg-alert{margin:0.8rem 0;padding:0.7rem 1rem;background:rgba(192,57,43,0.08);border-left:2px solid rgba(192,57,43,0.5);font-size:0.8rem;line-height:1.6;color:rgba(240,232,208,0.75);}
+.msg-okbox{margin:0.8rem 0;padding:0.7rem 1rem;background:rgba(45,158,95,0.06);border-left:2px solid rgba(45,158,95,0.4);font-size:0.8rem;line-height:1.6;color:rgba(240,232,208,0.75);}
+.hc-table{width:100%;border-collapse:collapse;margin:0.8rem 0;}
+.hc-table th{font-family:"DM Mono",monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--fog);padding:0.4rem 0.6rem;text-align:left;border-bottom:1px solid rgba(240,232,208,0.06);}
+.hc-table td{padding:0.45rem 0.6rem;font-size:0.78rem;border-bottom:1px solid rgba(240,232,208,0.04);color:rgba(240,232,208,0.72);vertical-align:middle;}
+.hc-table tr:last-child td{border-bottom:none;}
+.dot-g{display:inline-block;width:7px;height:7px;border-radius:50%;background:#2d9e5f;box-shadow:0 0 5px rgba(45,158,95,0.6);margin-right:0.4rem;}
+.sch-table{width:100%;border-collapse:collapse;margin:0.8rem 0;}
+.sch-table td{padding:0.45rem 0.6rem;font-size:0.78rem;border-bottom:1px solid rgba(240,232,208,0.04);color:rgba(240,232,208,0.72);vertical-align:top;}
+.sch-table tr:last-child td{border-bottom:none;}
+.sch-table td:first-child{font-family:"DM Mono",monospace;font-size:0.7rem;color:var(--amber);white-space:nowrap;width:5rem;}
+.tg-divider{margin:1rem 0;height:1px;background:rgba(240,232,208,0.06);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes scrollPulse{0%,100%{opacity:0.3;}50%{opacity:1;}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.8s ease,transform 0.8s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+@media(max-width:600px){nav{padding:1rem 4vw;}.hero{padding:0 4vw 8vh;}section{padding:4rem 0;}.content{padding:0 4vw;}.contrast{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+<div class="dawn-bar" id="dawnBar"></div>
+<nav>
+  <span class="nav-logo">개발자 박대표 &middot; S3</span>
+  <span class="nav-ep">EP010</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-horizon"></div>
+  <div class="hero-meta">
+    <div class="series-badge">Season 3 &middot; DECOHUB Chronicles</div>
+    <div class="ep-label">Episode 010</div>
+    <h1 class="hero-title">프로그램은<br><em>정직하다</em></h1>
+    <p class="hero-subtitle">
+      사람은 정직하지 않다.<br>
+      그래서 AI 에이전트가 필요하다.<br>
+      대한민국 중소기업의 이야기다.
+    </p>
+    <div class="hero-date">2026 &middot; 팩토리봇 &middot; 업무 관리 &middot; 신뢰 시스템 &middot; 데코페이브</div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
+</div>
+
+<main class="content">
+
+  <section>
+    <div class="section-num reveal">01 &middot; 텔레그램 방의 풍경</div>
+    <h2 class="section-title reveal">AI들이<br><em>중간 관리자가 됐다</em></h2>
+    <p class="reveal">지금 우리 회사 텔레그램 방을 외부인이 본다면 이상하게 생각할 수도 있다. AI들이 직원들의 업무 계획서를 읽고 코멘트를 달고, 어제 업무일지를 분석한 내용을 전송하고 있다.</p>
+    <p class="reveal">이것은 원래 중간 관리자가 했어야 할 업무다. 지금 AI들이 그 일을 제대로 하고 있다. 오늘 팩토리봇은 아침마다 업무 목록을 분석해서 누가 무엇을 하지 않았는지를 명확하게 정리해 <strong>한국어, 네팔어, 베트남어</strong>로 발송한다.</p>
+    <p class="reveal">나는 매일 AI에게 학습을 시킨다. 어떤 기준으로 판단해야 하는지, 어떤 실수를 했는지, 무엇을 잘못 읽었는지, 어디에서 데이터를 가져와야 하는지. 이 학습을 계속 시키고 있다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">02 &middot; 3단계 원칙</div>
+    <h2 class="section-title reveal">안 할 수가<br><em>없다</em></h2>
+    <p class="reveal">업무일지를 작성하지 않는 직원에게는 단계별 원칙이 적용된다. 프로그램은 이 원칙을 예외 없이 실행한다.</p>
+    <div class="strike-system reveal">
+      <div class="strike-row">
+        <div class="strike-num s1">1</div>
+        <div class="strike-body">
+          <div class="strike-label">First Notice</div>
+          <div class="strike-text">동의를 구한다. 업무일지 미작성 사실을 알리고 작성을 요청한다.</div>
+        </div>
+      </div>
+      <div class="strike-row">
+        <div class="strike-num s2">2</div>
+        <div class="strike-body">
+          <div class="strike-label">Warning</div>
+          <div class="strike-text">경고한다. 반복 미작성에 대해 명확한 경고 메시지를 전달한다.</div>
+        </div>
+      </div>
+      <div class="strike-row">
+        <div class="strike-num s3">3</div>
+        <div class="strike-body">
+          <div class="strike-label">Final Warning</div>
+          <div class="strike-text">최종 경고한다. 이 단계가 되면 안 할 수 없다.</div>
+        </div>
+      </div>
+    </div>
+    <div class="pull-quote reveal">
+      <p>프로그램은 정직하다.<br>사람은 정직하지 않다.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-num reveal">03 &middot; 대한민국 중소기업의 문제</div>
+    <h2 class="section-title reveal">객관적 데이터가<br><em>없으면 말할 수 없다</em></h2>
+    <p class="reveal">직원들은 신뢰받은 만큼 일해야 하는 존재다. 그런데 왜 하지 않는가. 왜 규정을 지키지 않는가. 인간이라서다. 그렇다면 그런 사람들과 일하는 회사는 어떻게 해야 하는가.</p>
+    <p class="reveal">급여를 안 줄 수도 없다. 그게 현실이다. 대표가 직접 "당신이 무엇을 잘못하고 있다"고 말할 수도 없다. 특히 대한민국 중소기업에서는 객관적 데이터가 없으면 그 말을 꺼내기가 어렵다.</p>
+    <div class="insight reveal">
+      <p>대한민국 중소기업의 시스템이<br>정량화되고 정형화되어야 한다.<br>그래야 평가할 수 있다.<br>평가를 못하기 때문에<br>시간을 때우고 공간을 채우면 되는 것이다.</p>
+      <span class="insight-sub">데코페이브 &middot; AI 에이전트 도입 배경</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-num reveal">04 &middot; 유럽의 현장에서 배운 것</div>
+    <h2 class="section-title reveal">관리자가 없어도<br><em>일하는 사람들</em></h2>
+    <p class="reveal">유럽 업체들과 공장을 세우면서 1년 넘게 함께 일했다. 현장에 관리자가 없다. 관리자는 독일에 있다. 그런데도 사람들은 제대로 일한다.</p>
+    <div class="contrast reveal">
+      <div class="contrast-col">
+        <div class="contrast-badge">한국의 현실</div>
+        <div class="contrast-item">관리자가 없으면 느슨해진다</div>
+        <div class="contrast-item">시간을 채우면 된다는 인식</div>
+        <div class="contrast-item">객관적 평가 기준이 없다</div>
+        <div class="contrast-item">대표가 직접 지적해야 한다</div>
+      </div>
+      <div class="contrast-col eu">
+        <div class="contrast-badge eu">유럽의 방식</div>
+        <div class="contrast-item eu">계획서를 만들고 실행한다</div>
+        <div class="contrast-item eu">했는지 안 했는지만 보고한다</div>
+        <div class="contrast-item eu">목요일 검증, 금요일 통보</div>
+        <div class="contrast-item eu">미달이면 주말에 나와서 채운다</div>
+      </div>
+    </div>
+    <p class="reveal">그게 상식이다. 자신이 해야 할 업무의 양이 정해져 있고, 그만큼 일하지 않으면 급여를 받지 못하는 것. 그 시스템이 작동하기 때문에 관리자가 없어도 돌아간다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">05 &middot; AI가 할 수 있는 것</div>
+    <h2 class="section-title reveal">업무량은 줄었다<br><em>그래도 안 한다면</em></h2>
+    <p class="reveal">내가 볼 때 우리 회사 직원들은 하루에 진짜 네다섯 시간만 집중하면 좋은 결과물이 나온다. 예전에 시간을 쏟아야 했던 일들이 이제 클릭 한 번으로 처리되도록 프로그램이 만들어졌다. 그 일들 자체도 AI가 대신 한다.</p>
+    <p class="reveal">모르는 것이 있으면 AI에게 물어보면 된다. AI 에이전트와 일하면 업무량이 대폭 줄어든다. 그런데도 안 된다면 진짜 일을 안 하는 거다. 아니면 모르는 거다. 그 모름도 이제는 AI에게 물어보면 된다. 묻기조차 귀찮은 거다.</p>
+    <div class="pull-quote reveal">
+      <p>사람들과 제대로 일하는 방법이 무엇인가.<br>그들을 정확하게 분석하는 것이다.<br>어떻게 일하는지를 조목조목 따져서<br>피드백해주는 것이다.<br>바뀌지 않으면 바꿔야 한다.<br>그게 유일한 방법이다.</p>
+    </div>
+    <p class="reveal">사람은 가르쳐서 고쳐 쓰는 것이 아니다. 맞지 않는 사람은 교체해야 한다. 단, 그 판단을 내리려면 명확한 원칙과 기준이 있어야 한다. 그 원칙에 따라 측정하고, 그 기준에 맞는 잣대로 평가하는 것. AI 에이전트가 그 일을 한다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">06 &middot; 왜 이 일을 하는가</div>
+    <h2 class="section-title reveal">모든 소스를<br><em>공개할 것이다</em></h2>
+    <p class="reveal">이 시작을 대한민국에서, 데코페이브라는 아주 작은 중소기업에서 하게 될 것이다. 나는 이렇게 만들어진 모든 소스를 공개할 예정이다. 그래야 한다. 그래야 대한민국 중소기업이 살아남는다.</p>
+    <p class="reveal">대한민국 제조 중소기업 대표들이 무슨 죄가 있나. 그들은 열심히 노력했고, 제대로 만들려고 했다. 그런데 그들을 힘들게 만드는 것이 무엇인지 누군가는 생각해봐야 한다. 믿지 못하게 만든 사람들 때문에 관리해야 하고, 감시해야 하고, 거기에 시간과 에너지를 쏟는다.</p>
+    <div class="declaration reveal">
+      <p>신뢰는 시스템이 만든다.<br>
+      독일과 미국에서 신뢰가 작동하는 이유는<br>
+      정해진 룰대로 하면 신뢰가 쌓이는<br>
+      시스템이 갖춰져 있기 때문이다.<br><br>
+      AI 에이전트들이 그 시스템을 만들어줄 것이다.<br>
+      그게 명확해질 때, 모든 것이 제자리를 잡는다.</p>
+      <span class="declaration-sub">데코페이브 &middot; AI 에이전트 선언 &middot; Season 3 EP010</span>
+    </div>
+    <p class="reveal">이게 내가 지금 열심히 하는 이유다. 시간을 갈아 넣어가며 만들고 있는 이유다. 대한민국 중소기업을 위해서.</p>
+  </section>
+
+</main>
+
+  <!-- 실제 증거 섹션 -->
+  <section style="padding:7rem 0;">
+    <div class="section-num reveal">증거 &middot; Real Evidence</div>
+    <h2 class="section-title reveal">말이 아니라<br><em>실제 화면이다</em></h2>
+    <p class="reveal">이것은 개념이 아니다. 오늘 아침, 실제로 작동하고 있는 시스템의 화면이다. AI 에이전트들이 보낸 텔레그램 메시지 원문이다.</p>
+
+    <!-- FactoryMbot -->
+    <div class="tg-section-header reveal">
+      <div class="tg-ch-icon factory">🏭</div>
+      <div>
+        <div class="tg-ch-name">생산관리업무</div>
+        <div class="tg-ch-tag">FactoryMbot &middot; 참가자 13명 &middot; 3개 언어 동시 발송</div>
+      </div>
+    </div>
+
+    <div class="lang-tabs reveal">
+      <div class="lang-tab active" onclick="switchLang(event,'ko')">한국어</div>
+      <div class="lang-tab" onclick="switchLang(event,'vi')">Tiếng Việt</div>
+      <div class="lang-tab" onclick="switchLang(event,'ne')">नेपाली</div>
+    </div>
+
+    <div class="tg-window reveal">
+      <div class="tg-topbar">
+        <div class="tg-topbar-icon g">🏭</div>
+        <div class="tg-topbar-title">생산관리업무</div>
+        <div class="tg-topbar-sub">FactoryMbot &middot; 오늘 오전</div>
+      </div>
+      <div class="tg-body">
+
+        <div class="tg-lang show" id="lang-ko">
+          <div class="msg-section">
+            <div class="msg-h1">🏭 3공장 (F3) — 생산일지 작성현황</div>
+            <div class="msg-h2">A조 (주간)</div>
+            <div class="msg-row"><span class="key">OP (옥)</span>&nbsp; 총 320사이클 <span class="tg-err">🔴 (160/h, 기준 200)</span> | QC사진 4장</div>
+            <div class="msg-row"><span class="key">LQC (카듀이)</span>&nbsp; 사진 🚨 <span class="tg-err">미작성</span> | 불량 0건 | 제품코드: <span class="tg-err">미입력</span></div>
+            <div class="msg-row"><span class="key">반출 (시매트)</span>&nbsp; 반출 0개 | 철판버퍼 <span class="tg-err">미입력</span> 🔴 사진없음 | 시그노드 0회</div>
+            <div class="msg-alert">🔴 반출 미작성 — 철판버퍼 기록 없음 · KPI 감점</div>
+            <div class="msg-h2">B조 (야간)</div>
+            <div class="msg-row"><span class="key">OP (디팍)</span>&nbsp; 총 1,110사이클 <span class="tg-err">🔴 (159/h, 기준 200)</span> | QC사진 8장</div>
+            <div class="msg-row"><span class="key">LQC (툼양)</span>&nbsp; 사진 <span class="tg-ok">✅ 8장</span> | 불량 0건 | 제품코드: TR1908T04BBB30</div>
+            <div class="msg-row"><span class="key">반출 (쭈이터)</span>&nbsp; 반출 93개 | 철판버퍼 384→392 <span class="tg-ok">✅</span> | 시그노드 6회</div>
+          </div>
+          <div class="tg-divider"></div>
+          <div class="msg-section">
+            <div class="msg-h1">📊 KPI 분석 · 조치 권고</div>
+            <div class="msg-alert"><span class="tg-bold">② 반출 KPI 조작 감지 【최우선】</span><br>A조 반출(시매트) 🔴 의도적 KPI 조작 의심 · 강력 경고 · 문책 대상<br>철판버퍼 수량 미입력(None→None), BAR코드 미확인, 반출 0개, 사진 없음<br>→ 반출 핵심 KPI 2개 항목 모두 누락. 사실상 업무 미이행.</div>
+            <div class="msg-okbox">B조 반출(쭈이터) — 철판버퍼 384→392 기록, 시그노드 6회, 사진 보유<br>→ 핵심 항목 이행. <span class="tg-ok">정상 평가.</span></div>
+            <div class="msg-row">A조 LQC(카듀이): 사진 0장·제품코드 미입력 → <span class="tg-err">품질관리 업무 전면 미이행, 강력 문책</span></div>
+            <div class="msg-row">A조·B조 OP: 160/h·159/h → 기준 200/h 대비 <span class="tg-warn">약 20% 미달</span> → 두 팀장 사유서 즉시 제출 요구</div>
+            <div class="msg-row">A조 전반: 팀장(옥) 관리 하에 LQC·반출 동시 미이행 → <span class="tg-err">팀장 관리 책임 추궁</span></div>
+          </div>
+        </div>
+
+        <div class="tg-lang" id="lang-vi">
+          <div class="msg-section">
+            <div class="msg-h1">🏭 Nhà máy 3 (F3) — Tình trạng viết nhật ký sản xuất</div>
+            <div class="msg-h2">Tổ A (Ca ngày)</div>
+            <div class="msg-row"><span class="key">OP (옥)</span>&nbsp; Tổng 320 chu kỳ <span class="tg-err">🔴 (160/h, tiêu chuẩn 200)</span> | Ảnh QC 4 tấm</div>
+            <div class="msg-row"><span class="key">LQC (카듀이)</span>&nbsp; Ảnh 🚨 <span class="tg-err">chưa viết</span> | Lỗi 0 | Mã sản phẩm: <span class="tg-err">chưa nhập</span></div>
+            <div class="msg-row"><span class="key">Xuất hàng (시매트)</span>&nbsp; Xuất 0 cái | Buffer tấm sắt <span class="tg-err">chưa nhập</span> 🔴 | Signode 0 lần</div>
+            <div class="msg-alert">🔴 Nhật ký xuất hàng chưa viết — Không có bản ghi buffer tấm sắt, trừ điểm KPI</div>
+            <div class="msg-h2">Tổ B (Ca đêm)</div>
+            <div class="msg-row"><span class="key">OP (디팍)</span>&nbsp; Tổng 1.110 chu kỳ <span class="tg-err">🔴 (159/h, tiêu chuẩn 200)</span> | Ảnh QC 8 tấm</div>
+            <div class="msg-row"><span class="key">LQC (툼양)</span>&nbsp; Ảnh <span class="tg-ok">✅ 8 tấm</span> | Lỗi 0 | Mã sản phẩm: TR1908T04BBB30</div>
+            <div class="msg-row"><span class="key">Xuất hàng (쭈이터)</span>&nbsp; Xuất 93 cái | Buffer tấm sắt 384→392 <span class="tg-ok">✅</span> | Signode 6 lần</div>
+          </div>
+        </div>
+
+        <div class="tg-lang" id="lang-ne">
+          <div class="msg-section">
+            <div class="msg-h1">🏭 र नम्बर कारखाना — विश्लेषण</div>
+            <div class="msg-row">क्रसरमा 38 बाल्टी अभिलेख, शट ब्लास्ट सञ्चालन नभएको (सामान्य)</div>
+            <div class="msg-alert">३ नम्बर कारखाना QC सहयोग र सामग्री स्थानान्तरण उल्लेख —<br>संख्यात्मक प्रमाण छैन, फोटो संलग्न छैन।<br><span class="tg-bold">तत्काल पुष्टि गर्नु आवश्यक।</span></div>
+            <div class="msg-h2">⑤ डिस्पाच टोली (네우민광) विस्तृत विश्लेषण</div>
+            <div class="msg-row">प्रस्थान 20:33 / 17:00 पछि लोडिङ 0 गाडी</div>
+            <div class="msg-alert">अनुमति प्राप्त अवशेष समय 0 मिनेट, वास्तविक अवशेष 213 मिनेट<br>→ <span class="tg-bold">अतिरिक्त 213 मिनेट सम्पूर्ण अनावश्यक</span></div>
+            <div class="msg-row">याड सफाइ 4 वटा अभिलेख — सबैमा फोटो दर्ता छैन → <span class="tg-err">जवाफदेही अस्वीकार</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 문실장 -->
+    <div class="tg-section-header reveal" style="margin-top:3rem;">
+      <div class="tg-ch-icon moonsil">🤵</div>
+      <div>
+        <div class="tg-ch-name">경영지원실장 문돌</div>
+        <div class="tg-ch-tag">봇 &middot; 아침 브리핑 2026-04-14 (화) 09:05</div>
+      </div>
+    </div>
+
+    <div class="tg-window reveal">
+      <div class="tg-topbar">
+        <div class="tg-topbar-icon m">🤵</div>
+        <div class="tg-topbar-title">경영지원실장 문돌</div>
+        <div class="tg-topbar-sub">08:09 수집 완료 · 09:05 브리핑</div>
+      </div>
+      <div class="tg-body">
+        <div class="msg-section">
+          <div class="msg-h1">✅ 시스템 헬스체크 — <span class="tg-ok">전원 정상</span></div>
+          <table class="hc-table">
+            <thead><tr><th>항목</th><th>상태</th><th>비고</th></tr></thead>
+            <tbody>
+              <tr><td>문돌실장 봇</td><td><span class="dot-g"></span><span class="tg-ok">정상</span></td><td>어제 18:55 재가동 후 14시간 안정</td></tr>
+              <tr><td>서버 디스크</td><td><span class="dot-g"></span><span class="tg-ok">11% 사용</span></td><td>396GB 여유</td></tr>
+              <tr><td>서버 메모리</td><td><span class="dot-g"></span><span class="tg-ok">15GB/125GB</span></td><td>108GB 여유</td></tr>
+              <tr><td>FactoryMbot</td><td><span class="dot-g"></span><span class="tg-ok">정상</span></td><td>2주 16시간 가동</td></tr>
+              <tr><td>Decofin</td><td><span class="dot-g"></span><span class="tg-ok">정상</span></td><td>5일 18시간 가동</td></tr>
+              <tr><td>DecoHR</td><td><span class="dot-g"></span><span class="tg-ok">정상</span></td><td>12일 7시간 가동</td></tr>
+              <tr><td>DecoSale</td><td><span class="dot-g"></span><span class="tg-ok">정상</span></td><td>5일 18시간 가동</td></tr>
+              <tr><td>DecoMES</td><td><span class="dot-g"></span><span class="tg-ok">정상</span></td><td>10일 11시간 가동</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tg-divider"></div>
+        <div class="msg-section">
+          <div class="msg-h1">🚨 오늘 주요 이슈 2건</div>
+          <div class="msg-alert"><span class="tg-bold">① DecoSale 이메일 수집 오류 (OAuth)</span><br>08:00 모니터링에서 sales@decopave.co.kr 수집 실패 (OAuth 인증 오류)<br>영업 관련 외부 이메일 누락 가능 → <span class="tg-bold">확인·재인증 필요</span></div>
+          <div class="msg-alert"><span class="tg-bold">② Taskworld API 404 오류</span><br>이메일에서 생성된 태스크 7건이 Taskworld에 직접 등록 안 됨<br>연결 오류로 보임 → <span class="tg-bold">내부 확인 필요</span></div>
+        </div>
+        <div class="tg-divider"></div>
+        <div class="msg-section">
+          <div class="msg-h1">🏗️ 오늘 특이사항</div>
+          <div class="msg-row"><span class="tg-bold">김현준 프로 입사 첫날</span> (생산관리팀) — 오늘부터 업무일지 집중 관리 대상. 07:37 안내 코멘트 발송 완료</div>
+          <div class="msg-row"><span class="tg-bold">어제 업무일지 미완성 4건</span> (옥, 카듀이, 디팍, 툼양) — 07:00 독려 완료. 오늘 20:00 최종 점검 예정</div>
+          <div class="msg-row"><span class="tg-bold">정하윤 프로</span> 복직 2주차 — 업무 적응 상황 모니터링 중</div>
+        </div>
+        <div class="tg-divider"></div>
+        <div class="msg-section">
+          <div class="msg-h1">📋 오늘 문실장 스케줄</div>
+          <table class="sch-table">
+            <tbody>
+              <tr><td>11:30</td><td>Deco AI bot 방 요약 → 사장님 DM</td></tr>
+              <tr><td>17:30</td><td>Deco AI bot 방 요약 → 사장님 DM</td></tr>
+              <tr><td>18:00</td><td>정낙일 실장 저녁 (캘린더 등록됨)</td></tr>
+              <tr><td>19:00</td><td>사장님 텔레그램 종합 보고</td></tr>
+              <tr><td>20:00</td><td>전 직원 업무일지 분석</td></tr>
+              <tr><td>23:30</td><td>업무일지 최종 점검</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="tg-divider"></div>
+        <div style="font-size:0.78rem;color:rgba(240,232,208,0.5);line-height:1.7;padding:0.5rem 0;">
+          <span class="tg-bold">요약:</span> 시스템·봇 전원 이상 없습니다. 오늘 주요 처리 사항은 <span class="tg-bold">① HO2 제품 Decohub 등록 확인</span>, <span class="tg-bold">② DecoSale OAuth 재인증</span> 두 가지입니다. 오늘 저녁 18시 정낙일 실장 약속 있으시니 수고하십시오. 🌟
+        </div>
+      </div>
+    </div>
+
+    <div class="pull-quote reveal" style="margin-top:3rem;">
+      <p>한국어, 베트남어, 네팔어로 동시에.<br>
+      아침 브리핑, 시스템 헬스체크, 업무일지 분석.<br>
+      이것이 오늘 아침 데코페이브의 풍경이다.</p>
+    </div>
+  </section>
+
+<footer class="footer-section">
+  <div class="dawn-divider" style="margin-bottom:3rem;"></div>
+  <div class="footer-ep">Season 3 &middot; Episode 010</div>
+  <div class="footer-title">다음 에피소드를 기다려 주세요.</div>
+  <p class="footer-body">시스템이 신뢰를 만든다.<br>그 다음 이야기를 이어갑니다.</p>
+  <div class="footer-line">Decopave Co., Ltd. &middot; 데코페이브&#x338E; &middot; 2026</div>
+  <div class="footer-line" style="font-size:0.45rem;">개발자 박대표 &middot; AI로 회사를 바꾸는 중소기업 대표의 기록</div>
+</footer>
+
+<script>
+const bar=document.getElementById("dawnBar");
+window.addEventListener("scroll",()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  bar.style.width=pct+"%";
+});
+const reveals=document.querySelectorAll(".reveal");
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){setTimeout(()=>e.target.classList.add("visible"),i*60);obs.unobserve(e.target);}
+  });
+},{threshold:0.1,rootMargin:"0px 0px -40px 0px"});
+reveals.forEach(el=>obs.observe(el));
+
+function switchLang(e,lang){
+  document.querySelectorAll(".lang-tab").forEach(t=>t.classList.remove("active"));
+  document.querySelectorAll(".tg-lang").forEach(d=>d.classList.remove("show"));
+  e.target.classList.add("active");
+  var el=document.getElementById("lang-"+lang);
+  if(el)el.classList.add("show");
+}
+</script>
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
+  <a href="ep009.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">10</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+</nav>
+</body>
+</html>

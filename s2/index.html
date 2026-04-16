@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 시즌2 — INDEX</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&family=Noto+Sans+KR:wght@300;400;700;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#050508;color:#e2e8f0;font-family:'Noto Serif KR',serif;min-height:100vh;padding-top:40px}
+.hero{padding:100px 8vw 60px;text-align:center;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(234,179,8,.08),transparent 70%)}
+.hero-season{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:6px;color:#854d0e;text-transform:uppercase;margin-bottom:14px}
+.hero-title{font-family:'Noto Serif KR',serif;font-weight:900;font-size:clamp(2.4rem,6vw,5rem);line-height:1.15;margin-bottom:24px}
+.hero-title .y{color:#eab308;text-shadow:0 0 40px rgba(234,179,8,.3)}
+.hero-sub{font-family:'Noto Sans KR',sans-serif;font-weight:300;font-size:1rem;line-height:2;color:rgba(255,255,255,.5);max-width:600px;margin:0 auto}
+.list{max-width:780px;margin:0 auto;padding:60px 8vw 100px}
+.ep{display:block;text-decoration:none;color:inherit;background:#0c0c14;border:1px solid rgba(234,179,8,.08);border-radius:14px;padding:28px 32px;margin-bottom:16px;transition:all .3s;position:relative;overflow:hidden}
+.ep::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:#eab308;opacity:.3;transition:opacity .3s}
+.ep:hover{border-color:rgba(234,179,8,.3);transform:translateX(6px)}
+.ep:hover::before{opacity:1}
+.ep-num{font-family:'JetBrains Mono',monospace;font-size:.65rem;letter-spacing:3px;color:#eab308;margin-bottom:8px;text-transform:uppercase}
+.ep-title{font-family:'Noto Serif KR',serif;font-weight:900;font-size:1.3rem;color:#fff;margin-bottom:6px;line-height:1.4}
+.ep-desc{font-family:'Noto Sans KR',sans-serif;font-size:.85rem;color:rgba(255,255,255,.5);line-height:1.7}
+.ep.special{border-color:rgba(168,85,247,.2);background:linear-gradient(135deg,rgba(168,85,247,.06),rgba(59,130,246,.04))}
+.ep.special::before{background:#a855f7}
+.ep.special .ep-num{color:#c084fc}
+.ep.final{border-color:rgba(236,72,153,.2);background:linear-gradient(135deg,rgba(236,72,153,.06),rgba(234,179,8,.04))}
+.ep.final::before{background:#ec4899}
+.ep.final .ep-num{color:#f472b6}
+.footer{padding:50px 8vw;text-align:center;border-top:1px solid rgba(255,255,255,.05)}
+.footer p{font-family:'Noto Sans KR',sans-serif;font-size:.75rem;color:rgba(255,255,255,.3);line-height:1.9}
+.footer .brand{color:#eab308;font-weight:700;letter-spacing:2px;font-family:'JetBrains Mono',monospace;font-size:.7rem;margin-bottom:12px}
+@media(max-width:768px){.list{padding:40px 6vw 80px}.ep{padding:22px 24px}}
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(234,179,8,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#eab308;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">│</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #eab308;padding-bottom:2px;">S2</a>
+  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+</div>
+<section class="hero">
+<div class="hero-season">DEVELOPER PARK · SEASON 2</div>
+<h1 class="hero-title">개발자 <span class="y">박대표</span><br>시즌 2</h1>
+<p class="hero-sub">코딩 모르는 CEO의 100일 AI 도입기.<br>단순한 질문 하나에서 시작된 대전환의 기록.</p>
+</section>
+
+<div class="list">
+
+<a class="ep" href="ep001.html">
+<div class="ep-num">Episode 001</div>
+<div class="ep-title">어제의 생각을 현실로 만들었다</div>
+<div class="ep-desc">자동 부팅 USB · 10년 된 노트북 부활 · 문실장의 일상 · 한전 공문 분석</div>
+</a>
+
+<a class="ep" href="ep002.html">
+<div class="ep-num">Episode 002</div>
+<div class="ep-title">문실장, DIE</div>
+<div class="ep-desc">시스템 다운 · 응급 복구 · 자체 LLM 서버 구축 계획 · 하이브리드 아키텍처</div>
+</a>
+
+<a class="ep" href="ep003.html">
+<div class="ep-num">Episode 003</div>
+<div class="ep-title">리눅스가 가르쳐 준 것</div>
+<div class="ep-desc">40년 전 유닉스 기억 · 오픈소스 생태계 · 77만 중소기업의 답</div>
+</a>
+
+<a class="ep" href="ep004.html">
+<div class="ep-num">Episode 004</div>
+<div class="ep-title">깃허브라는 세상</div>
+<div class="ep-desc">Paperclip 발견 · DECOHUB 70% 일치 · 5개 레이어 아키텍처</div>
+</a>
+
+<a class="ep" href="ep005.html">
+<div class="ep-num">Episode 005</div>
+<div class="ep-title">이해하는 기술이 필요하다</div>
+<div class="ep-desc">코딩 기술 ✗ 이해하는 기술 ✓ · 익숙함이라는 자산 · 새벽의 자율 위임</div>
+</a>
+
+<a class="ep" href="ep006.html">
+<div class="ep-num">Episode 006</div>
+<div class="ep-title">열 시간, 다섯 대의 컴퓨터</div>
+<div class="ep-desc">봇 진단 · 프로그램 개발 사이클 · "될 때까지 해봐"</div>
+</a>
+
+<a class="ep" href="ep007.html">
+<div class="ep-num">Episode 007</div>
+<div class="ep-title">생각의 확장에는 한계가 없다</div>
+<div class="ep-desc">대시보드 아이디어 · 19%의 의미 · n8n과 Gemma · 또라이가 세상을 바꾼다</div>
+</a>
+
+<a class="ep special" href="epilogue.html">
+<div class="ep-num">Epilogue</div>
+<div class="ep-title">대전환의 시점</div>
+<div class="ep-desc">자랑이 아니다 · 50년 인생의 깨달음 · 같이 가고 싶은 마음</div>
+</a>
+
+<a class="ep final" href="final.html">
+<div class="ep-num">Final Episode</div>
+<div class="ep-title">시즌2를 마무리하며</div>
+<div class="ep-desc">월요일 20명의 CEO 발표 · 100일의 회고 · 50:50 불안과 기대 · 시즌3 예고</div>
+</a>
+
+</div>
+
+<footer class="footer">
+<p class="brand">DEVELOPER PARK · SEASON 2 · COMPLETE</p>
+<p>(주)데코페이브 | 대표이사 박문석 | DECOPAVE Co., LTD.<br>본사: 부산 | 스마트팩토리: 충북 단양 | R&D: 서울<br><br>⚠️ 이 블로그는 Claude AI를 기반으로 작성되었습니다.</p>
+</footer>
+</body>
+</html>

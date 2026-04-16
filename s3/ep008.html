@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP008 — AI에게 업무를 가르친다는 것</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;700&family=DM+Mono:ital@0;1&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#04050a;--dawn:#c8922a;--amber:#e8a83a;--gold:#f5c842;
+  --cream:#f0e8d0;--mist:rgba(240,232,208,0.55);--fog:rgba(240,232,208,0.25);
+  --ghost:rgba(240,232,208,0.08);--dawn-glow:rgba(232,168,58,0.18);
+  --indigo:#1a2f6e;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background-color:var(--void);color:var(--cream);font-family:"Noto Sans KR",sans-serif;font-weight:300;line-height:1.9;overflow-x:hidden;padding-top:40px;padding-bottom:50px;}
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.6;}
+
+.dawn-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--indigo),var(--amber),var(--gold));width:0%;z-index:1000;box-shadow:0 0 8px rgba(232,168,58,0.5);transition:width 0.1s linear;}
+
+nav{position:fixed;top:36px;left:0;right:0;z-index:100;padding:1.5rem 6vw;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(4,5,10,0.95) 0%,transparent 100%);backdrop-filter:blur(4px);}
+.nav-logo{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.25em;color:var(--amber);text-transform:uppercase;}
+.nav-ep{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--fog);text-transform:uppercase;}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 6vw 10vh;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 50% 0%,#0d1b3e 0%,transparent 70%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(200,146,42,0.12) 0%,transparent 60%),linear-gradient(180deg,var(--void) 0%,#060b18 40%,#090f1e 70%,#0a1225 100%);z-index:0;}
+.hero-horizon{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,var(--dawn) 30%,var(--amber) 50%,var(--dawn) 70%,transparent 100%);opacity:0.4;z-index:1;}
+.hero-meta{position:relative;z-index:2;margin-bottom:3rem;}
+.series-badge{display:inline-flex;align-items:center;gap:0.6rem;font-family:"DM Mono",monospace;font-size:0.65rem;letter-spacing:0.25em;color:var(--amber);text-transform:uppercase;margin-bottom:2rem;opacity:0;animation:fadeUp 0.8s ease 0.2s forwards;}
+.series-badge::before{content:"";display:block;width:28px;height:1px;background:var(--amber);}
+.ep-label{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.3em;color:var(--mist);text-transform:uppercase;margin-bottom:1.2rem;opacity:0;animation:fadeUp 0.8s ease 0.4s forwards;}
+.hero-title{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(2.4rem,7vw,6rem);line-height:1.0;letter-spacing:-0.02em;color:var(--cream);opacity:0;animation:fadeUp 1s ease 0.5s forwards;}
+.hero-title em{font-style:normal;color:var(--amber);text-shadow:0 0 40px rgba(232,168,58,0.4);}
+.hero-subtitle{margin-top:1.6rem;font-family:"Noto Serif KR",serif;font-size:clamp(0.95rem,2vw,1.1rem);font-weight:300;color:var(--mist);max-width:48ch;line-height:1.8;opacity:0;animation:fadeUp 0.8s ease 0.8s forwards;}
+.hero-date{margin-top:2.5rem;font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;color:var(--fog);opacity:0;animation:fadeUp 0.8s ease 1s forwards;}
+.scroll-cue{position:absolute;bottom:3vh;right:6vw;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0.4rem;opacity:0;animation:fadeIn 1s ease 1.5s forwards;}
+.scroll-cue span{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.3em;color:var(--fog);writing-mode:vertical-rl;text-transform:uppercase;}
+.scroll-line{width:1px;height:50px;background:linear-gradient(180deg,var(--amber) 0%,transparent 100%);animation:scrollPulse 2s ease infinite;}
+
+/* CONTENT */
+.content{max-width:720px;margin:0 auto;padding:0 6vw;}
+section{padding:7rem 0;border-bottom:1px solid var(--ghost);}
+section:last-child{border-bottom:none;}
+.section-num{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.3em;color:var(--amber);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:0.8rem;}
+.section-num::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--dawn-glow),transparent);max-width:80px;}
+.section-title{font-family:"Syne",sans-serif;font-weight:700;font-size:clamp(1.6rem,4vw,2.4rem);line-height:1.15;color:var(--cream);margin-bottom:2.5rem;letter-spacing:-0.01em;}
+.section-title em{font-style:normal;color:var(--amber);}
+p{font-size:1rem;line-height:2;color:rgba(240,232,208,0.75);margin-bottom:1.6rem;}
+p strong{color:var(--cream);font-weight:700;}
+
+/* PULL QUOTE */
+.pull-quote{margin:3rem 0;padding:2rem 2.5rem;border-left:2px solid var(--amber);background:linear-gradient(90deg,rgba(200,146,42,0.06) 0%,transparent 100%);position:relative;}
+.pull-quote::before{content:"C";position:absolute;top:-1rem;left:1.5rem;font-family:"Noto Serif KR",serif;font-size:4rem;color:var(--amber);opacity:0.3;line-height:1;}
+.pull-quote p{font-family:"Noto Serif KR",serif;font-size:1.1rem;font-weight:400;color:var(--cream);margin:0;line-height:1.8;}
+
+/* 사람 vs AI 비교 테이블 */
+.compare-table{margin:2.5rem 0;width:100%;border-collapse:collapse;}
+.compare-table th{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;text-transform:uppercase;padding:0.8rem 1.2rem;text-align:left;border-bottom:1px solid rgba(232,168,58,0.2);}
+.compare-table th:first-child{color:var(--fog);}
+.compare-table th:last-child{color:var(--amber);}
+.compare-table td{padding:0.9rem 1.2rem;font-size:0.85rem;border-bottom:1px solid var(--ghost);line-height:1.6;vertical-align:top;}
+.compare-table td:first-child{color:rgba(240,232,208,0.45);width:30%;}
+.compare-table td:nth-child(2){color:rgba(240,232,208,0.55);width:35%;font-style:italic;}
+.compare-table td:nth-child(3){color:rgba(240,232,208,0.8);width:35%;}
+.compare-table tr:last-child td{border-bottom:none;}
+
+/* 업무 분해 카드 */
+.decomp{margin:2.5rem 0;display:flex;flex-direction:column;gap:1px;background:rgba(240,232,208,0.05);}
+.decomp-row{background:var(--void);display:grid;grid-template-columns:6rem 1fr;gap:0;}
+.decomp-key{padding:1.4rem 1.2rem;font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.15em;color:var(--amber);text-transform:uppercase;border-right:1px solid rgba(240,232,208,0.05);display:flex;align-items:center;}
+.decomp-val{padding:1.4rem 1.6rem;font-size:0.88rem;color:rgba(240,232,208,0.7);line-height:1.7;}
+.decomp-val em{font-style:normal;color:rgba(240,232,208,0.4);font-family:"DM Mono",monospace;font-size:0.75rem;}
+
+/* 판단 기준 예시 */
+.rule-block{margin:2.5rem 0;background:#06080f;border:1px solid rgba(240,232,208,0.06);padding:1.8rem 2rem;font-family:"DM Mono",monospace;font-size:0.78rem;line-height:2;position:relative;}
+.rule-block::before{content:attr(data-label);position:absolute;top:-0.6rem;left:1.5rem;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);background:#06080f;padding:0 0.5rem;}
+.rb-bad{color:rgba(192,57,43,0.7);}
+.rb-good{color:rgba(100,200,100,0.8);}
+.rb-comment{color:rgba(240,232,208,0.2);font-style:italic;}
+.rb-rule{color:rgba(240,232,208,0.6);}
+.rb-result{color:var(--amber);}
+
+/* 피드백 루프 */
+.feedback-loop{margin:2.5rem 0;display:flex;flex-direction:column;border-left:1px solid rgba(232,168,58,0.2);}
+.fb-step{display:grid;grid-template-columns:1.8rem 1fr;gap:1rem;padding-bottom:2rem;}
+.fb-dot-wrap{display:flex;flex-direction:column;align-items:center;position:relative;left:-0.55rem;}
+.fb-dot{width:8px;height:8px;border-radius:50%;background:var(--amber);box-shadow:0 0 8px rgba(232,168,58,0.5);flex-shrink:0;margin-top:0.35rem;}
+.fb-line{width:1px;flex:1;background:linear-gradient(180deg,rgba(232,168,58,0.3),rgba(232,168,58,0.05));min-height:1rem;}
+.fb-tag{font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;color:var(--amber);text-transform:uppercase;margin-bottom:0.3rem;}
+.fb-body p{font-size:0.88rem;line-height:1.75;margin:0;color:rgba(240,232,208,0.7);}
+.fb-body p strong{color:var(--cream);}
+
+/* 완성 매뉴얼 예시 */
+.manual-block{margin:2.5rem 0;background:#06080f;border:1px solid rgba(232,168,58,0.15);padding:1.8rem 2rem;font-family:"DM Mono",monospace;font-size:0.76rem;line-height:2;position:relative;}
+.manual-block::before{content:"agents/worklog-analyst.md 4  실제 매뉴얼 예시";position:absolute;top:-0.6rem;left:1.5rem;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);background:#06080f;padding:0 0.5rem;}
+.mb-head{color:var(--amber);}
+.mb-key{color:rgba(232,168,58,0.6);}
+.mb-val{color:rgba(240,232,208,0.65);}
+.mb-flag{color:rgba(100,200,100,0.7);}
+.mb-warn{color:rgba(192,57,43,0.7);}
+.mb-comment{color:rgba(240,232,208,0.2);font-style:italic;}
+
+/* 구조 다이어그램 */
+.arch{margin:2.5rem 0;padding:2rem;border:1px solid var(--ghost);position:relative;}
+.arch::before{content:"DECOHUB 4  매뉴얼 전파 구조";position:absolute;top:-0.6rem;left:1.5rem;font-family:"DM Mono",monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--amber);background:var(--void);padding:0 0.5rem;}
+.arch-top{text-align:center;margin-bottom:1.5rem;}
+.arch-box{display:inline-block;font-family:"DM Mono",monospace;font-size:0.7rem;padding:0.5rem 1.2rem;border:1px solid rgba(232,168,58,0.3);color:var(--amber);letter-spacing:0.1em;}
+.arch-arrow{text-align:center;font-family:"DM Mono",monospace;font-size:0.7rem;color:rgba(232,168,58,0.3);margin:0.5rem 0;}
+.arch-mid{text-align:center;margin-bottom:0.5rem;}
+.arch-mid-box{display:inline-block;font-family:"DM Mono",monospace;font-size:0.65rem;padding:0.5rem 1.5rem;border:1px solid rgba(42,90,170,0.4);color:rgba(42,90,170,0.9);letter-spacing:0.08em;background:rgba(42,90,170,0.04);}
+.arch-bottom{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(240,232,208,0.05);margin-top:0.5rem;}
+.arch-agent{background:var(--void);padding:1rem;text-align:center;}
+.arch-agent-name{font-family:"DM Mono",monospace;font-size:0.55rem;color:rgba(240,232,208,0.6);letter-spacing:0.1em;margin-bottom:0.3rem;}
+.arch-agent-role{font-size:0.72rem;color:var(--fog);line-height:1.4;}
+
+/* 인사이트 */
+.insight{margin:3rem 0;padding:2.5rem;background:linear-gradient(135deg,rgba(26,47,110,0.2) 0%,rgba(200,146,42,0.06) 100%);border:1px solid rgba(232,168,58,0.15);text-align:center;}
+.insight p{font-family:"Noto Serif KR",serif;font-size:1.15rem;font-weight:400;color:var(--cream);margin:0;line-height:1.8;}
+.insight-sub{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.2em;color:var(--amber);text-transform:uppercase;margin-top:1.2rem;display:block;}
+
+.dawn-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent 0%,var(--amber) 50%,transparent 100%);opacity:0.2;}
+
+/* FOOTER */
+.footer-section{padding:6rem 6vw 4rem;text-align:center;background:linear-gradient(0deg,rgba(200,146,42,0.04) 0%,transparent 100%);}
+.footer-ep{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.3em;color:var(--amber);text-transform:uppercase;margin-bottom:1rem;}
+.footer-title{font-family:"Syne",sans-serif;font-size:clamp(1.4rem,4vw,2rem);font-weight:700;color:var(--cream);margin-bottom:1.5rem;}
+.footer-body{font-family:"Noto Serif KR",serif;font-size:0.9rem;color:var(--mist);max-width:42ch;margin:0 auto 3rem;line-height:1.9;}
+.footer-line{display:flex;align-items:center;justify-content:center;gap:1rem;font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;color:var(--fog);text-transform:uppercase;margin-bottom:1rem;}
+.footer-line::before,.footer-line::after{content:"";width:40px;height:1px;background:var(--fog);}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+@keyframes scrollPulse{0%,100%{opacity:0.3;}50%{opacity:1;}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.8s ease,transform 0.8s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+@media(max-width:600px){nav{padding:1rem 4vw;}.hero{padding:0 4vw 8vh;}section{padding:4rem 0;}.content{padding:0 4vw;}.arch-bottom{grid-template-columns:1fr;}.decomp-row{grid-template-columns:1fr;}. decomp-key{border-right:none;border-bottom:1px solid rgba(240,232,208,0.05);}}
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+<div class="dawn-bar" id="dawnBar"></div>
+<nav>
+  <span class="nav-logo">개발자 박대표 · S3</span>
+  <span class="nav-ep">EP008</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-horizon"></div>
+  <div class="hero-meta">
+    <div class="series-badge">Season 3 · DECOHUB Chronicles</div>
+    <div class="ep-label">Episode 008</div>
+    <h1 class="hero-title">AI에게<br>업무를<br><em>가르친다는 것</em></h1>
+    <p class="hero-subtitle">
+      "이거 해"와 "이런 조건일 때 이걸 해"는<br>
+      전혀 다른 말이다.<br>
+      그 차이가 AI의 수준을 결정한다.
+    </p>
+    <div class="hero-date">2026 · 문실장 · 업무 학습 방법론 · DECOHUB</div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><div class="scroll-line"></div></div>
+</div>
+
+<main class="content">
+
+  <section>
+    <div class="section-num reveal">01 · 가장 중요한 오해</div>
+    <h2 class="section-title reveal">AI 학습이란<br><em>매뉴얼을 쓰는 것</em>이다</h2>
+    <p class="reveal">문실장에게 업무를 체계적으로 학습시켜야 제대로 일을 시킬 수 있다는 걸 알았다. 그런데 여기서 중요한 오해 하나를 먼저 풀어야 한다.</p>
+    <p class="reveal">"AI 학습"이라는 말이 오해를 만든다. 사람을 가르치면 그 사람 머릿속에 경험이 쌓인다. 한 번 가르치면 다음부터는 알아서 한다. AI는 이것과 근본적으로 다르다.</p>
+    <div class="pull-quote reveal">
+      <p>문실장은 매번 새로 태어납니다.<br>어제 대화를 기억하지 못합니다.<br>대신 태어나는 순간 매뉴얼을 읽고<br>그 매뉴얼대로 움직입니다.<br><br>AI를 가르치는 것 = AI의 머리를 바꾸는 것이 아니라,<br>매뉴얼을 잘 쓰는 것입니다.</p>
+    </div>
+    <p class="reveal">비유하면 이렇다. 사람 직원은 3개월 수습 기간 동안 천천히 배워서 이후 혼자 한다. AI 직원은 매일 아침 첫 출근인데, 출근하면 완벽한 업무 매뉴얼이 있어서 즉시 실행한다. <strong>매뉴얼의 품질이 곧 AI의 업무 능력이다.</strong></p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">02 · 사람과 AI의 근본적 차이</div>
+    <h2 class="section-title reveal">사람은 감으로 하지만<br>AI는 <em>조건이 필요하다</em></h2>
+    <p class="reveal">지금까지 문실장에게 업무를 주는 방식이 있었다. "업무일지 체크해", "ERP 올려", "직원 관리해". 이 방식의 문제는 내 의도와 AI의 해석 사이에 간극이 생긴다는 것이다.</p>
+    <table class="compare-table reveal">
+      <thead>
+        <tr>
+          <th>항목</th>
+          <th>사람 직원</th>
+          <th>AI (문실장)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>기억</td><td>반복하면 몸이 기억</td><td>매 세션 백지 시작 — 기억 파일 필요</td></tr>
+        <tr><td>맥락 이해</td><td>"대충 이런 느낌" 통함</td><td>정확한 조건과 절차가 없으면 못 함</td></tr>
+        <tr><td>예외 처리</td><td>상식으로 판단</td><td>명시적으로 적어줘야 판단 가능</td></tr>
+        <tr><td>전파</td><td>선배가 후배에게 구두 전달</td><td>파일 하나 공유하면 즉시 동일 수준</td></tr>
+      </tbody>
+    </table>
+    <p class="reveal">사장님이 "당연히 알겠지"라고 생각하는 부분이 AI에게는 100% 빈칸이다. 이 빈칸을 채우는 것이 AI에게 업무를 가르치는 것의 본질이다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">03 · 업무를 AI용으로 변환하는 법</div>
+    <h2 class="section-title reveal">모든 업무는<br><em>4가지로 분해된다</em></h2>
+    <p class="reveal">사람이 하는 모든 반복 업무는 예외 없이 이 구조로 되어 있다. "어떤 상황이 되면 → 어디서 정보를 보고 → 판단해서 → 조치한다." 이것을 명시적으로 쓰는 것이 변환의 핵심이다.</p>
+    <div class="decomp reveal">
+      <div class="decomp-row">
+        <div class="decomp-key">트리거</div>
+        <div class="decomp-val">언제, 무엇이 이 업무를 시작하는가<br><em>예) 매일 20:00 / 거래처 메일 수신 시 / 사장님 지시 시</em></div>
+      </div>
+      <div class="decomp-row">
+        <div class="decomp-key">입력</div>
+        <div class="decomp-val">어디서 무슨 정보를 가져오는가<br><em>예) Taskworld project/275 / WEHAGO ERP 출하 데이터</em></div>
+      </div>
+      <div class="decomp-row">
+        <div class="decomp-key">처리</div>
+        <div class="decomp-val">그 정보로 무엇을 하는가<br><em>예) 미제출자 추출 / 합계 계산 / 유사도 비교</em></div>
+      </div>
+      <div class="decomp-row">
+        <div class="decomp-key">출력</div>
+        <div class="decomp-val">결과를 어디에 어떤 형태로 내보내는가<br><em>예) 사장님 텔레그램 DM / Taskworld 코멘트 / 이메일 초안</em></div>
+      </div>
+    </div>
+    <p class="reveal">이것만 정리하면 AI가 실행할 수 있는 업무의 80%는 커버된다. 나머지 20%는 판단 기준과 예외 처리다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">04 · 가장 어렵고 가장 중요한 단계</div>
+    <h2 class="section-title reveal">"감"을<br><em>숫자와 조건</em>으로 바꿔라</h2>
+    <p class="reveal">사람은 "부실하다", "대충 봐서", "알아서 판단"으로 한다. AI는 이 말을 처리할 수 없다. "대충"을 구체적인 숫자와 조건으로 바꾸는 것이 핵심이다.</p>
+    <div class="rule-block reveal" data-label="판단 기준 변환 — 실제 예시">
+      <div class="rb-bad">&#x274C; "업무일지를 대충 봐서 문제 있으면 알려줘"</div>
+      <div class="rb-good">&#x2705; "업무일지에서 다음을 체크해:"</div>
+      <div class="rb-rule">&nbsp;&nbsp;&nbsp;&nbsp;100자 미만이면 &rarr; '내용 부족' 플래그</div>
+      <div class="rb-rule">&nbsp;&nbsp;&nbsp;&nbsp;전일 유사도 80% 이상이면 &rarr; '복붙 의심' 플래그</div>
+      <div class="rb-rule">&nbsp;&nbsp;&nbsp;&nbsp;미제출이면 &rarr; '미작성' 플래그</div>
+      <div class="rb-rule">&nbsp;&nbsp;&nbsp;&nbsp;각 등급별로 다른 메시지 발송</div>
+      <br>
+      <div class="rb-comment">// 핵심: "대충", "적당히", "알아서"를 숫자와 조건으로 바꾸는 것</div>
+    </div>
+    <p class="reveal">이 판단 기준을 꺼내는 가장 좋은 방법은 화가 났던 경험을 떠올리는 것이다. 최근에 직원 업무일지 보고 화가 났던 적이 있나? 왜? 그 "왜"가 AI의 판단 기준이 된다.</p>
+    <div class="rule-block reveal" data-label="실제 대화에서 기준이 도출되는 방식">
+      <div class="rb-comment">// 사장님: "맨날 같은 내용 복붙해서 화남"</div>
+      <div class="rb-result">&rarr; 규칙: 전일 대비 유사도 80% 이상이면 '복붙 의심' 자동 플래그</div>
+      <br>
+      <div class="rb-comment">// 사장님: "'회의함' 한 줄만 써놓고"</div>
+      <div class="rb-result">&rarr; 규칙: 100자 미만이면 '내용 부족' 자동 플래그</div>
+      <br>
+      <div class="rb-comment">// 사장님: "복직한 지 얼마 안 됐으니 좀 봐줘야지"</div>
+      <div class="rb-result">&rarr; 규칙: 복직 후 2주간 독촉 강도 '약'으로 설정</div>
+    </div>
+    <p class="reveal">사장님이 화난 사례가 AI의 판단 기준이 된다. 반대로 "이건 잘했네"라고 느낀 사례도 기준이 된다.</p>
+  </section>
+
+  <section>
+    <div class="section-num reveal">05 · 변환의 결과물</div>
+    <h2 class="section-title reveal">이것 하나가<br><em>에이전트 전체에 전파된다</em></h2>
+    <p class="reveal">위 과정을 거치면 이런 문서가 만들어진다. 이 문서 하나가 agents/worklog-analyst.md에 들어가는 순간 문실장은 내일부터 이 업무를 정확히 실행한다.</p>
+    <div class="manual-block reveal">
+      <div class="mb-head">업무명: 20시 업무일지 분석</div>
+      <div class="mb-key">트리거: <span class="mb-val">매일 20:00 KST (평일만, 공휴일 제외)</span></div>
+      <div class="mb-key">입력:&nbsp;&nbsp; <span class="mb-val">Taskworld project/275 오늘 날짜 태스크</span></div>
+      <div class="mb-key">처리:</div>
+      <div class="mb-val">&nbsp;&nbsp;1. 전체 직원 목록과 대조 &rarr; 미제출자 추출</div>
+      <div class="mb-val">&nbsp;&nbsp;2. 본문 100자 미만 &rarr; <span class="mb-warn">내용부족</span></div>
+      <div class="mb-val">&nbsp;&nbsp;3. 전일 유사도 80%↑ &rarr; <span class="mb-warn">복붙의심</span></div>
+      <div class="mb-val">&nbsp;&nbsp;4. 정상 &rarr; <span class="mb-flag">OK</span></div>
+      <div class="mb-key">출력:</div>
+      <div class="mb-val">&nbsp;&nbsp;관리자방 분석표 / 미제출자 개별 독촉</div>
+      <div class="mb-val">&nbsp;&nbsp;복직 2주 이내 직원: 약한 톤 적용</div>
+      <div class="mb-key">예외:</div>
+      <div class="mb-val">&nbsp;&nbsp;Taskworld 장애 &rarr; 30분 재시도 &times;2, 실패 시 사장님 보고</div>
+      <div class="mb-comment">&nbsp;&nbsp;// 직원 사유 신고 &rarr; 기록 후 사장님 판단 대기</div>
+    </div>
+    <p class="reveal">그리고 이 문서를 다른 에이전트들에게 공유하면 즉시 동일한 수준으로 실행한다. 사람이면 3개월 수습이 필요한 것을, 문서 하나로 전파한다.</p>
+    <div class="arch reveal">
+      <div class="arch-top"><div class="arch-box">사장님의 머릿속 — "당연한 것"</div></div>
+      <div class="arch-arrow">&#x2193; 문실장이 구조화: 트리거 / 입력 / 처리 / 판단 / 출력 / 예외</div>
+      <div class="arch-mid"><div class="arch-mid-box">문실장 (주에이전트) — CLAUDE.md + agents/*.md</div></div>
+      <div class="arch-arrow">&#x2193; 파일 하나 공유 &rarr; 즉시 동일 수준으로 전파</div>
+      <div class="arch-bottom">
+        <div class="arch-agent"><div class="arch-agent-name">worklog-analyst</div><div class="arch-agent-role">업무일지 분석 및 직원 피드백</div></div>
+        <div class="arch-agent"><div class="arch-agent-name">erp-operator</div><div class="arch-agent-role">ERP 자동화 및 계약서 처리</div></div>
+        <div class="arch-agent"><div class="arch-agent-name">hr-bot</div><div class="arch-agent-role">채용 분석 및 인사 지원</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-num reveal">06 · 사장님의 역할</div>
+    <h2 class="section-title reveal">3회면 완성된다<br><em>단, "아니야"를 말해줘야 한다</em></h2>
+    <p class="reveal">이 체계에서 사장님이 하실 일은 딱 두 가지다. "당연한 것"을 말로 꺼내주는 것, 그리고 결과를 보고 "아니야"라고 말해주는 것. AI에게 질문하는 것은 문실장의 일이다.</p>
+    <div class="feedback-loop reveal">
+      <div class="fb-step">
+        <div class="fb-dot-wrap"><div class="fb-dot"></div><div class="fb-line"></div></div>
+        <div class="fb-body">
+          <div class="fb-tag">1회차</div>
+          <p>"업무일지 체크해" &rarr; 문실장이 나름대로 해석해서 실행<br><strong>사장님: "아니야, 복붙하는 사람 잡아내야지"</strong></p>
+        </div>
+      </div>
+      <div class="fb-step">
+        <div class="fb-dot-wrap"><div class="fb-dot"></div><div class="fb-line"></div></div>
+        <div class="fb-body">
+          <div class="fb-tag">2회차</div>
+          <p>복붙 탐지 추가 &rarr; 전원에게 같은 톤으로 경고<br><strong>사장님: "복직한 지 얼마 안 된 직원은 좀 봐줘야지"</strong></p>
+        </div>
+      </div>
+      <div class="fb-step">
+        <div class="fb-dot-wrap"><div class="fb-dot"></div><div class="fb-line"></div></div>
+        <div class="fb-body">
+          <div class="fb-tag">3회차</div>
+          <p>개인별 톤 차등 추가 &rarr; <strong>거의 완벽. 사장님 확인만 하면 된다.</strong></p>
+        </div>
+      </div>
+    </div>
+    <p class="reveal">사람 직원 3개월 수습 vs AI 3~5회 피드백. 단, 사장님이 "아니야"를 정확히 말씀해주셔야 한다. 그 한마디가 매뉴얼을 정밀하게 만든다.</p>
+    <div class="insight reveal">
+      <p>AI에게 업무를 가르치는 것은<br>AI를 바꾸는 것이 아니다.<br>사장님 머릿속의 "당연한 것"을<br>글로 꺼내서 매뉴얼에 넣는 것이다.<br><br>매뉴얼이 좋으면 AI는 즉시 잘하고,<br>매뉴얼이 부실하면 AI도 부실하다.</p>
+      <span class="insight-sub">문실장 업무 학습 방법론 · Season 3 EP008</span>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer-section">
+  <div class="dawn-divider" style="margin-bottom:3rem;"></div>
+  <div class="footer-ep">Season 3 · Episode 008</div>
+  <div class="footer-title">다음 에피소드를 기다려 주세요.</div>
+  <p class="footer-body">매뉴얼이 완성되면 에이전트가 완성된다.<br>그 다음 이야기를 이어갑니다.</p>
+  <div class="footer-line">Decopave Co., Ltd. · 데코페이브&#xAC8C; · 2026</div>
+  <div class="footer-line" style="font-size:0.45rem;">개발자 박대표 · AI로 회사를 바꾸는 중소기업 대표의 기록</div>
+</footer>
+
+<script>
+const bar=document.getElementById("dawnBar");
+window.addEventListener("scroll",()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  bar.style.width=pct+"%";
+});
+const reveals=document.querySelectorAll(".reveal");
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){setTimeout(()=>e.target.classList.add("visible"),i*60);obs.unobserve(e.target);}
+  });
+},{threshold:0.1,rootMargin:"0px 0px -40px 0px"});
+reveals.forEach(el=>obs.observe(el));
+</script>
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
+  <a href="ep007.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep009.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+</nav>
+</body>
+</html>

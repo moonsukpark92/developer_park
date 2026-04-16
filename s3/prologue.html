@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 — Prologue · 단양에서 서울로 가는 길</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;600;700&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --void:#04050a;--amber:#e8a83a;--gold:#f5c842;--dawn:#c8922a;
+  --cream:#f0e8d0;--mist:rgba(240,232,208,0.5);--fog:rgba(240,232,208,0.22);
+  --ghost:rgba(240,232,208,0.07);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background-color:var(--void);color:var(--cream);font-family:"Noto Serif KR",serif;font-weight:300;line-height:1.95;overflow-x:hidden;padding-top:40px;padding-bottom:50px;}
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.5;}
+
+/* 송에 같은 스크롤 진행 표시 */
+.progress{position:fixed;top:0;left:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,146,42,0.4),transparent);width:0%;z-index:1000;transition:width 0.15s linear;}
+
+nav{position:fixed;top:36px;left:0;right:0;z-index:100;padding:1.5rem 6vw;display:flex;justify-content:space-between;align-items:center;}
+.nav-logo{font-family:"DM Mono",monospace;font-size:0.52rem;letter-spacing:0.28em;color:rgba(200,146,42,0.4);text-transform:uppercase;}
+.nav-tag{font-family:"DM Mono",monospace;font-size:0.48rem;letter-spacing:0.2em;color:rgba(240,232,208,0.15);text-transform:uppercase;}
+
+/* 단일 풀스크린 오프닝 */
+.opening{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-end;padding:0 8vw 12vh;overflow:hidden;}
+.opening-bg{position:absolute;inset:0;background:radial-gradient(ellipse 50% 40% at 30% 70%,rgba(13,27,62,0.4) 0%,transparent 70%),radial-gradient(ellipse 60% 50% at 80% 20%,rgba(4,5,10,0.8) 0%,transparent 60%),linear-gradient(180deg,#04050a 0%,#05070e 60%,#040608 100%);z-index:0;}
+
+/* 찺 헤드라이트 */
+.opening-time{position:absolute;top:8rem;right:8vw;font-family:"DM Mono",monospace;font-size:0.52rem;letter-spacing:0.2em;color:rgba(200,146,42,0.2);text-transform:uppercase;z-index:2;opacity:0;animation:fadeIn 2s ease 1s forwards;text-align:right;line-height:2;}
+
+/* 지평선 */
+.horizon{position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 0%,rgba(200,146,42,0.15) 40%,rgba(232,168,58,0.3) 50%,rgba(200,146,42,0.15) 60%,transparent 100%);z-index:1;}
+
+.prologue-badge{font-family:"DM Mono",monospace;font-size:0.52rem;letter-spacing:0.35em;color:rgba(200,146,42,0.35);text-transform:uppercase;margin-bottom:2rem;position:relative;z-index:1;opacity:0;animation:fadeUp 0.8s ease 0.3s forwards;}
+
+.opening-title{font-family:"Syne",sans-serif;font-weight:800;font-size:clamp(2.2rem,6vw,5rem);line-height:1.05;letter-spacing:-0.02em;color:rgba(240,232,208,0.9);position:relative;z-index:1;opacity:0;animation:fadeUp 1s ease 0.5s forwards;margin-bottom:1.8rem;}
+.opening-title em{font-style:normal;color:rgba(200,146,42,0.7);}
+
+.opening-place{font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;color:rgba(240,232,208,0.2);text-transform:uppercase;position:relative;z-index:1;opacity:0;animation:fadeUp 0.8s ease 0.9s forwards;}
+
+/* 본문 컨테이너 */
+.content{max-width:580px;margin:0 auto;padding:8rem 6vw;}
+
+/* 에세이 문단들 */
+.essay-para{font-size:clamp(1rem,2.2vw,1.12rem);line-height:2.05;color:rgba(240,232,208,0.72);margin-bottom:2.8rem;}
+.essay-para strong{color:rgba(240,232,208,0.92);font-weight:600;}
+.essay-para em{font-style:italic;color:rgba(200,146,42,0.7);}
+
+/* 중간 인용 큰 것 */
+.big-moment{margin:4rem 0;padding:0;text-align:left;}
+.big-moment-text{font-family:"Noto Serif KR",serif;font-size:clamp(1.15rem,2.8vw,1.5rem);line-height:1.75;color:rgba(240,232,208,0.88);font-weight:400;letter-spacing:-0.01em;}
+.big-moment-text em{font-style:normal;color:rgba(232,168,58,0.8);}
+
+/* 간단한 구분선 */
+.section-break{margin:4rem 0;display:flex;align-items:center;gap:1.5rem;}
+.section-break::before,.section-break::after{content:"";flex:1;height:1px;background:var(--ghost);}
+.section-break-dot{width:4px;height:4px;border-radius:50%;background:rgba(200,146,42,0.3);flex-shrink:0;}
+
+/* 마지막 한 줄 */
+.closing-line{margin-top:5rem;padding-top:3rem;border-top:1px solid var(--ghost);font-family:"DM Mono",monospace;font-size:0.55rem;letter-spacing:0.2em;color:rgba(240,232,208,0.15);text-transform:uppercase;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+
+/* 애니메이션 */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 1s ease,transform 1s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+@media(max-width:600px){
+  .opening{padding:0 5vw 10vh;}
+  .content{padding:6rem 5vw;}
+  .opening-time{display:none;}
+  .closing-line{flex-direction:column;}
+}
+</style>
+</head>
+<body>
+
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+
+<div class="progress" id="progress"></div>
+<nav>
+  <span class="nav-logo">개발자 박대표 &middot; S3</span>
+  <span class="nav-tag">Prologue</span>
+</nav>
+
+<!-- 오프닝 -->
+<div class="opening">
+  <div class="opening-bg"></div>
+  <div class="horizon"></div>
+
+  <div class="opening-time">
+    단양 출발 열한 시<br>
+    자정이 넘은 길<br>
+    밤
+  </div>
+
+  <div class="prologue-badge">Prologue</div>
+
+  <h1 class="opening-title">
+    단양에서<br>
+    서울로<br>
+    <em>가는 길</em>
+  </h1>
+
+  <div class="opening-place">
+    Danyang Factory &rarr; Seoul &middot; 2026 &middot; Season 3
+  </div>
+</div>
+
+<!-- 본문 -->
+<div class="content">
+
+  <p class="essay-para reveal">
+    단양 공장에서 서울로 가고 있는 길이다. 열한 시에 출발했다. 지금은 자정이 넘었다. 팩토리봇을 세팅해 놓고 오기 위해 늦어졌다. SSH 서버가 한 번 덜컥하면서 기존 작업이 중지되었고, 복구하고 정리하다 보니 8시간이 넘었다. 어차피 하던 거 마무리하자 싶었던 것이 결국 이렇게 됐다.
+  </p>
+
+  <p class="essay-para reveal">
+    요즘 운행 시간에는 녹음을 한다. 녹음하고, 그 파일을 텍스트로 바꾼다. 그 텍스트를 Claude에게 준다. Claude는 두 가지를 만들고 있다. 내 생각에 대한 에세이 하나, 개발자 박대표 시리즈 하나.
+  </p>
+
+  <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+  <div class="big-moment reveal">
+    <div class="big-moment-text">
+      24시간은 누구에게나 똑같다.<br>
+      근데 인생에서 이렇게 치열하게<br>
+      24시간을 나눠서 살아본 적이 있는가.
+    </div>
+  </div>
+
+  <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+  <p class="essay-para reveal">
+    잠을 하루에 3시간, 4시간밖에 못 잔다. 예전에도 많이 그렇게 살았다. 근데 그때는 20대였다. 30대였다. 50이 넘어서 이럴 거라고는 생각도 못 했다. <strong>그런데 누가 시켜서, 누가 강요해서 하는 게 아니지 않은가. 철저하게 혼자서 즐기는 거다.</strong>
+  </p>
+
+  <p class="essay-para reveal">
+    AI와 일을 하다 보면 시간이 너무 빨리 간다. 모르니까 공부하다 보면 시간이 가고, 집중과 몰입에 빠지다 보면 시간이 가고, MD 파일 만들어줘, 보고서 만들어줘, 계획서 읽다 보면 2시간 30분이 그냥 훌쩍 지나간다.
+  </p>
+
+  <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+  <div class="big-moment reveal">
+    <div class="big-moment-text">
+      하루하루가 시간을 갈아넣는 것처럼 보이지만<br>
+      이 매 순간이 이 <em>대전환의 시점</em>에<br>
+      꼭 필요한 것이 아닌가 하는 생각이 든다.
+    </div>
+  </div>
+
+  <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+  <p class="essay-para reveal">
+    vibe coding을 제대로 시작한 건 한 달 보름 정도다. 코워크로 해보고 Python으로 돌리던 시절을 빼고 나면, Claude Code에서 실제로 작업하며 진짜 vibe coding이라는 걸 알고 시작한 건 한 달 보름. 그 한 달 보름 동안 정말 많은 시간과 에너지를 쏟아부었고, 체력적으로 힘들다는 걸 느낄 정도까지 왔다.
+  </p>
+
+  <p class="essay-para reveal">
+    하지만 이제 뭔가가 보이고, 뭔가가 만들어지고, 그 결과가 실질적인 것으로 눈앞에 나타나고 있다. 처음엔 가능할까 싶었던 것들이 실체가 되어가고 있다는 생각을 하면서, 시즌 3까지 오게 된 과정과 그 많은 것들이 교차하는 그런 밤이다.
+  </p>
+
+  <div class="section-break reveal"><div class="section-break-dot"></div></div>
+
+  <p class="essay-para reveal" style="color:rgba(240,232,208,0.4);font-size:0.9rem;">
+    녹음 파일은 Claude가 텍스트로 바꾸고, Claude가 에세이를 만들고, 그 에세이가 본인에게 돌아온다. 이 프롤로그도 그렇게 태어난다.
+  </p>
+
+  <div class="closing-line reveal">
+    <span>Decopave Co., Ltd. &middot; 2026</span>
+    <span>개발자 박대표 &middot; Season 3 Prologue</span>
+  </div>
+
+</div>
+
+<script>
+const prog=document.getElementById("progress");
+window.addEventListener("scroll",()=>{
+  const pct=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+  prog.style.width=pct+"%";
+});
+const reveals=document.querySelectorAll(".reveal");
+const obs=new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){setTimeout(()=>e.target.classList.add("visible"),i*80);obs.unobserve(e.target);}
+  });
+},{threshold:0.12,rootMargin:"0px 0px -50px 0px"});
+reveals.forEach(el=>obs.observe(el));
+</script>
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep001.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+</nav>
+</body>
+</html>

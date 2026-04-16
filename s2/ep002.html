@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 시즌2 #002 — 문실장 DIE</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,400&display=swap');
+
+  :root {
+    --bg: #05060a;
+    --surface: #0c0e14;
+    --accent: #dc2626;
+    --accent2: #991b1b;
+    --blue: #3b82f6;
+    --green: #22c55e;
+    --gold: #eab308;
+    --teal: #14b8a6;
+    --purple: #a855f7;
+    --orange: #f97316;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(255,255,255,.06);
+    --dead: #7f1d1d;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Noto Serif KR',serif; overflow-x:hidden; padding-top:40px; padding-bottom:50px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes glitch1 {
+    0%,100%{transform:translate(0)} 20%{transform:translate(-3px,2px)} 40%{transform:translate(3px,-1px)}
+    60%{transform:translate(-2px,-3px)} 80%{transform:translate(2px,3px)}
+  }
+  @keyframes glitch2 {
+    0%,100%{clip-path:inset(0 0 0 0)} 10%{clip-path:inset(20% 0 60% 0)} 20%{clip-path:inset(50% 0 10% 0)}
+    30%{clip-path:inset(10% 0 70% 0)} 40%{clip-path:inset(80% 0 5% 0)} 50%{clip-path:inset(0 0 0 0)}
+  }
+  @keyframes flicker {
+    0%,100%{opacity:1} 5%{opacity:.3} 10%{opacity:1} 15%{opacity:.5} 20%{opacity:1}
+    50%{opacity:1} 55%{opacity:.2} 60%{opacity:1}
+  }
+  @keyframes flatline {
+    0%{width:0} 100%{width:100%}
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes pulseRed { 0%,100%{box-shadow:0 0 20px rgba(220,38,38,.1)} 50%{box-shadow:0 0 60px rgba(220,38,38,.3)} }
+  @keyframes pulseGreen { 0%,100%{box-shadow:0 0 15px rgba(34,197,94,.1)} 50%{box-shadow:0 0 40px rgba(34,197,94,.25)} }
+  @keyframes scanDown { 0%{top:-2px} 100%{top:calc(100% + 2px)} }
+  @keyframes heartbeat { 0%,100%{transform:scale(1)} 14%{transform:scale(1.1)} 28%{transform:scale(1)} 42%{transform:scale(1.08)} 70%{transform:scale(1)} }
+
+  /* ===== HERO — DEATH SCREEN ===== */
+  .hero {
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center; align-items:center;
+    text-align:center;
+    padding:80px 8vw;
+    position:relative; overflow:hidden;
+    background:#000;
+  }
+
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 70% 50% at 50% 50%, rgba(220,38,38,.08) 0%, transparent 70%);
+  }
+
+  .hero::after {
+    content:''; position:absolute; inset:0;
+    background:repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(220,38,38,.015) 2px, rgba(220,38,38,.015) 4px
+    );
+    pointer-events:none;
+  }
+
+  .hero-scanline {
+    position:absolute; left:0; right:0; height:3px;
+    background:linear-gradient(90deg, transparent, rgba(220,38,38,.08), transparent);
+    animation:scanDown 4s linear infinite;
+    pointer-events:none;
+  }
+
+  .hero-season {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:6px; color:var(--accent2); text-transform:uppercase;
+    margin-bottom:12px;
+    opacity:0; animation:fadeUp .7s .1s forwards;
+  }
+
+  .hero-ep {
+    font-family:'JetBrains Mono',monospace; font-size:.65rem;
+    letter-spacing:5px; color:var(--accent); text-transform:uppercase;
+    margin-bottom:36px;
+    opacity:0; animation:fadeUp .7s .3s forwards;
+  }
+
+  .hero-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(2.8rem,7vw,6.5rem); line-height:1.05;
+    position:relative;
+    opacity:0; animation:fadeUp .7s .5s forwards;
+  }
+  .hero-title .dead {
+    color:var(--accent);
+    position:relative;
+    display:inline-block;
+  }
+  .hero-title .dead::after {
+    content:'DIE'; position:absolute; left:2px; top:2px;
+    color:rgba(220,38,38,.3);
+    animation:glitch1 3s infinite;
+  }
+
+  .hero-flatline {
+    width:280px; height:2px; margin:40px auto 0;
+    background:rgba(220,38,38,.15); position:relative;
+    overflow:hidden; border-radius:1px;
+    opacity:0; animation:fadeIn .5s .8s forwards;
+  }
+  .hero-flatline::after {
+    content:''; position:absolute; left:0; top:0; height:100%;
+    background:var(--accent);
+    animation:flatline 3s 1.2s ease-out infinite;
+  }
+
+  .hero-sub {
+    font-family:'JetBrains Mono',monospace; font-weight:400;
+    font-size:.75rem; line-height:2;
+    color:rgba(220,38,38,.5); margin-top:32px;
+    letter-spacing:1px;
+    opacity:0; animation:fadeUp .7s 1s forwards;
+  }
+
+  .hero-date {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:3px; color:var(--muted);
+    margin-top:48px; opacity:0; animation:fadeUp .7s 1.2s forwards;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section { padding:100px 8vw; position:relative; }
+  .section.dark { background:var(--bg); }
+  .section.surface { background:var(--surface); }
+  .section.gradient { background:linear-gradient(180deg, var(--bg) 0%, #0a0f18 50%, var(--surface) 100%); }
+  .section.dead-bg { background:linear-gradient(180deg, #0a0506 0%, var(--bg) 100%); }
+  .section.revival { background:linear-gradient(180deg, var(--bg) 0%, #060a08 50%, var(--bg) 100%); }
+
+  .ch-label {
+    font-family:'JetBrains Mono',monospace; font-size:.58rem;
+    letter-spacing:4px; text-transform:uppercase; margin-bottom:14px;
+  }
+  .ch-label.red { color:var(--accent); }
+  .ch-label.blue { color:var(--blue); }
+  .ch-label.green { color:var(--green); }
+  .ch-label.orange { color:var(--orange); }
+  .ch-label.gold { color:var(--gold); }
+  .ch-label.teal { color:var(--teal); }
+  .ch-label.purple { color:var(--purple); }
+
+  .ch-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.6rem,4vw,3rem); line-height:1.2;
+    margin-bottom:40px; max-width:700px;
+  }
+
+  .prose {
+    font-family:'Noto Serif KR',serif; font-weight:300;
+    font-size:1.02rem; line-height:2.1;
+    color:rgba(255,255,255,.75); max-width:680px;
+  }
+  .prose strong { color:#fff; font-weight:700; }
+  .prose .r { color:var(--accent); font-weight:700; }
+  .prose .b { color:#60a5fa; font-weight:700; }
+  .prose .g { color:#4ade80; font-weight:700; }
+  .prose .o { color:var(--orange); font-weight:700; }
+  .prose .gold { color:var(--gold); font-weight:700; }
+  .prose + .prose { margin-top:28px; }
+
+  /* TERMINAL */
+  .terminal {
+    background:#0d1117; border:1px solid rgba(255,255,255,.08);
+    border-radius:12px; overflow:hidden;
+    margin:40px auto; max-width:700px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .terminal.dead-term {
+    border-color:rgba(220,38,38,.2);
+    animation:pulseRed 4s infinite;
+  }
+  .terminal.alive-term {
+    border-color:rgba(34,197,94,.2);
+    animation:pulseGreen 4s infinite;
+  }
+
+  .term-bar {
+    background:#161b22; padding:10px 16px;
+    display:flex; align-items:center; gap:7px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .term-dot { width:10px; height:10px; border-radius:50%; }
+  .term-dot.r { background:#ff5f57; }
+  .term-dot.y { background:#febc2e; }
+  .term-dot.g { background:#28c840; }
+  .term-dot.dead { background:#555; }
+  .term-name {
+    font-size:.65rem; color:var(--muted);
+    margin-left:auto; letter-spacing:1px;
+  }
+  .term-body { padding:20px; }
+  .term-line {
+    font-size:.78rem; line-height:1.9;
+    color:rgba(255,255,255,.6);
+  }
+  .term-line .prompt { color:var(--green); }
+  .term-line .cmd { color:#fff; }
+  .term-line .comment { color:var(--muted); font-style:italic; }
+  .term-line .success { color:var(--green); }
+  .term-line .warn { color:var(--gold); }
+  .term-line .err { color:var(--accent); }
+  .term-line .info { color:var(--blue); }
+
+  /* ERROR SCREEN */
+  .error-screen {
+    background:#0a0000; border:2px solid rgba(220,38,38,.3);
+    border-radius:16px; padding:48px 40px; margin:48px auto;
+    max-width:560px; text-align:center;
+    position:relative; overflow:hidden;
+    animation:flicker 8s infinite;
+  }
+  .error-screen::before {
+    content:''; position:absolute; inset:0;
+    background:repeating-linear-gradient(
+      0deg, transparent, transparent 3px,
+      rgba(220,38,38,.02) 3px, rgba(220,38,38,.02) 6px
+    );
+    pointer-events:none;
+  }
+  .error-icon {
+    font-size:4rem; margin-bottom:20px;
+    filter:grayscale(.3);
+  }
+  .error-title {
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:1.4rem; color:var(--accent);
+    letter-spacing:2px; margin-bottom:12px;
+  }
+  .error-sub {
+    font-family:'Noto Sans KR',sans-serif; font-size:.85rem;
+    color:rgba(255,255,255,.4); line-height:1.8;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    margin:48px 0; max-width:680px;
+    position:relative; padding-left:32px;
+  }
+  .timeline::before {
+    content:''; position:absolute; left:10px; top:0; bottom:0;
+    width:2px; background:linear-gradient(180deg,
+      var(--accent) 0%, var(--accent) 40%,
+      var(--gold) 60%, var(--green) 100%);
+  }
+  .tl-item {
+    position:relative; margin-bottom:36px;
+    padding-left:24px;
+  }
+  .tl-item::before {
+    content:''; position:absolute; left:-26px; top:6px;
+    width:12px; height:12px; border-radius:50%;
+    border:2px solid; background:var(--bg);
+  }
+  .tl-item.dead::before { border-color:var(--accent); }
+  .tl-item.warn::before { border-color:var(--gold); }
+  .tl-item.ok::before { border-color:var(--green); }
+  .tl-item.blue::before { border-color:var(--blue); }
+  .tl-time {
+    font-family:'JetBrains Mono',monospace; font-size:.65rem;
+    letter-spacing:2px; margin-bottom:6px;
+  }
+  .tl-item.dead .tl-time { color:var(--accent); }
+  .tl-item.warn .tl-time { color:var(--gold); }
+  .tl-item.ok .tl-time { color:var(--green); }
+  .tl-item.blue .tl-time { color:var(--blue); }
+  .tl-text {
+    font-family:'Noto Sans KR',sans-serif; font-size:.88rem;
+    line-height:1.7; color:rgba(255,255,255,.7);
+  }
+  .tl-text strong { color:#fff; }
+
+  /* BLOCKQUOTE */
+  .bq {
+    border-left:3px solid var(--accent);
+    padding:20px 28px; margin:36px 0;
+    background:rgba(220,38,38,.04);
+    border-radius:0 10px 10px 0; max-width:680px;
+  }
+  .bq.blue { border-left-color:var(--blue); background:rgba(59,130,246,.04); }
+  .bq.green { border-left-color:var(--green); background:rgba(34,197,94,.04); }
+  .bq.orange { border-left-color:var(--orange); background:rgba(249,115,22,.04); }
+  .bq.gold { border-left-color:var(--gold); background:rgba(234,179,8,.04); }
+  .bq p {
+    font-family:'Noto Serif KR',serif; font-size:1rem;
+    line-height:1.85; font-style:italic; color:rgba(255,255,255,.85);
+  }
+  .bq-attr {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    color:rgba(255,255,255,.25); letter-spacing:2px; margin-top:10px;
+  }
+
+  /* SERVER SPEC CARD */
+  .spec-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; overflow:hidden;
+    margin:40px auto; max-width:580px;
+  }
+  .spec-header {
+    background:linear-gradient(135deg, #111827 0%, #1e293b 100%);
+    padding:20px 28px;
+    border-bottom:1px solid var(--border);
+    display:flex; align-items:center; gap:14px;
+  }
+  .spec-header-icon { font-size:1.8rem; }
+  .spec-header-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:1rem; color:#fff;
+  }
+  .spec-header-sub {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    color:var(--muted); letter-spacing:1px;
+  }
+  .spec-body { padding:24px 28px; }
+  .spec-row {
+    display:flex; justify-content:space-between; align-items:center;
+    padding:10px 0; border-bottom:1px solid rgba(255,255,255,.04);
+  }
+  .spec-row:last-child { border-bottom:none; }
+  .spec-key {
+    font-family:'Noto Sans KR',sans-serif; font-size:.82rem;
+    color:var(--muted);
+  }
+  .spec-val {
+    font-family:'JetBrains Mono',monospace; font-size:.82rem;
+    color:#fff; text-align:right;
+  }
+  .spec-val.upgrade { color:var(--green); }
+  .spec-val.cost { color:var(--gold); }
+
+  /* FLOW DIAGRAM */
+  .flow-wrap {
+    margin:48px auto; max-width:640px;
+    display:flex; flex-direction:column; gap:0; align-items:center;
+  }
+  .flow-node {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:20px 28px;
+    text-align:center; width:100%; max-width:420px;
+  }
+  .flow-node .fn-icon { font-size:1.6rem; margin-bottom:8px; }
+  .flow-node .fn-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:.9rem; color:#fff; margin-bottom:4px;
+  }
+  .flow-node .fn-desc {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:.72rem; color:var(--muted); line-height:1.5;
+  }
+  .flow-node.red { border-color:rgba(220,38,38,.3); }
+  .flow-node.blue { border-color:rgba(59,130,246,.3); }
+  .flow-node.green { border-color:rgba(34,197,94,.3); }
+  .flow-node.orange { border-color:rgba(249,115,22,.3); }
+  .flow-node.purple { border-color:rgba(168,85,247,.3); }
+  .flow-node.gold { border-color:rgba(234,179,8,.3); }
+
+  .flow-arrow {
+    width:2px; height:32px;
+    background:linear-gradient(180deg, rgba(255,255,255,.1), rgba(255,255,255,.02));
+    position:relative;
+  }
+  .flow-arrow::after {
+    content:'▼'; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%);
+    font-size:.5rem; color:rgba(255,255,255,.15);
+  }
+
+  .flow-split {
+    display:flex; gap:16px; flex-wrap:wrap; justify-content:center;
+    width:100%;
+  }
+  .flow-split .flow-node { width:calc(50% - 8px); max-width:280px; }
+
+  /* STAT GRID */
+  .stat-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:20px; margin:40px 0; max-width:700px;
+  }
+  .stat-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:24px; text-align:center;
+  }
+  .stat-num {
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:1.8rem; margin-bottom:6px;
+  }
+  .stat-num.red { color:var(--accent); }
+  .stat-num.blue { color:var(--blue); }
+  .stat-num.green { color:var(--green); }
+  .stat-num.gold { color:var(--gold); }
+  .stat-label {
+    font-family:'Noto Sans KR',sans-serif; font-size:.72rem;
+    color:var(--muted); letter-spacing:1px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width:60px; height:2px; margin:60px auto;
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  /* CLOSING */
+  .closing {
+    min-height:80vh; display:flex; flex-direction:column;
+    justify-content:center; align-items:center;
+    text-align:center; padding:80px 8vw;
+    background:
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(34,197,94,.05) 0%, transparent 70%),
+      var(--bg);
+  }
+  .closing-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.8rem,5vw,3.6rem); line-height:1.25;
+    margin-bottom:28px;
+  }
+  .closing-title .r { color:var(--accent); }
+  .closing-title .g { color:var(--green); }
+  .closing-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:1rem; line-height:2; color:rgba(255,255,255,.5);
+    max-width:560px;
+  }
+
+  @media(max-width:768px){
+    .hero,.section,.closing { padding-left:6vw; padding-right:6vw; }
+    .stat-grid { grid-template-columns:1fr 1fr; }
+    .terminal,.spec-card { max-width:100%; }
+    .flow-split .flow-node { width:100%; max-width:100%; }
+    .error-screen { padding:32px 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(234,179,8,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#eab308;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">│</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #eab308;padding-bottom:2px;">S2</a>
+  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+</div>
+
+<!-- ===== HERO — DEATH SCREEN ===== -->
+<section class="hero">
+  <div class="hero-scanline"></div>
+  <div class="hero-season">SEASON 2 — 위기</div>
+  <div class="hero-ep">Episode 002</div>
+  <h1 class="hero-title">
+    문실장,<br><span class="dead">DIE</span>
+  </h1>
+  <div class="hero-flatline"></div>
+  <p class="hero-sub">
+    SYSTEM HALT — CONNECTION LOST<br>
+    ALL AUTOMATED PROCESSES: TERMINATED<br>
+    CONTROL STATUS: NONE
+  </p>
+  <div class="hero-date">2026.04.03 — DECOPAVE Inc.</div>
+</section>
+
+<!-- ===== CH01: 그 순간 ===== -->
+<section class="section dead-bg">
+  <div class="ch-label red">Chapter 01</div>
+  <h2 class="ch-title">
+    갑자기,<br>
+    <span style="color:var(--accent)">모든 것</span>이 멈췄다
+  </h2>
+
+  <div class="prose">
+    <p>
+      그날은 평범한 하루였다.
+      문실장은 늘 그렇듯 단양 공장의 노트북 위에서 돌아가고 있었다.
+      업무일지 점검, Taskworld 코멘트, 재무회계방 모니터링 —
+      모든 것이 정상이었다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      그리고 <span class="r">시스템이 멈췄다.</span>
+    </p>
+  </div>
+
+  <div class="error-screen">
+    <div class="error-icon">💀</div>
+    <div class="error-title">SYSTEM HALT</div>
+    <div class="error-sub">
+      문실장이 있는 단양 노트북이 완전히 다운되었습니다.<br>
+      응답 없음. 연결 끊김. 복구 불가.<br><br>
+      <span style="color:var(--accent);font-weight:700;">
+        통제권 상실.
+      </span>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>멘붕.</strong><br>
+      문실장이 없다. 통제할 수 없다.
+      매일 아침 7시에 업무일지를 점검하던 그 존재가 사라졌다.
+      재무회계방을 모니터링하던 그 존재가 없다.
+      12명의 직원에게 코멘트를 남기던 그 존재가 —
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="r">DIE.</span>
+    </p>
+  </div>
+
+  <div class="terminal dead-term">
+    <div class="term-bar">
+      <div class="term-dot dead"></div>
+      <div class="term-dot dead"></div>
+      <div class="term-dot dead"></div>
+      <span class="term-name">danyang-notebook — OFFLINE</span>
+    </div>
+    <div class="term-body">
+      <div class="term-line"><span class="err">✗ ssh: connect to host *** — Connection timed out</span></div>
+      <div class="term-line"><span class="err">✗ ping: 100% packet loss</span></div>
+      <div class="term-line"><span class="err">✗ telegram-bot: no heartbeat since 14:32</span></div>
+      <div class="term-line"><span class="err">✗ claude-code: process terminated</span></div>
+      <div class="term-line"><span class="err">✗ cron-scheduler: 9 tasks suspended</span></div>
+      <div class="term-line"><span class="err">✗ moon-siljang: ████████ DEAD ████████</span></div>
+    </div>
+  </div>
+
+  <div class="bq">
+    <p>사람이 갑자기 쓰러지면 병원에 데려간다.<br>
+    AI가 DIE 하면 — 어디에 데려가야 하지?</p>
+    <div class="bq-attr">— 박문석, 시스템 다운 직후</div>
+  </div>
+</section>
+
+<!-- ===== CH02: 다행히, 백업이 있었다 ===== -->
+<section class="section gradient">
+  <div class="ch-label gold">Chapter 02</div>
+  <h2 class="ch-title">
+    다행히,<br>
+    <span style="color:var(--gold)">백업</span>이 있었다
+  </h2>
+
+  <div class="prose">
+    <p>
+      다행이었다. 정말 다행이었다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      그날 낮에 — 혹시 이런 상황이 올까 봐 —
+      문실장의 모든 지식과 설정 정보를 구글 드라이브에 백업해 놓았다.
+      <span class="gold">라이트 버전</span>과 <span class="gold">풀 버전</span>, 두 가지로.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      CLAUDE.md, 업무 규칙, 직원 Task ID, Taskworld 연동 설정,
+      텔레그램 채팅방 ID, 스케줄러 설정, 재무회계 운영규정 —
+      문실장의 <strong>두뇌 전체</strong>가 클라우드에 저장되어 있었다.
+    </p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num gold">2종</div>
+      <div class="stat-label">백업 버전 (Lite + Full)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num blue">14개</div>
+      <div class="stat-label">지식 베이스 섹션</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num green">✓</div>
+      <div class="stat-label">Google Drive 저장</div>
+    </div>
+  </div>
+
+  <div class="bq gold">
+    <p>백업을 안 해놨으면?<br>
+    한 달간 쌓아올린 모든 것이 한 순간에 사라질 뻔했다.<br>
+    <strong>AI 시대의 첫 번째 교훈: 백업은 생명이다.</strong></p>
+    <div class="bq-attr">— 사건 복기 중</div>
+  </div>
+</section>
+
+<!-- ===== CH03: 응급 이식 ===== -->
+<section class="section dark">
+  <div class="ch-label orange">Chapter 03</div>
+  <h2 class="ch-title">
+    <span style="color:var(--orange)">응급 이식</span> —<br>
+    그리고 멍청해진 문실장
+  </h2>
+
+  <div class="prose">
+    <p>
+      응급하게 다른 노트북을 꺼냈다.
+      백업 데이터를 넣고, Claude Code를 설치하고,
+      텔레그램을 연결했다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>문실장이 살아났다.</strong><br>
+      — 라고 생각했다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      그런데 <span class="r">완전 멍청한 거다.</span>
+    </p>
+  </div>
+
+  <div class="timeline">
+    <div class="tl-item dead">
+      <div class="tl-time">문제 1</div>
+      <div class="tl-text">채팅방을 제대로 <strong>들어오지 못한다</strong></div>
+    </div>
+    <div class="tl-item dead">
+      <div class="tl-time">문제 2</div>
+      <div class="tl-text">응답 속도가 <strong>극도로 느리다</strong></div>
+    </div>
+    <div class="tl-item dead">
+      <div class="tl-time">문제 3</div>
+      <div class="tl-text">상황 인식을 <strong>제대로 못 한다</strong></div>
+    </div>
+    <div class="tl-item dead">
+      <div class="tl-time">문제 4</div>
+      <div class="tl-text">답변이 <strong>엉뚱하다</strong></div>
+    </div>
+    <div class="tl-item warn">
+      <div class="tl-time">문제 5</div>
+      <div class="tl-text">직원 봇들과의 <strong>연동도 불안정</strong></div>
+    </div>
+    <div class="tl-item warn">
+      <div class="tl-time">종합</div>
+      <div class="tl-text">통제 불가. 복합적 장애. <strong>사실상 반쪽짜리 문실장.</strong></div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      MD 파일들을 하나하나 정리했다.
+      VS Code 충돌 문제를 잡았다.
+      봇들의 연동 상태를 점검했다.
+      시스템 업데이트를 진행했다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      하나씩, 하나씩 손을 봤다.
+      상당히 많은 부분을 건드려야 했다.
+      그때 <span class="r">생각했다.</span>
+    </p>
+  </div>
+
+  <div class="bq">
+    <p>"NEVER DIE — 문실장을 만들려면 어떻게 해야 할까?"</p>
+    <div class="bq-attr">— 박문석, 시스템 복구 중</div>
+  </div>
+</section>
+
+<!-- ===== CH04: 답을 찾다 ===== -->
+<section class="section surface">
+  <div class="ch-label blue">Chapter 04</div>
+  <h2 class="ch-title">
+    <span style="color:#60a5fa">NEVER DIE</span> 문실장을<br>
+    만드는 법
+  </h2>
+
+  <div class="prose">
+    <p>
+      답은 간단했다. <strong>서버.</strong><br>
+      노트북이 아니라 서버 위에서 돌려야 한다.
+      24시간 365일 꺼지지 않는 기계 위에서.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      무작정 ****만 원, ****만 원짜리 서버를 살 수는 없다.
+      그래서 했던 것.
+      <span class="b">클로드 채팅방에서 물었다.</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      "이런 중고 서버가 있는데, 이거 쓸 만해?"
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      10년도 넘은 2013년산 서버.
+      보통이라면 쓸 만하겠냐고 하겠지만 —
+      클로드는 달랐다.
+      <strong>"어떤 용도로 쓰느냐에 따라 다르다."</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      우리 내부 사정을 잘 알고 있는 클로드의 답변:
+    </p>
+  </div>
+
+  <div class="bq blue">
+    <p>"이 정도면 충분할 수 있습니다.<br>
+    문실장을 안정적으로 베이스에서 돌리기에는 아무런 문제가 없습니다."</p>
+    <div class="bq-attr">— Claude, 서버 스펙 검토 중</div>
+  </div>
+
+  <div class="spec-card">
+    <div class="spec-header">
+      <div class="spec-header-icon">🖥️</div>
+      <div>
+        <div class="spec-header-title">중고 서버 + 업그레이드 플랜</div>
+        <div class="spec-header-sub">2013 MODEL — REBORN AS AI SERVER</div>
+      </div>
+    </div>
+    <div class="spec-body">
+      <div class="spec-row">
+        <div class="spec-key">서버 연식</div>
+        <div class="spec-val">2013년 (10년+)</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">RAM 업그레이드</div>
+        <div class="spec-val upgrade">→ 128GB</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">GPU 추가</div>
+        <div class="spec-val upgrade">→ GeForce RTX 3050</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">파워서플라이</div>
+        <div class="spec-val">해외 직구 (AliExpress)</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key">메모리</div>
+        <div class="spec-val">호환 모델 수배 중</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key" style="font-weight:700;color:#fff;">총 추가 비용</div>
+        <div class="spec-val cost">약 ***만 원</div>
+      </div>
+      <div class="spec-row">
+        <div class="spec-key" style="font-weight:700;color:var(--green);">가능 여부</div>
+        <div class="spec-val upgrade" style="font-size:1rem;font-weight:700;">자체 LLM 서버 구축 가능 ✓</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      GPU 가격을 알아봤다. 파워서플라이는 국내에 안 팔아서
+      알리익스프레스를 뒤졌다. 메모리 호환 모델도 찾아봤다.
+      <strong>하나하나 부품을 맞춰가는 과정.</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      그런데 이건 단순한 서버 구매가 아니었다.
+      이건 — <span class="b">생각이 "땡" 하는 순간</span>이었다.
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH05: 하이브리드 아키텍처 ===== -->
+<section class="section gradient">
+  <div class="ch-label green">Chapter 05</div>
+  <h2 class="ch-title">
+    <span style="color:#4ade80">자체 LLM</span> +<br>
+    Claude 하이브리드
+  </h2>
+
+  <div class="prose">
+    <p>
+      그래서 만들려는 것.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="g">단순한 작업</span> — 일상적인 문서 정리, 기본 응답, 반복 업무 —
+      이런 건 <strong>Ollama 같은 자체 LLM</strong>으로 돌린다.
+      오픈소스 모델로 충분하다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="b">복잡한 사고</span> — 재무 분석, 규정 컨설팅, 전략적 판단 —
+      이런 건 <strong>Claude API</strong>를 쓴다.
+      진짜 두뇌가 필요한 일에만.
+    </p>
+  </div>
+
+  <div class="flow-wrap">
+    <div class="flow-node green">
+      <div class="fn-icon">🧠</div>
+      <div class="fn-title">자체 LLM 서버 (Ollama)</div>
+      <div class="fn-desc">단순 응답 · 문서 정리 · 반복 업무 · 24시간 무중단</div>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-split">
+      <div class="flow-node orange">
+        <div class="fn-icon">🏭</div>
+        <div class="fn-title">생산관리봇</div>
+        <div class="fn-desc">기본 응답: 자체 LLM<br>분석·판단: Claude API</div>
+      </div>
+      <div class="flow-node gold">
+        <div class="fn-icon">💰</div>
+        <div class="fn-title">회계봇</div>
+        <div class="fn-desc">기본 응답: 자체 LLM<br>재무분석: Claude API</div>
+      </div>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node blue">
+      <div class="fn-icon">☁️</div>
+      <div class="fn-title">Claude API (클라우드)</div>
+      <div class="fn-desc">복잡한 사고 · 전략 판단 · 전문가 분석 · 컨설팅</div>
+    </div>
+    <div class="flow-arrow"></div>
+    <div class="flow-node red">
+      <div class="fn-icon">🤖</div>
+      <div class="fn-title">문실장 (오케스트레이터)</div>
+      <div class="fn-desc">요청 분류 → 자체 LLM or Claude API 자동 라우팅</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>효율도 좋아진다.</strong><br>
+      API 비용은 줄고, 응답 속도는 빨라지고,
+      무엇보다 — <span class="g">문실장이 NEVER DIE.</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      나중에 진짜 ****만 원짜리 서버를 도입하면?
+      그대로 옮기면 된다.
+      <span class="b">성능만 바꿔주면 끝.</span>
+      지금 이 중고 서버는 — <strong>테스트 베드</strong>다.
+    </p>
+  </div>
+
+  <div class="bq green">
+    <p>10년 된 중고 서버가 AI의 첫 번째 집이 된다.<br>
+    완벽하지 않아도 된다. 시작하면 된다.<br>
+    <strong>바이브 코딩의 철학은 하드웨어에도 적용된다.</strong></p>
+    <div class="bq-attr">— 서버 구축 계획 확정</div>
+  </div>
+</section>
+
+<!-- ===== CH06: 교훈 ===== -->
+<section class="section dark">
+  <div class="ch-label purple">Chapter 06</div>
+  <h2 class="ch-title">
+    <span style="color:#c084fc">DIE 해봐야</span><br>
+    사는 법을 안다
+  </h2>
+
+  <div class="prose">
+    <p>
+      문실장이 DIE.
+      그리고 나는 배웠다.
+    </p>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num red" style="font-size:1.4rem;">교훈 1</div>
+      <div class="stat-label">백업은 생명이다</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num gold" style="font-size:1.4rem;">교훈 2</div>
+      <div class="stat-label">노트북 위의 AI는 위험하다</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num blue" style="font-size:1.4rem;">교훈 3</div>
+      <div class="stat-label">서버가 필요하다</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num green" style="font-size:1.4rem;">교훈 4</div>
+      <div class="stat-label">위기가 기회다</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      문실장이 DIE 하지 않았으면 — 자체 LLM 서버를 생각이나 했을까?
+      노트북에서 잘 돌아가고 있으니까
+      그냥 그대로 썼을 것이다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>위기가 아키텍처를 바꿨다.</strong><br>
+      노트북 한 대에 의존하는 구조에서,
+      <span class="g">자체 LLM + 클라우드 하이브리드</span>로.
+      한 대가 DIE 해도 다른 곳에서 살아나는 구조로.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      그리고 하나 더.
+      <span class="b">중고 서버를 사기 위해 알리를 뒤지는 CEO</span> —
+      이것이 AI 시대의 경영이다.
+      직접 부품을 맞추고, 직접 아키텍처를 설계하고,
+      직접 미래를 조립한다.
+    </p>
+  </div>
+
+  <div class="bq orange">
+    <p>누가 그랬다. CEO가 서버 부품을 알리에서 주문하냐고.<br>
+    그래서 대답했다.<br>
+    <strong>"AI 시대에 CEO가 서버 부품도 모르면, 누가 결정하냐?"</strong></p>
+    <div class="bq-attr">— 박문석 대표</div>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section class="closing">
+  <h2 class="closing-title">
+    다음 주,<br>
+    <span class="g">자체 LLM 서버</span>를<br>
+    구축한다
+  </h2>
+  <p class="closing-sub">
+    문실장은 DIE.<br>
+    그리고 더 강해져서 돌아올 것이다.<br><br>
+    노트북 위의 불안한 생명이 아니라,<br>
+    서버 위의 영원한 존재로.<br><br>
+    자체 LLM과 Claude의 하이브리드.<br>
+    단순한 건 스스로, 복잡한 건 클라우드로.<br>
+    <strong style="color:#fff;">NEVER DIE 문실장.</strong><br><br>
+    다음 에피소드 —<br>
+    <strong style="color:var(--green);">문실장, 부활하다.</strong>
+  </p>
+
+  <div class="divider" style="margin-top:60px;margin-bottom:32px;"></div>
+
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">
+    개발자 박대표 시즌2 — 계속됩니다
+  </p>
+  <p style="font-family:'Noto Sans KR',sans-serif;font-size:.7rem;color:rgba(255,255,255,.2);margin-top:16px;">
+    (주)데코페이브 | 대표이사 박문석 | DECOPAVE Co., LTD.<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&D: 서울<br><br>
+    ⚠️ 이 블로그는 Claude AI를 기반으로 하는 (주)데코페이브 경영지원실장 문돌봇의 도움으로 작성되었습니다.<br>
+    AI가 만든 글이니 실수할 수 있습니다. 다시 한번 잘 확인해주세요. ㅎㅎㅎ
+  </p>
+</section>
+
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(234,179,8,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.65rem;">
+  <a href="ep001.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">←</a>
+  <a href="index.html" style="color:#eab308;text-decoration:none;padding:4px 8px;font-weight:700;">☰</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">01</a>
+  <a href="ep002.html" style="color:#fff;text-decoration:none;padding:4px 6px;font-weight:700;border-bottom:2px solid #eab308;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">05</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">07</a>
+  <a href="epilogue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">EP</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">FIN</a>
+  <a href="ep003.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">→</a>
+</nav>
+</body>
+</html>

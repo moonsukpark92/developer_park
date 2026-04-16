@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 시즌2 #004 — 깃허브라는 세상</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  :root {
+    --bg: #04060d;
+    --surface: #0d1017;
+    --accent: #8b5cf6;
+    --accent-dim: #5b21b6;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --blue: #3b82f6;
+    --teal: #14b8a6;
+    --orange: #f97316;
+    --pink: #ec4899;
+    --layer1: #8b5cf6;
+    --layer2: #3b82f6;
+    --layer3: #22c55e;
+    --layer4: #f59e0b;
+    --layer5: #ef4444;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: rgba(139,92,246,.1);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { background:var(--bg); color:var(--text); font-family:'Noto Serif KR',serif; overflow-x:hidden; padding-top:40px; padding-bottom:50px; }
+
+  @keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
+  @keyframes pulseGlow { 0%,100%{box-shadow:0 0 20px rgba(139,92,246,.1)} 50%{box-shadow:0 0 50px rgba(139,92,246,.2)} }
+  @keyframes starPop { 0%{transform:scale(0) rotate(-30deg);opacity:0} 50%{transform:scale(1.3) rotate(10deg);opacity:1} 100%{transform:scale(1) rotate(0deg);opacity:1} }
+  @keyframes countUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:80px 8vw;
+    position:relative; overflow:hidden;
+  }
+
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background:
+      radial-gradient(ellipse 50% 50% at 20% 40%, rgba(139,92,246,.07) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 80% 60%, rgba(59,130,246,.05) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 30% at 50% 80%, rgba(236,72,153,.04) 0%, transparent 60%);
+  }
+
+  .hero-season {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:6px; color:var(--accent-dim); text-transform:uppercase;
+    margin-bottom:12px; opacity:0; animation:fadeUp .7s .1s forwards;
+  }
+
+  .hero-ep {
+    font-family:'JetBrains Mono',monospace; font-size:.65rem;
+    letter-spacing:5px; color:var(--accent); text-transform:uppercase;
+    margin-bottom:36px; opacity:0; animation:fadeUp .7s .3s forwards;
+  }
+
+  .hero-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(2.2rem,6vw,5.2rem); line-height:1.1;
+    opacity:0; animation:fadeUp .7s .5s forwards; max-width:800px;
+  }
+  .hero-title .v { color:var(--accent); }
+  .hero-title .p { color:var(--pink); }
+
+  .hero-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:clamp(.85rem,1.5vw,1.05rem); line-height:2;
+    color:rgba(255,255,255,.45); margin-top:32px; max-width:580px;
+    opacity:0; animation:fadeUp .7s .7s forwards;
+  }
+
+  .hero-date {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:3px; color:var(--muted);
+    margin-top:48px; opacity:0; animation:fadeUp .7s .9s forwards;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section { padding:100px 8vw; position:relative; }
+  .section.dark { background:var(--bg); }
+  .section.surface { background:var(--surface); }
+  .section.gradient { background:linear-gradient(180deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%); }
+
+  .ch-label {
+    font-family:'JetBrains Mono',monospace; font-size:.58rem;
+    letter-spacing:4px; text-transform:uppercase; margin-bottom:14px;
+  }
+  .ch-label.purple { color:var(--accent); }
+  .ch-label.green { color:var(--green); }
+  .ch-label.amber { color:var(--amber); }
+  .ch-label.blue { color:var(--blue); }
+  .ch-label.orange { color:var(--orange); }
+  .ch-label.teal { color:var(--teal); }
+
+  .ch-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.6rem,4vw,3rem); line-height:1.2;
+    margin-bottom:40px; max-width:700px;
+  }
+
+  .prose {
+    font-family:'Noto Serif KR',serif; font-weight:300;
+    font-size:1.02rem; line-height:2.1;
+    color:rgba(255,255,255,.72); max-width:680px;
+  }
+  .prose strong { color:#fff; font-weight:700; }
+  .prose .v { color:var(--accent); font-weight:700; }
+  .prose .g { color:var(--green); font-weight:700; }
+  .prose .a { color:var(--amber); font-weight:700; }
+  .prose .b { color:#60a5fa; font-weight:700; }
+  .prose .r { color:var(--red); font-weight:700; }
+  .prose .o { color:var(--orange); font-weight:700; }
+  .prose .p { color:var(--pink); font-weight:700; }
+  .prose + .prose { margin-top:28px; }
+
+  /* GITHUB CARD */
+  .gh-card {
+    background:linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+    border:1px solid rgba(139,92,246,.15);
+    border-radius:16px; overflow:hidden;
+    margin:40px auto; max-width:560px;
+    animation:pulseGlow 5s infinite;
+  }
+  .gh-header {
+    padding:20px 24px; display:flex; align-items:center; gap:14px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .gh-octo {
+    width:42px; height:42px; border-radius:50%; background:#f0f6fc;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.5rem;
+  }
+  .gh-repo-name {
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:1rem; color:var(--accent);
+  }
+  .gh-repo-sub {
+    font-family:'Noto Sans KR',sans-serif; font-size:.72rem;
+    color:var(--muted); margin-top:2px;
+  }
+  .gh-body { padding:20px 24px; }
+  .gh-desc {
+    font-family:'Noto Sans KR',sans-serif; font-size:.88rem;
+    line-height:1.7; color:rgba(255,255,255,.7); margin-bottom:20px;
+  }
+  .gh-stats {
+    display:flex; gap:20px; flex-wrap:wrap;
+  }
+  .gh-stat {
+    display:flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono',monospace; font-size:.78rem;
+  }
+  .gh-stat .icon { font-size:1rem; }
+  .gh-stat.star { color:var(--amber); }
+  .gh-stat.fork { color:var(--muted); }
+  .gh-stat.lang { color:var(--green); }
+  .gh-tags {
+    display:flex; gap:8px; flex-wrap:wrap; margin-top:16px;
+  }
+  .gh-tag {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    padding:4px 10px; border-radius:20px;
+    background:rgba(139,92,246,.1); color:var(--accent);
+    border:1px solid rgba(139,92,246,.2);
+    letter-spacing:1px;
+  }
+
+  /* MATCH METER */
+  .match-wrap {
+    margin:40px auto; max-width:500px; text-align:center;
+  }
+  .match-bar-outer {
+    width:100%; height:32px; border-radius:16px;
+    background:rgba(255,255,255,.05);
+    overflow:hidden; position:relative;
+    border:1px solid rgba(139,92,246,.15);
+  }
+  .match-bar-inner {
+    height:100%; border-radius:16px;
+    background:linear-gradient(90deg, var(--accent-dim), var(--accent), var(--pink));
+    display:flex; align-items:center; justify-content:flex-end; padding-right:14px;
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:.85rem; color:#fff;
+    animation:countUp 1s .5s both;
+  }
+  .match-label {
+    font-family:'Noto Sans KR',sans-serif; font-size:.82rem;
+    color:var(--muted); margin-top:12px;
+  }
+
+  /* TERMINAL */
+  .terminal {
+    background:#0d1117; border:1px solid rgba(255,255,255,.08);
+    border-radius:12px; overflow:hidden;
+    margin:40px auto; max-width:700px;
+    font-family:'JetBrains Mono',monospace;
+  }
+  .term-bar {
+    background:#161b22; padding:10px 16px;
+    display:flex; align-items:center; gap:7px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+  }
+  .term-dot { width:10px; height:10px; border-radius:50%; }
+  .term-dot.r { background:#ff5f57; }
+  .term-dot.y { background:#febc2e; }
+  .term-dot.g { background:#28c840; }
+  .term-name { font-size:.65rem; color:var(--muted); margin-left:auto; letter-spacing:1px; }
+  .term-body { padding:20px; }
+  .term-line { font-size:.78rem; line-height:1.9; color:rgba(255,255,255,.6); }
+  .term-line .prompt { color:var(--green); }
+  .term-line .cmd { color:#fff; }
+  .term-line .comment { color:var(--muted); font-style:italic; }
+  .term-line .success { color:var(--green); }
+  .term-line .warn { color:var(--amber); }
+  .term-line .err { color:var(--red); }
+  .term-line .info { color:var(--blue); }
+  .term-line .purple { color:var(--accent); }
+
+  /* BLOCKQUOTE */
+  .bq {
+    border-left:3px solid var(--accent);
+    padding:20px 28px; margin:36px 0;
+    background:rgba(139,92,246,.04);
+    border-radius:0 10px 10px 0; max-width:680px;
+  }
+  .bq.green { border-left-color:var(--green); background:rgba(34,197,94,.04); }
+  .bq.amber { border-left-color:var(--amber); background:rgba(245,158,11,.04); }
+  .bq.blue { border-left-color:var(--blue); background:rgba(59,130,246,.04); }
+  .bq.orange { border-left-color:var(--orange); background:rgba(249,115,22,.04); }
+  .bq.teal { border-left-color:var(--teal); background:rgba(20,184,166,.04); }
+  .bq p {
+    font-family:'Noto Serif KR',serif; font-size:1rem;
+    line-height:1.85; font-style:italic; color:rgba(255,255,255,.85);
+  }
+  .bq-attr {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    color:rgba(255,255,255,.25); letter-spacing:2px; margin-top:10px;
+  }
+
+  /* ROADMAP */
+  .roadmap {
+    margin:48px 0; max-width:680px;
+    display:grid; grid-template-columns:1fr 1fr; gap:16px;
+  }
+  .rm-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:14px; padding:24px 20px;
+    position:relative; overflow:hidden;
+  }
+  .rm-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+  }
+  .rm-card.w1::before { background:var(--accent); }
+  .rm-card.w2::before { background:var(--blue); }
+  .rm-card.w3::before { background:var(--green); }
+  .rm-card.w4::before { background:var(--orange); }
+  .rm-week {
+    font-family:'JetBrains Mono',monospace; font-size:.6rem;
+    letter-spacing:3px; text-transform:uppercase; margin-bottom:10px;
+  }
+  .rm-card.w1 .rm-week { color:var(--accent); }
+  .rm-card.w2 .rm-week { color:var(--blue); }
+  .rm-card.w3 .rm-week { color:var(--green); }
+  .rm-card.w4 .rm-week { color:var(--orange); }
+  .rm-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:.9rem; color:#fff; margin-bottom:8px;
+  }
+  .rm-desc {
+    font-family:'Noto Sans KR',sans-serif; font-size:.75rem;
+    line-height:1.7; color:var(--muted);
+  }
+
+  /* INSIGHT */
+  .insight {
+    background:linear-gradient(135deg, rgba(139,92,246,.06) 0%, rgba(59,130,246,.04) 100%);
+    border:1px solid rgba(139,92,246,.15);
+    border-radius:14px; padding:32px 28px;
+    margin:40px 0; max-width:680px; position:relative;
+  }
+  .insight::before {
+    content:'💡'; position:absolute; top:-14px; left:24px;
+    font-size:1.4rem; background:var(--bg); padding:0 8px;
+  }
+  .insight-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:.95rem; color:var(--accent); margin-bottom:12px;
+  }
+  .insight p {
+    font-family:'Noto Serif KR',serif; font-size:.95rem;
+    line-height:1.9; color:rgba(255,255,255,.75);
+  }
+
+  /* STAT GRID */
+  .stat-grid {
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:16px; margin:40px 0; max-width:700px;
+  }
+  .stat-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:22px; text-align:center;
+  }
+  .stat-num {
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:1.6rem; margin-bottom:6px;
+  }
+  .stat-num.purple { color:var(--accent); }
+  .stat-num.green { color:var(--green); }
+  .stat-num.amber { color:var(--amber); }
+  .stat-num.blue { color:var(--blue); }
+  .stat-label {
+    font-family:'Noto Sans KR',sans-serif; font-size:.7rem;
+    color:var(--muted); letter-spacing:1px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width:60px; height:2px; margin:60px auto;
+    background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  }
+
+  /* CLOSING */
+  .closing {
+    min-height:80vh; display:flex; flex-direction:column;
+    justify-content:center; align-items:center;
+    text-align:center; padding:80px 8vw;
+    background:
+      radial-gradient(ellipse 50% 40% at 50% 50%, rgba(139,92,246,.05) 0%, transparent 70%),
+      var(--bg);
+  }
+  .closing-title {
+    font-family:'Noto Serif KR',serif; font-weight:900;
+    font-size:clamp(1.8rem,5vw,3.6rem); line-height:1.25;
+    margin-bottom:28px;
+  }
+  .closing-title .v { color:var(--accent); }
+  .closing-title .o { color:var(--orange); }
+  .closing-sub {
+    font-family:'Noto Sans KR',sans-serif; font-weight:300;
+    font-size:1rem; line-height:2; color:rgba(255,255,255,.5);
+    max-width:560px;
+  }
+
+  /* LAYER TABLE */
+  .layer-table {
+    margin:40px 0; max-width:700px; width:100%;
+    border-collapse:separate; border-spacing:0;
+    overflow:hidden; border-radius:14px;
+    border:1px solid var(--border);
+    font-family:'Noto Sans KR',sans-serif;
+  }
+  .layer-table th {
+    background:rgba(139,92,246,.1); padding:14px 18px;
+    font-size:.72rem; font-weight:700; letter-spacing:1px;
+    color:var(--accent); text-align:left;
+    border-bottom:1px solid var(--border);
+  }
+  .layer-table td {
+    padding:14px 18px; font-size:.82rem; line-height:1.6;
+    color:rgba(255,255,255,.7); background:var(--surface);
+    border-bottom:1px solid rgba(255,255,255,.03);
+    vertical-align:top;
+  }
+  .layer-table tr:last-child td { border-bottom:none; }
+  .layer-table .ln { font-family:'JetBrains Mono',monospace; font-weight:700; font-size:.75rem; white-space:nowrap; }
+  .layer-table .ln.l1 { color:var(--layer1); }
+  .layer-table .ln.l2 { color:var(--layer2); }
+  .layer-table .ln.l3 { color:var(--layer3); }
+  .layer-table .ln.l4 { color:var(--layer4); }
+  .layer-table .ln.l5 { color:var(--layer5); }
+  .layer-table .def { font-weight:700; color:#fff; }
+
+  /* LAYER CARDS */
+  .layer-cards {
+    display:flex; flex-direction:column; gap:16px;
+    margin:40px 0; max-width:700px;
+  }
+  .lc {
+    background:var(--surface); border-radius:14px;
+    padding:24px; position:relative; overflow:hidden;
+    border:1px solid var(--border);
+  }
+  .lc::before {
+    content:''; position:absolute; top:0; left:0; bottom:0; width:4px;
+  }
+  .lc.l1::before { background:var(--layer1); }
+  .lc.l2::before { background:var(--layer2); }
+  .lc.l3::before { background:var(--layer3); }
+  .lc.l4::before { background:var(--layer4); }
+  .lc.l5::before { background:var(--layer5); }
+  .lc-head { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .lc-num {
+    font-family:'JetBrains Mono',monospace; font-weight:700;
+    font-size:1.1rem; width:32px; height:32px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .lc.l1 .lc-num { color:var(--layer1); background:rgba(139,92,246,.12); }
+  .lc.l2 .lc-num { color:var(--layer2); background:rgba(59,130,246,.12); }
+  .lc.l3 .lc-num { color:var(--layer3); background:rgba(34,197,94,.12); }
+  .lc.l4 .lc-num { color:var(--layer4); background:rgba(245,158,11,.12); }
+  .lc.l5 .lc-num { color:var(--layer5); background:rgba(239,68,68,.12); }
+  .lc-title {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:.95rem; color:#fff;
+  }
+  .lc-def {
+    font-family:'JetBrains Mono',monospace; font-size:.65rem;
+    color:var(--muted); letter-spacing:1px;
+  }
+  .lc-body {
+    font-family:'Noto Sans KR',sans-serif; font-size:.82rem;
+    line-height:1.7; color:rgba(255,255,255,.6); padding-left:44px;
+  }
+  .lc-tools {
+    display:flex; flex-wrap:wrap; gap:6px; margin-top:10px; padding-left:44px;
+  }
+  .lc-tool {
+    font-family:'JetBrains Mono',monospace; font-size:.58rem;
+    padding:3px 10px; border-radius:20px;
+    border:1px solid rgba(255,255,255,.1);
+    color:rgba(255,255,255,.5); letter-spacing:.5px;
+  }
+
+  /* STACK TABLE */
+  .stack-grid {
+    display:grid; grid-template-columns:1fr 1fr; gap:12px;
+    margin:40px 0; max-width:700px;
+  }
+  .stack-card {
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:18px 20px;
+  }
+  .sc-label {
+    font-family:'JetBrains Mono',monospace; font-size:.58rem;
+    letter-spacing:2px; text-transform:uppercase; margin-bottom:8px;
+  }
+  .sc-label.l1 { color:var(--layer1); }
+  .sc-label.l2 { color:var(--layer2); }
+  .sc-label.l3 { color:var(--layer3); }
+  .sc-label.l4 { color:var(--layer4); }
+  .sc-label.l5 { color:var(--layer5); }
+  .sc-label.hub { color:var(--teal); }
+  .sc-name {
+    font-family:'Noto Sans KR',sans-serif; font-weight:700;
+    font-size:.88rem; color:#fff; margin-bottom:4px;
+  }
+  .sc-why {
+    font-family:'Noto Sans KR',sans-serif; font-size:.72rem;
+    color:var(--muted); line-height:1.5;
+  }
+
+  @media(max-width:768px){
+    .hero,.section,.closing { padding-left:6vw; padding-right:6vw; }
+    .roadmap { grid-template-columns:1fr; }
+    .stat-grid { grid-template-columns:1fr 1fr; }
+    .gh-card,.terminal { max-width:100%; }
+    .stack-grid { grid-template-columns:1fr; }
+    .layer-table { font-size:.75rem; }
+    .layer-table th, .layer-table td { padding:10px 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(234,179,8,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#eab308;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">│</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #eab308;padding-bottom:2px;">S2</a>
+  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+  <div class="hero-season">SEASON 2 — 발견</div>
+  <div class="hero-ep">Episode 004</div>
+  <h1 class="hero-title">
+    <span class="v">깃허브</span>라는<br>
+    세상을 발견했다
+  </h1>
+  <p class="hero-sub">
+    깃허브? 뭐지?<br>
+    들어가 봤더니 — 엄청난 게 있었다.<br>
+    그리고 그 안에서 나와 똑같은 생각을 하는 사람을 만났다.
+  </p>
+  <div class="hero-date">2026.04.04 — DECOPAVE Inc.</div>
+</section>
+
+<!-- ===== CH01: 깃허브란? ===== -->
+<section class="section gradient">
+  <div class="ch-label purple">Chapter 01</div>
+  <h2 class="ch-title">
+    <span style="color:var(--accent)">깃허브?</span><br>
+    뭐지?
+  </h2>
+
+  <div class="prose">
+    <p>
+      깃허브가 뭔지 몰랐다.
+      <strong>깃허브?</strong> 뭐지?
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      사람들이 깃허브, 깃허브 하길래
+      들어가 봤더니 —
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="v">엄청난 게 있었다.</span>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      프로그램 소스를 <strong>공개</strong>하고,
+      <strong>공유</strong>하고,
+      거기에 <strong>댓글</strong>을 달고,
+      블로그처럼 운영된다.
+      그 안에 태그가 있고, 스타가 있고 —
+    </p>
+  </div>
+
+  <div class="bq">
+    <p>엄청난 곳이다.<br>
+    지식이 공유되고, 세상의 모든 것을 그냥 푸는 오픈소스들이다.<br>
+    <strong>어마어마했다. 너무 재밌다.</strong></p>
+    <div class="bq-attr">— 깃허브 첫 방문 소감</div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-num purple">∞</div>
+      <div class="stat-label">오픈소스 프로젝트</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num green">₩0</div>
+      <div class="stat-label">소스코드 비용</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num amber">⭐</div>
+      <div class="stat-label">깃허브 스타 시스템</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num blue">🌍</div>
+      <div class="stat-label">전 세계 개발자 참여</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CH02: Paperclip 발견 ===== -->
+<section class="section dark">
+  <div class="ch-label amber">Chapter 02</div>
+  <h2 class="ch-title">
+    그 안에서<br>
+    <span style="color:var(--amber)">하나</span>를 찾았다
+  </h2>
+
+  <div class="prose">
+    <p>
+      내가 그 안에서 하나를 찾았다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="a">Paperclip.</span><br>
+      누군가가 MIT 오픈소스로 올려놓았고,
+      3월 초에 공개됐고,
+      수만 조회수를 기록하며 깃허브의 ⭐ 스타를 받고 있는 프로젝트.
+    </p>
+  </div>
+
+  <div class="gh-card">
+    <div class="gh-header">
+      <div class="gh-octo">📌</div>
+      <div>
+        <div class="gh-repo-name">Paperclip</div>
+        <div class="gh-repo-sub">AI 에이전트 팀으로 비즈니스를 운영하는 플랫폼</div>
+      </div>
+    </div>
+    <div class="gh-body">
+      <div class="gh-desc">
+        Node.js 서버와 React UI로 AI 에이전트 팀을 오케스트레이션하여
+        비즈니스를 운영하는 플랫폼. 조직도 모델링, 목표 계층,
+        예산 통제, 감사 로그. <strong>MIT 라이선스 오픈소스.</strong>
+      </div>
+      <div class="gh-stats">
+        <div class="gh-stat star"><span class="icon">⭐</span> 수만+</div>
+        <div class="gh-stat fork"><span class="icon">🍴</span> MIT License</div>
+        <div class="gh-stat lang"><span class="icon">●</span> Node.js + React</div>
+      </div>
+      <div class="gh-tags">
+        <span class="gh-tag">AI-AGENT</span>
+        <span class="gh-tag">ORCHESTRATION</span>
+        <span class="gh-tag">ORG-MODELING</span>
+        <span class="gh-tag">AUDIT-LOG</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>AI 에이전트들이 회사를 운영하는 시스템.</strong><br>
+      CEO 에이전트가 미션을 받아 전략적 목표로 분해하고,
+      직속 보고자에게 위임하고,
+      결과를 추적하는 — 플랫폼의 소스코드.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      소스코드를 받았다.
+      그리고 <span class="b">클로드에게 분석을 시켰다.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH03: 70% 일치 ===== -->
+<section class="section surface">
+  <div class="ch-label green">Chapter 03</div>
+  <h2 class="ch-title">
+    <span style="color:var(--green)">70%</span> 이상이<br>
+    지금 내가 하는 것과 같다
+  </h2>
+
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="term-dot r"></div>
+      <div class="term-dot y"></div>
+      <div class="term-dot g"></div>
+      <span class="term-name">claude.ai — source code analysis</span>
+    </div>
+    <div class="term-body">
+      <div class="term-line"><span class="info">→ Paperclip 소스코드 분석 중...</span></div>
+      <div class="term-line"><span class="info">→ DECOHUB 아키텍처와 비교 중...</span></div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="purple">▶ 분석 결과:</span></div>
+      <div class="term-line"><span class="success">✓ 에이전트 오케스트레이션 — 일치</span></div>
+      <div class="term-line"><span class="success">✓ 업무 배분 및 추적 — 일치</span></div>
+      <div class="term-line"><span class="success">✓ 직원-AI 협업 구조 — 일치</span></div>
+      <div class="term-line"><span class="success">✓ 자동화 파이프라인 — 일치</span></div>
+      <div class="term-line"><span class="success">✓ 모니터링/보고 체계 — 일치</span></div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="warn">⚡ 대표님이 구상하신 DECOHUB과 70% 이상 동일합니다.</span></div>
+    </div>
+  </div>
+
+  <div class="match-wrap">
+    <div class="match-bar-outer">
+      <div class="match-bar-inner" style="width:75%;">~70%+</div>
+    </div>
+    <div class="match-label">Paperclip ↔ DECOHUB 아키텍처 일치율</div>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>세상에.</strong>
+      나랑 똑같은 생각을 하는 사람이 있었다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      업무를 직원에게 주고, 직원의 결과를 추적하고,
+      신뢰가 떨어지면 해결하려고 만든 아이디어들 —
+      이것이 세계 오픈소스 시장에서 <span class="a">엄청난 각광</span>을 받고 있는
+      그 프로젝트 플랫폼의 <strong>80%를 동일한 수준</strong>으로
+      생각하고 만들어 가려 했다는 게 —
+    </p>
+  </div>
+
+  <div class="bq amber">
+    <p>재밌다. 그게 세상이다.<br>
+    세상은 누구나 나 같은 니즈를 갖고 산다.<br>
+    <strong>특히 대한민국의 중소기업은 지금 직면한 문제가 바로 이것이다.</strong></p>
+    <div class="bq-attr">— 박문석 대표, 소스코드 분석 후</div>
+  </div>
+</section>
+
+<!-- ===== CH04: DECOHUB에 이식 ===== -->
+<section class="section gradient">
+  <div class="ch-label blue">Chapter 04</div>
+  <h2 class="ch-title">
+    <span style="color:#60a5fa">DECOHUB</span>에<br>
+    이식할 수 있는가
+  </h2>
+
+  <div class="prose">
+    <p>
+      클로드에게 물었다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      "이 프로그램 소스에서 우리가 가져올 수 있는 것,
+      우리가 배울 수 있는 것에 대해서 분석해라.
+      그리고 <span class="b">개발계획서를 만들어라.</span>"
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      만들었다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      "이걸 DECOHUB에 이식할 수 있겠는가?"
+    </p>
+  </div>
+
+  <div class="terminal">
+    <div class="term-bar">
+      <div class="term-dot r"></div>
+      <div class="term-dot y"></div>
+      <div class="term-dot g"></div>
+      <span class="term-name">claude.ai — feasibility analysis</span>
+    </div>
+    <div class="term-body">
+      <div class="term-line"><span class="purple">▶ DECOHUB 이식 가능성 분석</span></div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="success">성공 확률: 90% 이상</span></div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="comment"># 나머지 10%의 리스크 요인:</span></div>
+      <div class="term-line"><span class="warn">→ 커스터마이징 복잡도</span></div>
+      <div class="term-line"><span class="warn">→ 시스템 통합 과정의 예상치 못한 변수</span></div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="info">💬 "포기하지 마세요."</span></div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      90% 이상의 확률로 할 수 있단다.
+      그러면 실패할 확률은 왜 있느냐 — 물었더니
+      <span class="b">포기하지 말란다.</span>
+    </p>
+  </div>
+
+  <div class="bq blue">
+    <p>나도 포기할 생각이 없다.<br>
+    <strong>실제로 지금 우리 AI 에이전트들이
+    각 분야에서 세팅되고 있다.</strong><br>
+    그들을 가르치고, 함께 고민하고,
+    문제를 어떻게 해결할지를 반복적으로 논의하고 있다.</p>
+    <div class="bq-attr">— 박문석 대표</div>
+  </div>
+</section>
+
+<!-- ===== CH05: 시야가 좁았다 ===== -->
+<section class="section dark">
+  <div class="ch-label orange">Chapter 05</div>
+  <h2 class="ch-title">
+    <span style="color:var(--orange)">시야가 좁았다</span>
+  </h2>
+
+  <div class="prose">
+    <p>
+      Paperclip 하나에 흥분했다.
+      70% 일치. 소스코드 분석. 개발계획서 작성.
+      하지만 클로드가 말했다.
+    </p>
+  </div>
+
+  <div class="bq orange">
+    <p>"맞습니다. 시야가 좁았습니다. 더 넓게 조사하겠습니다."</p>
+    <div class="bq-attr">— Claude, 분석 확장 시작</div>
+  </div>
+
+  <div class="prose">
+    <p>
+      클로드가 전체 생태계를 넓게 뒤졌다.
+      그리고 돌아온 답 —
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <strong>내가 만들려는 건 하나의 프로그램이 아니었다.</strong><br>
+      <span class="v">5개의 서로 다른 기능 레이어</span>가 결합된 시스템이었다.
+      각 레이어마다 참조할 최적의 프로그램이 달랐다.
+    </p>
+  </div>
+
+  <table class="layer-table">
+    <tr>
+      <th>레이어</th>
+      <th>핵심 기능</th>
+      <th>한줄 정의</th>
+    </tr>
+    <tr>
+      <td><span class="ln l1">① 에이전트 오케스트레이션</span></td>
+      <td>AI 에이전트 팀 조직화·위임·조율</td>
+      <td class="def">"AI 직원들의 회사"</td>
+    </tr>
+    <tr>
+      <td><span class="ln l2">② 모니터링 & 옵저버빌리티</span></td>
+      <td>서버 상태, 에이전트 헬스, 이상감지</td>
+      <td class="def">"AI 인프라 관제탑"</td>
+    </tr>
+    <tr>
+      <td><span class="ln l3">③ 프로젝트·태스크 관리</span></td>
+      <td>진행률, 담당자, 일정 추적</td>
+      <td class="def">"AI 포함 프로젝트 보드"</td>
+    </tr>
+    <tr>
+      <td><span class="ln l4">④ 사람-AI 협업 KPI</span></td>
+      <td>직원의 AI 활용도, 성과 측정</td>
+      <td class="def">"인간+AI 성과관리"</td>
+    </tr>
+    <tr>
+      <td><span class="ln l5">⑤ CEO AI (전문경영인 AI)</span></td>
+      <td>종합 판단, 오더 발행, 보고 생성</td>
+      <td class="def">"AI 경영자"</td>
+    </tr>
+  </table>
+
+  <div class="prose">
+    <p>
+      <strong>Paperclip은 레이어 ①의 일부일 뿐이었다.</strong>
+      내가 만들려는 DECOHUB은 — 5개 레이어 전체였다.
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH06: 5개 레이어 탐사 ===== -->
+<section class="section surface">
+  <div class="ch-label purple">Chapter 06</div>
+  <h2 class="ch-title">
+    <span style="color:var(--accent)">5개 레이어</span>,<br>
+    각각의 세계가 있었다
+  </h2>
+
+  <div class="layer-cards">
+    <div class="lc l1">
+      <div class="lc-head">
+        <div class="lc-num">①</div>
+        <div>
+          <div class="lc-title">에이전트 오케스트레이션</div>
+          <div class="lc-def">"여러 AI를 하나의 팀으로 묶는 접착제"</div>
+        </div>
+      </div>
+      <div class="lc-body">
+        Paperclip — Node.js+React, 조직도 모델링, 목표 계층, 예산 통제, 감사 로그 (MIT)<br>
+        CrewAI — Python 기반 역할 모델, 20줄로 시작, FastAPI 호환<br>
+        n8n — 422+ 앱 연동, 텔레그램 통합, 에이전트를 도구로 노출<br>
+        Dify — RAG 지식 베이스, 에이전트 빌더 UI, API 배포<br>
+        LangGraph — 상태 관리, 체크포인팅, 복잡한 의사결정 그래프
+      </div>
+      <div class="lc-tools">
+        <span class="lc-tool">Paperclip</span>
+        <span class="lc-tool">CrewAI</span>
+        <span class="lc-tool">n8n</span>
+        <span class="lc-tool">Dify</span>
+        <span class="lc-tool">LangGraph</span>
+      </div>
+    </div>
+
+    <div class="lc l2">
+      <div class="lc-head">
+        <div class="lc-num">②</div>
+        <div>
+          <div class="lc-title">모니터링 & 옵저버빌리티</div>
+          <div class="lc-def">"각 에이전트가 살아있는지, 비용은 얼마인지"</div>
+        </div>
+      </div>
+      <div class="lc-body">
+        Langfuse — LLM 호출 추적, 토큰 비용, 프롬프트 버전 관리 (오픈소스)<br>
+        도구 호출 단위 추적 — 어떤 API를 언제 호출했는지<br>
+        에이전트 헬스체크, 실행 트레이스, 행동 보고, 보안 이벤트
+      </div>
+      <div class="lc-tools">
+        <span class="lc-tool">Langfuse</span>
+        <span class="lc-tool">LangSmith</span>
+        <span class="lc-tool">Composio</span>
+      </div>
+    </div>
+
+    <div class="lc l3">
+      <div class="lc-head">
+        <div class="lc-num">③</div>
+        <div>
+          <div class="lc-title">프로젝트·태스크 관리</div>
+          <div class="lc-def">"AI와 사람이 같은 태스크 보드에서 일하는 구조"</div>
+        </div>
+      </div>
+      <div class="lc-body">
+        Linear 스타일 이슈 보드 UI — 프로젝트/상태 추적의 UX 표준<br>
+        AI 에이전트와 사람 직원이 동일한 보드에서 할당받는 구조가 핵심
+      </div>
+      <div class="lc-tools">
+        <span class="lc-tool">Linear</span>
+        <span class="lc-tool">DECOHUB 확장</span>
+      </div>
+    </div>
+
+    <div class="lc l4">
+      <div class="lc-head">
+        <div class="lc-num">④</div>
+        <div>
+          <div class="lc-title">사람-AI 협업 KPI</div>
+          <div class="lc-def">"직원이 AI를 얼마나 잘 쓰는지 측정"</div>
+        </div>
+      </div>
+      <div class="lc-body">
+        AI 활용도 + 태스크 완료율 + 협업 품질 측정<br>
+        이미 우리가 만든 평가체계(AI활용 40 + 역량 30 + 학습 30)를 확장
+      </div>
+      <div class="lc-tools">
+        <span class="lc-tool">KPI Blueprint</span>
+        <span class="lc-tool">기존 평가체계</span>
+      </div>
+    </div>
+
+    <div class="lc l5">
+      <div class="lc-head">
+        <div class="lc-num">⑤</div>
+        <div>
+          <div class="lc-title">CEO AI (전문경영인 AI)</div>
+          <div class="lc-def">"①~④의 모든 데이터를 종합 판단"</div>
+        </div>
+      </div>
+      <div class="lc-body">
+        Paperclip CEO Agent — 미션→전략 목표 분해→직속 보고자 위임<br>
+        OrchestrAI — 50~300개 에이전트 운영, 자동 전략 추천 기능<br>
+        하나의 제품이 아니다. ①~④의 모든 데이터를 하나의 LLM에 넣어 종합 판단.<br>
+        <strong style="color:#fff;">문실장을 이 레이어로 진화시키는 것이 가장 현실적인 경로.</strong>
+      </div>
+      <div class="lc-tools">
+        <span class="lc-tool">문실장 진화</span>
+        <span class="lc-tool">n8n + Claude API</span>
+        <span class="lc-tool">Paperclip CEO</span>
+        <span class="lc-tool">OrchestrAI</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bq">
+    <p>Paperclip 하나를 카피하는 것이 아니었다.<br>
+    <strong>5개의 서로 다른 도메인이 결합된 시스템</strong>이고,<br>
+    각 도메인마다 참조할 최적의 프로그램이 달랐다.</p>
+    <div class="bq-attr">— 시야가 넓어진 순간</div>
+  </div>
+</section>
+
+<!-- ===== CH07: 추천 기술 스택 ===== -->
+<section class="section gradient">
+  <div class="ch-label teal">Chapter 07</div>
+  <h2 class="ch-title">
+    <span style="color:var(--teal)">지금 바로</span><br>
+    시작할 수 있는 3가지
+  </h2>
+
+  <div class="stack-grid">
+    <div class="stack-card">
+      <div class="sc-label l1">① 오케스트레이션</div>
+      <div class="sc-name">CrewAI + Paperclip 설계패턴</div>
+      <div class="sc-why">Python 기반 → FastAPI 호환, 조직도 모델링 참조</div>
+    </div>
+    <div class="stack-card">
+      <div class="sc-label l2">② 모니터링</div>
+      <div class="sc-name">Langfuse (오픈소스)</div>
+      <div class="sc-why">LLM 호출 추적, API 비용 관리</div>
+    </div>
+    <div class="stack-card">
+      <div class="sc-label l3">③ 프로젝트 관리</div>
+      <div class="sc-name">Linear 스타일 UI</div>
+      <div class="sc-why">DECOHUB에 태스크 보드 추가</div>
+    </div>
+    <div class="stack-card">
+      <div class="sc-label l4">④ KPI</div>
+      <div class="sc-name">Agentic KPI Blueprint</div>
+      <div class="sc-why">기존 평가체계 + AI 협업 지표</div>
+    </div>
+    <div class="stack-card">
+      <div class="sc-label l5">⑤ CEO AI</div>
+      <div class="sc-name">문실장 진화</div>
+      <div class="sc-why">n8n + Claude API, 이미 11개 시스템 연동</div>
+    </div>
+    <div class="stack-card">
+      <div class="sc-label hub">통합 허브</div>
+      <div class="sc-name">n8n (셀프호스팅)</div>
+      <div class="sc-why">422+ 앱 연동, 텔레그램 통합</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-title">먼저 깔 3가지</div>
+    <p>
+      <strong>1.</strong> n8n 셀프호스팅 → 문실장의 통합 허브로 활용<br>
+      <strong>2.</strong> CrewAI로 부서별 에이전트 크루 구성 → Python이라 바로 시작<br>
+      <strong>3.</strong> Langfuse로 LLM 비용·호출 추적 → DECOHUB 대시보드 연결<br><br>
+      <strong style="color:var(--teal);">이 3개를 먼저 깔고, 나머지를 점진적으로 올리는 것이 가장 현실적이다.</strong>
+    </p>
+  </div>
+</section>
+
+<!-- ===== CH08: 과정이고, 공부고, 스토리다 ===== -->
+<section class="section dark">
+  <div class="ch-label amber">Chapter 08</div>
+  <h2 class="ch-title">
+    이건 <span style="color:var(--amber)">과정</span>이고<br>
+    공부고, 스토리다
+  </h2>
+
+  <div class="prose">
+    <p>
+      문실장 AI가 다운되고,
+      문실장 AI를 다시 세팅하고,
+      다시 가르치고, 자료를 보내고, 정리하고 —
+      그 많은 순간들을 지금 흘려보내고 있다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      하지만 <strong>안다.</strong>
+      지난 두 달 동안 느낀 것.
+      <span class="a">이건 과정이고, 공부고, 스토리다.</span>
+      시간이 지나면 된다는 걸 알기 때문에 —
+      <strong>포기할 일은 없다.</strong>
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      각 에이전트가 <strong>진짜 뭘 하고 있는지</strong> — 확인해야 한다.
+      문자만 띡 보내놓고 할루시네이션으로
+      "하고 있습니다"라고 하지는 않는지.
+      CLAUDE.md에 넣어놨다. <strong>그래도.</strong>
+      체크하고, 확인하고, 만들어 가야 한다.
+    </p>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="r">제대로 만들어 볼 생각이다.</span>
+      서버를 구축하고, 업무를 주고,
+      사람이 직접 이용하도록 만들 것이다.
+    </p>
+  </div>
+
+  <div class="roadmap">
+    <div class="rm-card w1">
+      <div class="rm-week">Week 1</div>
+      <div class="rm-title">서버 구축</div>
+      <div class="rm-desc">중고 서버 세팅 · Linux · n8n 셀프호스팅</div>
+    </div>
+    <div class="rm-card w2">
+      <div class="rm-week">Week 2</div>
+      <div class="rm-title">자체 LLM + Langfuse</div>
+      <div class="rm-desc">Ollama · Claude 하이브리드 · LLM 비용 추적</div>
+    </div>
+    <div class="rm-card w3">
+      <div class="rm-week">Week 3</div>
+      <div class="rm-title">5레이어 이식</div>
+      <div class="rm-desc">CrewAI 에이전트 크루 · DECOHUB 태스크 보드</div>
+    </div>
+    <div class="rm-card w4">
+      <div class="rm-week">Week 4</div>
+      <div class="rm-title">실전 투입</div>
+      <div class="rm-desc">직원 실사용 · KPI 측정 · 문실장 CEO AI 진화</div>
+    </div>
+  </div>
+
+  <div class="prose">
+    <p>
+      <span class="t">4월 한 달은 — 그런 달이 될 것이다.</span>
+    </p>
+  </div>
+</section>
+
+<!-- ===== CLOSING ===== -->
+<section class="closing">
+  <h2 class="closing-title">
+    Paperclip 하나가 아니었다<br>
+    <span class="v">5개의 세계</span>가 있었다
+  </h2>
+  <p class="closing-sub">
+    깃허브라는 세상을 처음 열어봤다.<br>
+    나와 똑같은 고민을 하는 사람을 만났다.<br><br>
+    그리고 시야가 좁았다는 걸 깨달았다.<br>
+    내가 만들려는 건 프로그램 하나가 아니라<br>
+    <strong style="color:#fff;">5개 레이어가 결합된 시스템</strong>이었다.<br><br>
+    오케스트레이션. 모니터링. 프로젝트 관리. KPI. CEO AI.<br>
+    각각의 세계에 참조할 오픈소스가 이미 존재했다.<br><br>
+    <strong style="color:var(--orange);">우리의 방향은 틀리지 않았다.</strong><br>
+    이제 더 넓은 시야로 — 제대로 만든다.
+  </p>
+
+  <div class="divider" style="margin-top:60px;margin-bottom:32px;"></div>
+
+  <p style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">
+    개발자 박대표 시즌2 — 계속됩니다
+  </p>
+  <p style="font-family:'Noto Sans KR',sans-serif;font-size:.7rem;color:rgba(255,255,255,.2);margin-top:16px;">
+    (주)데코페이브 | 대표이사 박문석 | DECOPAVE Co., LTD.<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&D: 서울<br><br>
+    ⚠️ 이 블로그는 Claude AI를 기반으로 하는 (주)데코페이브 경영지원실장 문돌봇의 도움으로 작성되었습니다.<br>
+    AI가 만든 글이니 실수할 수 있습니다. 다시 한번 잘 확인해주세요. ㅎㅎㅎ
+  </p>
+</section>
+
+<nav style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(5,5,8,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(234,179,8,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:.65rem;">
+  <a href="ep003.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">←</a>
+  <a href="index.html" style="color:#eab308;text-decoration:none;padding:4px 8px;font-weight:700;">☰</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">03</a>
+  <a href="ep004.html" style="color:#fff;text-decoration:none;padding:4px 6px;font-weight:700;border-bottom:2px solid #eab308;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">05</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">07</a>
+  <a href="epilogue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">EP</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 6px;">FIN</a>
+  <a href="ep005.html" style="color:#eab308;text-decoration:none;padding:4px 8px;">→</a>
+</nav>
+</body>
+</html>
