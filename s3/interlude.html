@@ -14,8 +14,8 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{background-color:var(--void);color:var(--cream);font-family:"Noto Sans KR",sans-serif;font-weight:300;line-height:1.9;overflow-x:hidden;padding-top:40px;padding-bottom:50px;}
-body::before{display:none;content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:-1;opacity:0.5;}
+body{background-color:var(--void);color:var(--cream);font-family:"Noto Sans KR",sans-serif;font-weight:300;line-height:1.9;overflow-x:hidden;}
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.5;}
 
 /* 진행 바 */
 .dawn-bar{position:fixed;top:0;left:0;height:1px;background:linear-gradient(90deg,transparent,var(--amber),transparent);width:0%;z-index:1000;transition:width 0.1s linear;}
@@ -96,9 +96,8 @@ nav{position:fixed;top:36px;left:0;right:0;z-index:100;padding:1.5rem 6vw;displa
 }
 </style>
 </head>
-<body>
-
-<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+<body style="padding-top:40px;padding-bottom:50px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
   <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
   <span style="color:rgba(255,255,255,.2);">|</span>
   <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
@@ -110,7 +109,7 @@ nav{position:fixed;top:36px;left:0;right:0;z-index:100;padding:1.5rem 6vw;displa
 <nav>
   <span class="nav-logo">개발자 박대표 · S3</span>
   <span class="nav-tag">Interlude</span>
-</div>
+</nav>
 
 <!-- 오프닝 -->
 <div class="opening">
@@ -228,7 +227,6 @@ nav{position:fixed;top:36px;left:0;right:0;z-index:100;padding:1.5rem 6vw;displa
     기술은 계속 바뀌지만 방법론은 남는다.
   </p>
   <div class="closing-series">Decopave Co., Ltd. · 개발자 박대표 · Season 3 · 2026</div>
-  <div style="font-size:0.45rem;color:rgba(240,232,208,.15);margin-top:16px;font-family:'DM Mono',monospace;letter-spacing:0.1em;">© 2025–2026 박문석 / (주)데코페이브. All rights reserved.</div>
 </footer>
 
 <script>
@@ -245,8 +243,8 @@ const obs=new IntersectionObserver((entries)=>{
 },{threshold:0.1,rootMargin:"0px 0px -40px 0px"});
 reveals.forEach(el=>obs.observe(el));
 </script>
-<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
-  <a href="ep005.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;">
+  <a href="ep005.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&larr;</a>
   <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
   <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
   <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
@@ -261,7 +259,7 @@ reveals.forEach(el=>obs.observe(el));
   <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
   <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
   <a href="ep011.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">11</a>
-  <a href="ep006.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+  <a href="ep006.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
 </div>
 </body>
 </html>

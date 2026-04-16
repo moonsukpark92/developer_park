@@ -33,11 +33,9 @@ body {
   font-weight: 300;
   line-height: 1.9;
   overflow-x: hidden;
-  padding-top: 40px;
-  padding-bottom: 50px;
 }
 
-body::before{display:none;
+body::before {
   content: '';
   position: fixed;
   inset: 0;
@@ -415,7 +413,7 @@ p strong { color: var(--cream); font-weight: 700; }
 .resource-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
+  top: 36px; left: 0; right: 0;
   height: 2px;
   opacity: 0;
   transition: opacity 0.3s ease;
@@ -695,9 +693,8 @@ p strong { color: var(--cream); font-weight: 700; }
 </style>
 </head>
 
-<body>
-
-<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+<body style="padding-top:40px;padding-bottom:50px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
   <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
   <span style="color:rgba(255,255,255,.2);">|</span>
   <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
@@ -710,7 +707,7 @@ p strong { color: var(--cream); font-weight: 700; }
 <nav>
   <span class="nav-logo">개발자 박대표 · S3</span>
   <span class="nav-ep">EP006</span>
-</div>
+</nav>
 
 <!-- ────────── HERO ────────── -->
 <div class="hero">
@@ -957,7 +954,6 @@ p strong { color: var(--cream); font-weight: 700; }
   </p>
   <div class="footer-line">Decopave Co., Ltd. · (주)데코페이브 · 2026</div>
   <div class="footer-line" style="font-size:0.45rem;">개발자 박대표 · AI로 회사를 바꾸는 중소기업 대표의 기록</div>
-  <div style="font-size:0.4rem;color:rgba(240,232,208,.15);margin-top:16px;font-family:'DM Mono',monospace;letter-spacing:0.1em;">© 2025–2026 박문석 / (주)데코페이브. All rights reserved.</div>
 </footer>
 
 <script>
@@ -993,8 +989,8 @@ const scoreBlock = document.getElementById('scoreBlock');
 if (scoreBlock) scoreObs.observe(scoreBlock);
 </script>
 
-<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
-  <a href="interlude.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;">
+  <a href="interlude.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&larr;</a>
   <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
   <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
   <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
@@ -1009,7 +1005,7 @@ if (scoreBlock) scoreObs.observe(scoreBlock);
   <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
   <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
   <a href="ep011.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">11</a>
-  <a href="ep007.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+  <a href="ep007.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
 </div>
 </body>
 </html>

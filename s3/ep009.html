@@ -15,8 +15,8 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{background-color:var(--void);color:var(--cream);font-family:"Noto Sans KR",sans-serif;font-weight:300;line-height:1.9;overflow-x:hidden;padding-top:40px;padding-bottom:50px;}
-body::before{display:none;content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:-1;opacity:0.6;}
+body{background-color:var(--void);color:var(--cream);font-family:"Noto Sans KR",sans-serif;font-weight:300;line-height:1.9;overflow-x:hidden;}
+body::before{content:"";position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:0.6;}
 .dawn-bar{position:fixed;top:0;left:0;height:2px;background:linear-gradient(90deg,var(--green),var(--amber),var(--gold));width:0%;z-index:1000;box-shadow:0 0 8px rgba(232,168,58,0.5);transition:width 0.1s linear;}
 nav{position:fixed;top:36px;left:0;right:0;z-index:100;padding:1.5rem 6vw;display:flex;justify-content:space-between;align-items:center;background:linear-gradient(180deg,rgba(4,5,10,0.95) 0%,transparent 100%);backdrop-filter:blur(4px);}
 .nav-logo{font-family:"DM Mono",monospace;font-size:0.6rem;letter-spacing:0.25em;color:var(--amber);text-transform:uppercase;}
@@ -119,8 +119,8 @@ p strong{color:var(--cream);font-weight:700;}
 @media(max-width:600px){nav{padding:1rem 4vw;}.hero{padding:0 4vw 8vh;}section{padding:4rem 0;}.content{padding:0 4vw;}.condition-cards{grid-template-columns:1fr;}.dp-row{grid-template-columns:1fr;}.dp-source{border-right:none;border-bottom:1px solid rgba(240,232,208,0.04);}}
 </style>
 </head>
-<body>
-<div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
+<body style="padding-top:40px;padding-bottom:50px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
   <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
   <span style="color:rgba(255,255,255,.2);">|</span>
   <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
@@ -131,7 +131,7 @@ p strong{color:var(--cream);font-weight:700;}
 <nav>
   <span class="nav-logo">개발자 박대표 &middot; S3</span>
   <span class="nav-ep">EP009</span>
-</div>
+</nav>
 
 <div class="hero">
   <div class="hero-bg"></div>
@@ -235,7 +235,7 @@ p strong{color:var(--cream);font-weight:700;}
         </div>
       </div>
     </div>
-    <p class="reveal">돈을 쓰기 시작했다는 건, 좋은 데이터도 나오기 시작했다는 의미다. 아무것도 나오지 않는 AI는 텅 빈 서비스다. 결과가 나온다는 건 제대로 작동하고 있다는 증거다.</p>
+    <p class="reveal">돈을 쓰기 시작했다는 건, 좋은 데이터도 나오기 시작했다는 의미다. 아무것도 나오지 않는 AI는 탁 빈 서비스다. 결과가 나온다는 건 제대로 작동하고 있다는 증거다.</p>
   </section>
 
   <section>
@@ -283,9 +283,8 @@ p strong{color:var(--cream);font-weight:700;}
   <div class="footer-ep">Season 3 &middot; Episode 009</div>
   <div class="footer-title">다음 에피소드를 기다려 주세요.</div>
   <p class="footer-body">데이터 주권이 확보되면<br>AI는 더 강력해지기 시작합니다.</p>
-  <div class="footer-line">Decopave Co., Ltd. &middot; (주)데코페이브 &middot; 2026</div>
+  <div class="footer-line">Decopave Co., Ltd. &middot; 데코페이브&#x338E; &middot; 2026</div>
   <div class="footer-line" style="font-size:0.45rem;">개발자 박대표 &middot; AI로 회사를 바꾸는 중소기업 대표의 기록</div>
-  <div style="font-size:0.4rem;color:rgba(240,232,208,.15);margin-top:16px;font-family:'DM Mono',monospace;letter-spacing:0.1em;">© 2025–2026 박문석 / (주)데코페이브. All rights reserved.</div>
 </footer>
 
 <script>
@@ -313,8 +312,8 @@ const costObs=new IntersectionObserver((entries)=>{
 const cb=document.getElementById("costBlock");
 if(cb)costObs.observe(cb);
 </script>
-<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'DM Mono',monospace;font-size:.6rem;">
-  <a href="ep008.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8592;</a>
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;">
+  <a href="ep008.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&larr;</a>
   <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
   <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
   <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
@@ -329,7 +328,7 @@ if(cb)costObs.observe(cb);
   <a href="ep009.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">09</a>
   <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
   <a href="ep011.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">11</a>
-  <a href="ep010.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&#8594;</a>
+  <a href="ep010.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
 </div>
 </body>
 </html>
