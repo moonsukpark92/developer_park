@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-09T22:12:35.547Z",
+  "timestamp": "2026-05-09T22:32:29.472Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -19,8 +19,16 @@
     {
       "status": "M",
       "path": ".planning/HANDOFF.json"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep005.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep010.html"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\n02445e9 feat: GoatCounter 방문 통계 활성화 (developerpark)\n006291b feat: Buttondown + Giscus 활성화\n3a647ff feat: 블로그 기능 GitHub 자체 모드 추가 (가입 불필요, 즉시 작동)\n940ecf4 feat: 블로그 기능 추가 (구독 + 댓글 + 통계)\n4cc9c46 fix: 실명 마스킹 정책 수정"
+  "context_notes": "Recent commits:\n1ecdc06 feat: S3 EP011 교체 + EP012 1부/2부 + Epilogue 02 추가 (4편)\n02445e9 feat: GoatCounter 방문 통계 활성화 (developerpark)\n006291b feat: Buttondown + Giscus 활성화\n3a647ff feat: 블로그 기능 GitHub 자체 모드 추가 (가입 불필요, 즉시 작동)\n940ecf4 feat: 블로그 기능 추가 (구독 + 댓글 + 통계)"
 }
