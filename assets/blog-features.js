@@ -21,12 +21,12 @@ const CONFIG = {
   // ─── 업그레이드 모드 (선택, 비워두면 GitHub 모드로 작동) ───
 
   // 1. 이메일 구독 (https://buttondown.com)
-  buttondown: 'YOUR_BUTTONDOWN_USERNAME',
+  buttondown: 'moonsuk',
 
   // 2. 댓글 (https://giscus.app)
   giscus: {
-    repoId: 'YOUR_GISCUS_REPO_ID',
-    categoryId: 'YOUR_GISCUS_CATEGORY_ID',
+    repoId: 'R_kgDOSD0bmQ',
+    categoryId: 'DIC_kwDOSD0bmc4C8rg5',
   },
 
   // 3. 방문자 통계 (https://www.goatcounter.com)
