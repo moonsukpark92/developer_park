@@ -1,0 +1,16 @@
+# 임시/백업 폴더 (Git에 올리지 않음)
+_inbox/
+_archive/
+
+# 임시 파일
+*.tmp
+*.bak
+*.zip
+
+# OS 파일
+.DS_Store
+Thumbs.db
+
+# 에디터
+.vscode/
+.idea/
