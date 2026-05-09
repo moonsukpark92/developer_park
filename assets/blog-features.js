@@ -30,7 +30,7 @@ const CONFIG = {
   },
 
   // 3. 방문자 통계 (https://www.goatcounter.com)
-  goatcounter: 'YOUR_GOATCOUNTER_CODE',
+  goatcounter: 'developerpark',
 };
 
 (function () {
