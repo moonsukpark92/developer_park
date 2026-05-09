@@ -351,7 +351,8 @@ const obs=new IntersectionObserver((entries)=>{
 },{threshold:0.1,rootMargin:"0px 0px -40px 0px"});
 reveals.forEach(el=>obs.observe(el));
 </script>
-<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;">
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
   <a href="ep007.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&larr;</a>
   <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
   <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
@@ -367,8 +368,12 @@ reveals.forEach(el=>obs.observe(el));
   <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
   <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
   <a href="ep011.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">11</a>
+  <a href="ep012.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">12</a>
+  <a href="ep013.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">13</a>
+  <a href="epilogue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">E2</a>
   <a href="ep009.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
 </div>
+
 <!-- BLOG FEATURES (subscribe + comments + analytics) -->
 <div id="blog-features-mount"></div>
 <script src="../assets/blog-features.js"></script>

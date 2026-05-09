@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP012 2부</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#060809; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#f59e0b; --rose:#fb7185; --green:#34d399;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 55% at 8% 50%,rgba(251,113,133,.09) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 92% 20%,rgba(56,189,248,.05) 0%,transparent 60%),radial-gradient(ellipse 35% 45% at 80% 85%,rgba(52,211,153,.05) 0%,transparent 55%);pointer-events:none;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(251,113,133,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--rose);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.6rem,7vw,6rem);line-height:1.08;max-width:860px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:620px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.b{border-color:rgba(56,189,248,.4);color:var(--accent);background:rgba(56,189,248,.06);}
+.tag.g{border-color:rgba(245,158,11,.4);color:var(--gold);background:rgba(245,158,11,.06);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.tag.r{border-color:rgba(251,113,133,.35);color:var(--rose);background:rgba(251,113,133,.05);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+
+/* SECTION */
+.sec{max-width:860px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--rose);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.b{color:var(--accent);} .label.g{color:var(--gold);} .label.gr{color:var(--green);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.7rem,4vw,2.8rem);line-height:1.2;margin-bottom:32px;}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+
+/* PROSE */
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.75);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.hb{color:var(--accent);font-weight:500;} .hg{color:var(--gold);font-weight:500;}
+.hr{color:var(--rose);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
+
+/* CALLOUT */
+.callout{border-left:3px solid var(--rose);padding:20px 28px;margin:36px 0;background:rgba(251,113,133,.04);border-radius:0 6px 6px 0;}
+.callout.b{border-color:var(--accent);background:rgba(56,189,248,.04);}
+.callout.g{border-color:var(--gold);background:rgba(245,158,11,.04);}
+.callout.gr{border-color:var(--green);background:rgba(52,211,153,.04);}
+.callout p{font-family:var(--serif);font-weight:700;font-size:clamp(1rem,2.2vw,1.35rem);line-height:1.55;color:var(--text);}
+
+/* DANGER GRID */
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin:36px 0;}
+.dcard{background:#0d1117;border:1px solid rgba(251,113,133,.2);border-radius:8px;padding:22px 24px;}
+.dcard.g{border-color:rgba(245,158,11,.2);} .dcard.b{border-color:rgba(56,189,248,.2);}
+.dcard-icon{font-size:1.1rem;margin-bottom:10px;}
+.dcard-title{font-family:var(--sans);font-weight:700;font-size:.88rem;color:var(--rose);margin-bottom:8px;}
+.dcard.g .dcard-title{color:var(--gold);} .dcard.b .dcard-title{color:var(--accent);}
+.dcard-body{font-family:var(--sans);font-weight:300;font-size:.82rem;line-height:1.75;color:rgba(232,230,225,.6);}
+
+/* TERMINAL */
+.term{background:#0a0e14;border:1px solid rgba(251,113,133,.2);border-radius:8px;padding:28px 32px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(251,113,133,.04);border-bottom:1px solid rgba(251,113,133,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-body{margin-top:24px;font-family:var(--mono);font-size:.82rem;line-height:1.9;color:var(--rose);}
+.cmd{color:rgba(232,230,225,.9);} .cmt{color:rgba(232,230,225,.28);} .ok{color:var(--green);} .err{color:var(--rose);} .dim{color:rgba(56,189,248,.7);}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column;margin:36px 0;}
+.fs{display:flex;gap:20px;align-items:flex-start;padding-bottom:24px;position:relative;}
+.fs:last-child{padding-bottom:0;}
+.fn{flex-shrink:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.7rem;font-weight:700;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.35);color:var(--gold);position:relative;z-index:1;}
+.fs.b .fn{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:var(--accent);}
+.fs.gr .fn{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3);color:var(--green);}
+.fl{position:absolute;left:17px;top:36px;bottom:0;width:1px;background:linear-gradient(180deg,rgba(245,158,11,.3) 0%,transparent 100%);}
+.fs.b .fl{background:linear-gradient(180deg,rgba(56,189,248,.25) 0%,transparent 100%);}
+.fs:last-child .fl{display:none;}
+.fc{padding-top:6px;}
+.ft{font-family:var(--sans);font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:6px;}
+.fd{font-family:var(--sans);font-weight:300;font-size:.87rem;line-height:1.75;color:rgba(232,230,225,.6);}
+
+/* INSIGHT */
+.insight{background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.2);border-radius:8px;padding:28px 32px;margin:36px 0;}
+.insight-label{font-family:var(--mono);font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--green);margin-bottom:14px;}
+.insight-body{font-family:var(--serif);font-weight:400;font-size:clamp(1rem,2vw,1.2rem);line-height:1.75;color:var(--text);}
+
+/* STATEMENT */
+.stmt{padding:clamp(80px,12vw,160px) clamp(24px,8vw,100px);background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center;position:relative;overflow:hidden;}
+.stmt::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(52,211,153,.05) 0%,transparent 70%);pointer-events:none;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--green);margin-bottom:32px;position:relative;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.9rem,5vw,4.2rem);line-height:1.15;max-width:820px;margin:0 auto;position:relative;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.85rem,1.4vw,1rem);color:var(--muted);max-width:580px;margin:28px auto 0;line-height:1.9;position:relative;}
+
+/* FOOTER */
+.footer{padding:clamp(60px,8vw,100px) clamp(24px,8vw,100px) clamp(40px,5vw,60px);border-top:1px solid var(--border);display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--muted);}
+.footer-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.4rem,3.5vw,2.4rem);line-height:1.2;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.8rem;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--accent);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;color:rgba(255,255,255,.16);line-height:2;text-transform:uppercase;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+
+
+<!-- HERO -->
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 3 · Episode 012 · 2부</p>
+  <h1 class="hero-title">
+    <span style="color:var(--rose)">이 고비를 넘어야</span><br>
+    제대로 된<br>
+    <span style="color:var(--green)">바이브 엔지니어링이다</span>
+  </h1>
+  <p class="hero-desc">
+    2~3주 하면 "어느 정도 안다"고 느끼는 순간이 온다.<br>
+    바로 그때 터진다 — 멀티 세션 충돌, DB 설계 실수, 깃허브 사고.<br>
+    나도 겪었다. 다 겪는다. 그 이야기를 솔직하게 한다.
+  </p>
+  <div class="hero-tags">
+    <span class="tag r">1인 대형 프로젝트</span>
+    <span class="tag">DB 설계</span>
+    <span class="tag g">계획서</span>
+    <span class="tag b">깃허브</span>
+    <span class="tag">멀티 세션</span>
+    <span class="tag gr">바이브 엔지니어링</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH01 -->
+<section class="sec">
+  <p class="label">Chapter 01</p>
+  <h2 class="sec-title">1인 대형 프로젝트<br>— 이런 문제들이 터진다</h2>
+  <div class="prose">
+    <p>
+      바이브 코딩으로 2~3주 달리면 뭔가 되는 것 같다.<br>
+      근데 <span class="hr">외부 환경에서 여러 사람이 쓰는 소프트웨어를 만들기 시작하면</span> 얘기가 달라진다.
+      주 모듈이 너무 커지고, DB 구조가 처음 설계와 달라지고,
+      세션을 여러 개 열다 보면 서로 같은 코드를 건드려 엉킨다.
+      나도 겪었다. 다들 겪는다.
+    </p>
+  </div>
+  <div class="dgrid">
+    <div class="dcard">
+      <p class="dcard-icon">🔄</p>
+      <p class="dcard-title">멀티 세션 충돌</p>
+      <p class="dcard-body">기다리기 지루해서 세션 여러 개 열었다가 서로 같은 코드를 건드려 엉킨다. 나중에 원인도 모르는 대형사고가 된다.</p>
+    </div>
+    <div class="dcard g">
+      <p class="dcard-icon">🗄️</p>
+      <p class="dcard-title">DB 구조 설계 실수</p>
+      <p class="dcard-body">처음부터 완벽하게 설계 안 하면 나중에 로딩 시간이 폭발한다. 연결 구조가 꼬이면 자료가 다 엉키고, 다시 밀어야 한다.</p>
+    </div>
+    <div class="dcard b">
+      <p class="dcard-icon">⚠️</p>
+      <p class="dcard-title">깃허브 실수 → 코드 증발</p>
+      <p class="dcard-body">로컬과 서버 동기화 안 된 걸 까먹고 잘못 푸시하면 그쪽 베이스로 개발한 게 다 날아간다. 기본 명령어는 반드시 숙지해야 한다.</p>
+    </div>
+    <div class="dcard">
+      <p class="dcard-icon">🧩</p>
+      <p class="dcard-title">예외 규정 누적 → 폭발</p>
+      <p class="dcard-body">간단한 재고장에도 예외 규정 하나씩 추가하다 보면 걷잡을 수 없이 복잡해진다. AI도 원인 찾는 데 한참 걸리고 에너지가 소비된다.</p>
+    </div>
+  </div>
+  <div class="callout">
+    <p>
+      "꼬이게 되면 원인도 모르고<br>
+      AI도 한참 걸린다 — 에너지가 엄청나게 소비된다."
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH02 -->
+<section class="sec">
+  <p class="label g">Chapter 02</p>
+  <h2 class="sec-title">계획서는 살아있어야 한다<br>— 만들고 끝이 아니다</h2>
+  <div class="prose">
+    <p>
+      처음 계획서가 재고장 수준이었다.
+      지금은 업무통합 소프트웨어로 확장됐다.
+      그 <span class="hg">확장되는 스토리 전체가 계획서에 담겨있다.</span>
+    </p>
+    <p>
+      뭔가 생각날 때마다, 작업이 끝날 때마다 — <strong>기존 계획서를 업데이트한다.</strong>
+      그래야 나중에 문제가 생겨도 계획서를 따라 되돌아올 수 있다.
+      계획서 없이 빠르게만 가면 어느 순간 <span class="hr">길을 잃는다.</span>
+    </p>
+    <p>
+      여러 세션을 열어서 작업하다 보면 — 세션끼리 같은 부분을 건드리게 된다.
+      서로 다른 방향으로 고치다 보면 코드가 엉긴다.
+      <strong>이게 사소해 보이지만 프로그램적으로는 대형사고다.</strong>
+    </p>
+  </div>
+  <div class="flow">
+    <div class="fs g">
+      <div class="fn">①</div><div class="fl"></div>
+      <div class="fc">
+        <p class="ft">DB 구조 — 중간에 변화가 올 때마다 반드시 한 번씩 점검</p>
+        <p class="fd">처음에 완벽하지 않아도 된다. 단, 변화가 생길 때마다 구조를 들여다보지 않으면 나중에 되돌릴 수 없는 문제가 생긴다.</p>
+      </div>
+    </div>
+    <div class="fs b">
+      <div class="fn">②</div><div class="fl"></div>
+      <div class="fc">
+        <p class="ft">작업 완료 후 → Claude Code가 개발 일지 자동 작성</p>
+        <p class="fd">세션이 죽어도, 깃허브가 꼬여도 — 일지가 남아있으면 추적된다. AI가 스스로 오늘 뭘 했는지 기록하게 만든다.</p>
+      </div>
+    </div>
+    <div class="fs gr">
+      <div class="fn">③</div>
+      <div class="fc">
+        <p class="ft">개발 일지 → 계획서 업데이트 → 중간 전체 리뷰</p>
+        <p class="fd">계획서가 계속 살아서 보강된다. 중간에 한 번씩 전체를 리뷰 돌리면 방향이 흐트러지지 않는다.</p>
+      </div>
+    </div>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-body">
+      <div class="cmt"># 멀티 세션 사고 — 실제 재현</div>
+      <div class="cmd">Session A: 결제 모듈 수정 중...</div>
+      <div class="cmd">Session B: (동시에) 결제 모듈 DB 스키마 변경...</div>
+      <div class="err">✗ Conflict — 두 세션이 같은 파일을 덮어씀</div>
+      <div class="err">✗ 어느 버전인지 알 수 없음 — 원점 복구 시작</div>
+      <div class="cmt"># 원칙: 세션 하나씩. 완료 후 커밋. 그다음 시작.</div>
+      <div class="ok">✓ 세션 분리 + 섹션별 커밋 → 충돌 없음</div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT 1 -->
+<div class="stmt">
+  <p class="stmt-k">2부 핵심</p>
+  <p class="stmt-t">
+    코드를 공부하지 말고<br>
+    <span style="color:var(--gold)">업무를 더 깊이 이해하라</span>
+  </p>
+  <p class="stmt-s">
+    코드는 AI가 짠다.<br>
+    계획서, DB 설계, 문제를 보는 시각 — 이건 내가 해야 한다.<br>
+    그게 바이브 코딩의 진짜 실력이다.
+  </p>
+</div>
+
+<!-- CH03 -->
+<section class="sec">
+  <p class="label b">Chapter 03</p>
+  <h2 class="sec-title">AI가 "된다"고 해도<br>— 반드시 직접 검토해야 한다</h2>
+  <div class="prose">
+    <p>
+      YouTube 최신 기술을 다 공부해서 내 것으로 만든다는 건 불가능하다.<br>
+      그래서 Gemini가 분석하고, Perplexity로 보강해서 .md로 만들어
+      Claude Code에게 준다. <em>"우리 상황에 적용 계획서를 만들어라."</em>
+    </p>
+    <p>
+      여기서 반드시 해야 하는 것이 있다.<br>
+      <strong>그 계획서를 꼼꼼하게 직접 읽어봐야 한다.</strong>
+    </p>
+  </div>
+  <div class="callout b">
+    <p>
+      "안 된다고 하는 AI는 잘 없다.<br>
+      위험 부담이 있어도 된다고 한다."
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      그걸 그냥 믿고 진행하면 —
+      <span class="hr">나중에 되돌리는 데 시간이 엄청나게 든다.</span>
+      그 기능이 꼭 필요한지, 우리한테 맞는지를 <strong>직접 판단해야 한다.</strong>
+      AI가 해주는 게 아니다.
+    </p>
+    <p>
+      지난 한 달 동안 이 부분에서 상당히 많은 실수를 했고, 많이 배웠다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH04 -->
+<section class="sec">
+  <p class="label gr">Chapter 04</p>
+  <h2 class="sec-title">바이브 코딩의 진짜 강점<br>— 코딩하면서 시각이 달라졌다</h2>
+  <div class="prose">
+    <p>
+      프로그램을 만들면서 느낀 게 있다.<br>
+      <span class="hg">"우리 회사에 나만큼 일을 속속들이 아는 사람이 있는가?"</span>
+    </p>
+    <p>
+      그리고 반대로 — <em>"아, 이 부분은 내가 오래했지만 생각이 짧았구나."</em>
+    </p>
+    <p>
+      코딩을 하면서 문제를 보는 시각이 달라졌다.<br>
+      <strong>나는 잘 알지만, 이걸 모르는 사람이 쓰면 어디서 실수할까?</strong><br>
+      이 질문이 실제 기능에 반영되기 시작했다.
+      그러면서 바이브 코딩이 <span class="hgr">다시 한번 강력해진다.</span>
+    </p>
+  </div>
+  <div class="insight">
+    <p class="insight-label">핵심 인사이트</p>
+    <p class="insight-body">
+      바이브 코딩은 코딩 기술이 아니다.<br>
+      이건 <strong>업무 전문성 × AI</strong>의 조합이다.<br>
+      자신의 업무를 가장 잘 아는 사람이 결합됐을 때<br>가장 강력한 시너지가 생긴다.
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      요즘엔 이걸 <span class="hb">"바이브 엔지니어링"</span>이라고도 부른다.
+      코드를 짜는 게 아니라 — 시스템을 설계하고 AI를 지휘하는 것.
+      그게 지금 내가 하고 있는 일이다.
+    </p>
+    <p>
+      2~3달이면 누구나 이 고비를 겪는다.<br>
+      <strong>이 고비를 넘어가야 제대로 된 바이브 엔지니어링이 시작된다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT 2 -->
+<div class="stmt">
+  <p class="stmt-k">Episode 012 마무리</p>
+  <p class="stmt-t">
+    가장 잘 아는 사람이<br>
+    <span style="color:var(--green)">가장 강력한 도구를 쥔 것이다</span>
+  </p>
+  <p class="stmt-s">
+    계획서, 개발 일지, DB 설계, 깃허브 기본기.<br>
+    이것들이 갖춰졌을 때<br>
+    바이브 코딩은 1인이 대형 프로젝트를 해낼 수 있는 무기가 된다.
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 3</p>
+  <h2 class="footer-t">Episode <span style="color:var(--rose)">012</span> · 2부</h2>
+  <p class="footer-n">이어서 → <strong>Epilogue 02 · 내가 가진 것이 비즈니스가 되는 시대가 아니다</strong></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="ep012.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep011.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">11</a>
+  <a href="ep012.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">12</a>
+  <a href="ep013.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">13</a>
+  <a href="epilogue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">E2</a>
+  <a href="epilogue2.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+<!-- BLOG FEATURES (subscribe + comments + analytics) -->
+<div id="blog-features-mount"></div>
+<script src="../assets/blog-features.js"></script>
+</body>
+</html>
