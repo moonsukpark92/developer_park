@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "timestamp": "2026-05-09T21:48:05.178Z",
+  "source": "auto-postool",
+  "partial": false,
+  "phase": null,
+  "phase_name": null,
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "auto-checkpoint",
+  "completed_tasks": [],
+  "remaining_tasks": [],
+  "blockers": [],
+  "human_actions_pending": [],
+  "decisions": [],
+  "uncommitted_files": [
+    {
+      "status": "??",
+      "path": ".planning/"
+    },
+    {
+      "status": "??",
+      "path": "assets/"
+    }
+  ],
+  "next_action": null,
+  "context_notes": "Recent commits:\n4cc9c46 fix: 실명 마스킹 정책 수정\n7fd0337 fix: S3 EP002 OpenAI → OpenClaw 수정\n2b3c55c fix: S3 body::before z-index:999 → z-index:-1 (콘텐츠 뒤로)\n1beb6af rebuild: S3 에피소드 12개 원본에서 클린 리빌드\n381d668 fix: S3 에피소드 전체 화면 가림 문제 해결"
+}
