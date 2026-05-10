@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP016 · GSD — AI가 잊어먹는 걸 막아주는 플러그인</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 55% at 8% 50%,rgba(167,139,250,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 92% 20%,rgba(56,189,248,.08) 0%,transparent 60%),radial-gradient(ellipse 35% 45% at 80% 85%,rgba(232,168,58,.05) 0%,transparent 55%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(167,139,250,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--violet);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.4rem,6.5vw,5.6rem);line-height:1.1;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.b{border-color:rgba(56,189,248,.4);color:var(--accent);background:rgba(56,189,248,.06);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
+.tag.v{border-color:rgba(167,139,250,.4);color:var(--violet);background:rgba(167,139,250,.07);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+
+/* SECTION */
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.b{color:var(--accent);} .label.g{color:var(--gold);} .label.gr{color:var(--green);} .label.r{color:var(--rose);} .label.v{color:var(--violet);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+
+/* PROSE */
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.hb{color:var(--accent);font-weight:500;} .hg{color:var(--gold);font-weight:500;}
+.hr{color:var(--rose);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
+.hv{color:var(--violet);font-weight:500;}
+
+/* CALLOUT */
+.callout{border-left:3px solid var(--violet);padding:20px 28px;margin:36px 0;background:rgba(167,139,250,.04);border-radius:0 6px 6px 0;}
+.callout.r{border-color:var(--rose);background:rgba(251,113,133,.05);}
+.callout.g{border-color:var(--gold);background:rgba(232,168,58,.05);}
+.callout.gr{border-color:var(--green);background:rgba(52,211,153,.04);}
+.callout.b{border-color:var(--accent);background:rgba(56,189,248,.04);}
+.callout p{font-family:var(--serif);font-weight:700;font-size:clamp(1rem,2.2vw,1.35rem);line-height:1.55;color:var(--text);}
+
+/* TERMINAL */
+.term{background:#0a0e14;border:1px solid rgba(167,139,250,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(167,139,250,.04);border-bottom:1px solid rgba(167,139,250,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.82rem;line-height:1.95;color:var(--violet);}
+.cmd{color:rgba(232,230,225,.92);} .cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .err{color:var(--rose);} .dim{color:rgba(167,139,250,.6);}
+.term-body .you{color:var(--accent);}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:36px 0;}
+.card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:20px 22px;position:relative;}
+.card.b{border-color:rgba(56,189,248,.22);} .card.g{border-color:rgba(232,168,58,.25);}
+.card.gr{border-color:rgba(52,211,153,.22);} .card.r{border-color:rgba(251,113,133,.25);}
+.card.v{border-color:rgba(167,139,250,.25);}
+.card-n{font-family:var(--mono);font-size:.62rem;letter-spacing:3px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;}
+.card-t{font-family:var(--sans);font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:8px;line-height:1.45;}
+.card.b .card-t{color:var(--accent);} .card.g .card-t{color:var(--gold);}
+.card.gr .card-t{color:var(--green);} .card.r .card-t{color:var(--rose);}
+.card.v .card-t{color:var(--violet);}
+.card-d{font-family:var(--sans);font-weight:300;font-size:.82rem;line-height:1.75;color:rgba(232,230,225,.62);}
+
+/* QUOTE BOX */
+.qbox{margin:36px 0;padding:28px 32px;border:1px dashed rgba(251,113,133,.3);border-radius:6px;background:rgba(251,113,133,.03);}
+.qbox-l{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--rose);margin-bottom:14px;text-transform:uppercase;}
+.qbox-q{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.95rem,1.6vw,1.1rem);line-height:1.85;color:rgba(232,230,225,.85);}
+
+/* COMPARE */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:36px 0;}
+@media(max-width:680px){.cmp{grid-template-columns:1fr;}}
+.cmp-c{padding:24px;border-radius:8px;background:#0d1117;border:1px solid var(--border);}
+.cmp-c.before{border-color:rgba(251,113,133,.28);}
+.cmp-c.after{border-color:rgba(167,139,250,.32);}
+.cmp-l{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.cmp-c.before .cmp-l{color:var(--rose);} .cmp-c.after .cmp-l{color:var(--violet);}
+.cmp-t{font-family:var(--sans);font-weight:700;font-size:1rem;color:var(--text);margin-bottom:10px;}
+.cmp-d{font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.78;color:rgba(232,230,225,.65);}
+
+/* COMMAND LIST */
+.cmd-list{margin:36px 0;background:#0a0e14;border:1px solid rgba(167,139,250,.18);border-radius:8px;overflow:hidden;}
+.cmd-row{display:grid;grid-template-columns:240px 1fr;gap:18px;padding:14px 24px;border-bottom:1px solid rgba(167,139,250,.06);font-family:var(--mono);font-size:.8rem;align-items:center;}
+.cmd-row:last-child{border-bottom:0;}
+.cmd-row .k{color:var(--violet);font-weight:600;}
+.cmd-row .v{color:rgba(232,230,225,.7);font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.6;}
+@media(max-width:680px){.cmd-row{grid-template-columns:1fr;gap:6px;}}
+
+/* INSIGHT */
+.insight{background:rgba(167,139,250,.05);border:1px solid rgba(167,139,250,.22);border-radius:8px;padding:30px 32px;margin:36px 0;}
+.insight-label{font-family:var(--mono);font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--violet);margin-bottom:14px;}
+.insight-body{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.18rem);line-height:1.8;color:var(--text);}
+
+/* STMT */
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--violet);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+
+/* FOOTER */
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--violet);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--violet);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(167,139,250,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#a78bfa;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #a78bfa;padding-bottom:2px;">S3</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 3 · Episode 016</p>
+  <h1 class="hero-title">
+    GSD —<br>
+    AI가 <span style="color:var(--rose)">잊어먹는 걸</span><br>
+    <span style="color:var(--violet)">막아주는 플러그인</span>
+  </h1>
+  <p class="hero-desc">
+    AI한테 일을 시키다 보면 — 자꾸 잊어먹는다. 어제 하던 일이 오늘 사라진다.<br>
+    여러 일을 동시에 시키면 컨텍스트가 무너져서 처음부터 설명을 다시 해야 한다.<br>
+    이 문제를 한 방에 해결한 운영 체계가 있다. 이름은 <strong>GSD</strong>.<br>
+    바이브 코딩하는 비개발자한테 — 이게 없으면 이 시리즈도 못 썼다.
+  </p>
+  <div class="hero-tags">
+    <span class="tag v">GSD</span>
+    <span class="tag b">컨텍스트 관리</span>
+    <span class="tag g">HANDOFF</span>
+    <span class="tag">슬래시 커맨드</span>
+    <span class="tag gr">세션 인계</span>
+    <span class="tag r">실제 사용 사례</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH01 -->
+<section class="sec">
+  <p class="label r">Chapter 01</p>
+  <h2 class="sec-title">AI한테 일 시키다 보면<br>— 자꾸 잊어먹는다</h2>
+  <div class="prose">
+    <p>
+      AI랑 코딩을 하다 보면 — 처음엔 마법 같다.
+      <em>"이거 만들어줘"</em> 하면 만들어준다. <em>"여기 고쳐줘"</em> 하면 고쳐준다.
+      <span class="hgr">근데 일이 커지기 시작하면 — 뭔가 무너진다.</span>
+    </p>
+    <p>
+      어제 하던 일을 오늘 다시 시키면 <em>"네? 그게 뭔가요?"</em> 한다.
+      어제까지 알던 파일 구조를 모르고, 어제 결정한 디자인 톤을 까먹고,
+      어제 만든 함수를 모르고 또 만든다.
+      <span class="hr">대화창은 5천 줄이 넘어가면 앞부분이 흐려진다.</span>
+    </p>
+    <p>
+      더 큰 문제는 — <strong>일을 여러 개 동시에 굴리는 경우다.</strong><br>
+      박대표 시리즈를 쓰면서 동시에 회사 ERP 자동화도 하고,
+      유튜브 채널 런칭 계획도 짜고, 손해배상 소송 자료도 정리한다.
+      AI한테 이걸 다 시키면 — <em>지금 어디 일을 하고 있는지 자기도 모른다.</em>
+    </p>
+  </div>
+  <div class="qbox">
+    <p class="qbox-l">실제로 자주 듣는 말</p>
+    <p class="qbox-q">
+      "이전 대화의 맥락을 모르겠습니다. 무엇을 하시려는지 다시 한번 설명해주세요."<br>
+      — 또야?
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      이게 바이브 코딩하는 비개발자가 마주치는 <span class="hr">진짜 벽</span>이다.
+      코딩이 어려운 게 아니다. <strong>AI랑 같은 페이지에 있게 만드는 게 어렵다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH02 -->
+<section class="sec">
+  <p class="label v">Chapter 02</p>
+  <h2 class="sec-title">GSD라는 운영 체계를 만났다<br>— Get Sh*t Done</h2>
+  <div class="prose">
+    <p>
+      Claude Code 환경에서 쓰는 <span class="hv">GSD</span>라는 운영 체계가 있다.
+      "<strong>Get Sh*t Done.</strong>" 이름이 직설적이다. <em>일을 끝내라.</em>
+      이 운영 체계가 하는 일은 단순하다 —<br>
+      <strong>AI가 잊어먹지 않도록, 모든 결정·진행·다음 할 일을 파일에 영구 기록한다.</strong>
+    </p>
+    <p>
+      적용하면 프로젝트 안에 <span class="hg">.planning/</span> 폴더가 생긴다.
+      그 안에 — <em>지금 무슨 단계인지, 어디까지 했는지, 다음에 뭘 해야 하는지, 무엇을 절대 하면 안 되는지</em> 가
+      자동으로 적힌다. 사람이 적는 게 아니라, AI가 적는다. 그것도 매 작업마다.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">.planning/ 구조</div>
+    <div class="term-body">
+      <div class="dim">.planning/</div>
+      <div class="dim">├─ HANDOFF.json          <span class="cmt"># 다음 세션이 self-sufficient하게 재개</span></div>
+      <div class="dim">├─ PROJECT_IDENTITY.md   <span class="cmt"># 프로젝트의 불변 정체성 (LOCKED)</span></div>
+      <div class="dim">├─ intel/                <span class="cmt"># 코드베이스 분석 — tech, arch, quality, concerns</span></div>
+      <div class="dim">├─ phases/               <span class="cmt"># 단계별 계획 + 실행 + 검증 기록</span></div>
+      <div class="dim">└─ roadmap/ROADMAP.md    <span class="cmt"># P0~P3 우선순위 로드맵</span></div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      처음엔 <em>"이게 뭐 별거야?"</em> 싶었다. 폴더 하나 만든 거잖아.<br>
+      근데 — <strong>이 폴더 하나가 모든 걸 바꿨다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH03 -->
+<section class="sec">
+  <p class="label g">Chapter 03</p>
+  <h2 class="sec-title">잠깐 — 이 글 자체가<br>유튜브 → 제미나이 → Claude의 결과다</h2>
+  <div class="prose">
+    <p>
+      여기서 한 번 멈춘다. <span class="hg">사실 이 GSD라는 도구를 알게 된 과정 자체가 — 이전 에피소드(EP014)에서 말했던 그 패턴 그대로다.</span>
+    </p>
+    <p>
+      유튜브에서 <em>"바이브 코딩 필수 플러그인 3가지"</em> 같은 영상을 봤다.
+      세 가지 다 좋아 보였다. 근데 — <strong>다 깔 수는 없다. 어느 게 진짜 우리한테 맞는지 모른다.</strong>
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">선택의 자동화</div>
+    <div class="term-body">
+      <div class="cmt"># 1단계 — 영상 링크만 던졌다</div>
+      <div class="you">박대표 ▸ Gemini, 이 영상에 나온 3가지 플러그인 분석해라</div>
+      <div class="dim">[gemini] 영상 분석 + 3개 플러그인 검색 보강 + 비교표</div>
+      <div class="cmt"># 2단계 — 결과를 MD로 받아 Claude한테 넘겼다</div>
+      <div class="you">박대표 ▸ Claude, 우리 회사 상황에 가장 맞는 거 골라라</div>
+      <div class="dim">[claude] 우리 컨텍스트(비개발자, 다중 프로젝트) 분석 + 추천</div>
+      <div class="ok">✓ 선택 결과: GSD (Get Sh*t Done) — 컨텍스트 관리 최적</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      나는 <strong>3개 플러그인 자체에 대한 글도 안 읽었다.</strong>
+      유튜브 영상도 한 번만 봤다.
+      그런데 — <span class="hg">우리 회사에 가장 맞는 플러그인이 무엇인지에 대한 답</span>은 손에 들어왔다.
+    </p>
+    <p>
+      <em>"바이브 코딩에 필요한 도구를 선택하는 일 자체가 — 이미 바이브 코딩으로 처리되고 있다."</em><br>
+      이게 EP014에서 말한 <span class="hb">"AI에게 AI를 학습시키는"</span> 방법의 진짜 모습이다.
+      도구가 도구를 추천하고, AI가 AI 사용법을 정리한다.
+    </p>
+  </div>
+  <div class="callout g">
+    <p>
+      "유튜브 영상 1편 +<br>
+      Gemini 분석 + Claude 선택 →<br>
+      도구 선정 끝. 30분."
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH04 -->
+<section class="sec">
+  <p class="label v">Chapter 04</p>
+  <h2 class="sec-title">GSD의 진짜 정체 —<br>설치 프로그램이 아니다</h2>
+  <div class="prose">
+    <p>
+      Claude가 정리해 준 결과를 보고 알았다.<br>
+      <strong>GSD는 기술적으로 '설치형 프로그램'이 아니다.</strong>
+      Claude의 <span class="hr">컨텍스트(기억력) 한계를 극복하기 위한 운영 체계</span>에 가깝다.
+      쉽게 말하면 — <em>"AI를 어떻게 쓸지에 대한 약속"</em> 자체다.
+    </p>
+    <p>
+      이 프레임워크의 핵심 단어는 <span class="hr">"Context Rot(컨텍스트 썩음)"</span>이다.
+      대화가 길어지면 — AI의 답이 점점 흐려지고, 어제 한 말과 오늘 한 말이 안 맞기 시작한다.
+      이게 썩는다는 표현이다. <strong>GSD는 이걸 막기 위해 작업을 분리된 세션에서 수행하게 만든다.</strong>
+    </p>
+    <p>
+      구조는 단순하다 — <span class="hv">지휘관(Commander)</span>과 <span class="hb">실행자(Agent)</span>를 분리한다.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card v">
+      <p class="card-n">ROLE 01</p>
+      <p class="card-t">Commander · 지휘관</p>
+      <p class="card-d">메인 세션. 큰 그림·계획·검토만 한다. 디버깅 삽질이 들어오지 않는다. 수명이 길다.</p>
+    </div>
+    <div class="card b">
+      <p class="card-n">ROLE 02</p>
+      <p class="card-t">Agent · 실행자</p>
+      <p class="card-d">서브 세션. 새 채팅창에서 한 작업만 격리 실행. 끝나면 결과만 메인으로 들고 간다.</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      그래서 실전 운영은 <strong>3단계 워크플로우</strong>로 굴러간다.
+    </p>
+  </div>
+  <div class="cmd-list">
+    <div class="cmd-row"><span class="k">① Plan (메인)</span><span class="v">메인 세션에서 요구사항을 말한다 → 지휘관이 "전용 프롬프트"를 만들어 준다</span></div>
+    <div class="cmd-row"><span class="k">② Execute (서브)</span><span class="v">완전히 새로운 채팅창을 연다 → 전용 프롬프트를 첫 메시지로 넣고 작업한다 (컨텍스트 격리의 핵심)</span></div>
+    <div class="cmd-row"><span class="k">③ Review (메인)</span><span class="v">서브에서 완성된 결과만 메인으로 가져와 동기화한다</span></div>
+  </div>
+  <div class="prose">
+    <p>
+      처음엔 <em>"매번 새 창 여는 거 귀찮은데?"</em> 싶었다.
+      맞다. 귀찮다. 근데 — 프로젝트가 커질수록 <strong>AI가 이전 대화 때문에 헷갈리는 현상이 완벽하게 막힌다.</strong>
+    </p>
+    <p>
+      <span class="hgr">메인엔 결과만 남고, 과정(디버깅 삽질)은 서브에서 소모된다.</span>
+      그래서 메인 세션의 수명이 비약적으로 늘어난다.
+      이게 GSD가 진짜로 사주는 가치다. 토큰 절약이 아니라 — <strong>판단력의 보존이다.</strong>
+    </p>
+  </div>
+  <div class="callout">
+    <p>
+      "Context Rot을 막는 가장 단순한 방법 —<br>
+      썩기 전에 옮겨심는다.<br>
+      이게 GSD의 본질이다."
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH05 (was CH03) -->
+<section class="sec">
+  <p class="label b">Chapter 05</p>
+  <h2 class="sec-title">핵심은 HANDOFF.json<br>— "다음 세션 너에게"</h2>
+  <div class="prose">
+    <p>
+      GSD의 진짜 무기는 <span class="hb">HANDOFF.json</span>이다.<br>
+      세션이 끝나기 전에 — 지금까지 한 일, 남은 일, 막힌 일, 사람이 결정해야 할 일,
+      다음 세션이 반드시 먼저 읽어야 할 문서 순서까지 <strong>자동으로 기록</strong>된다.
+    </p>
+    <p>
+      그리고 다음 세션이 시작되면 — 새 Claude는 그 파일을 먼저 읽는다.
+      <em>"아, 어제까지 여기까지 했고, 지금 막힌 건 이거고, 다음은 이거 하면 되겠네."</em><br>
+      <span class="hgr">처음부터 설명할 필요가 없다.</span>
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">HANDOFF.json · 실제 발췌</div>
+    <div class="term-body">
+      <div class="cmt"># 유튜브 채널 런칭 계획 세션 종료 시점</div>
+      <div class="dim">"completed_tasks": [</div>
+      <div class="dim">  {"id": 1, "name": "헌법 + 5개 전략 + 자동화 청사진 13개 문서 작성", "status": "done"},</div>
+      <div class="dim">  {"id": 5, "name": "ffmpeg 노이즈 제거 검증 (36분 → 26초, 87배 실시간)", "status": "done"},</div>
+      <div class="dim">  ...</div>
+      <div class="dim">],</div>
+      <div class="dim">"remaining_tasks": [</div>
+      <div class="dim">  {"id": 8,  "name": "D1: YouTube 채널 개설", "status": "not_started"},</div>
+      <div class="dim">  {"id": 11, "name": "D3: ElevenLabs PVC 학습 신청", "status": "not_started"},</div>
+      <div class="dim">  ...</div>
+      <div class="dim">],</div>
+      <div class="dim">"blockers": [{"description": "FFmpeg PATH 갱신 필요", "workaround": "..."}],</div>
+      <div class="dim">"human_actions_pending": [{"action": "ElevenLabs 결제 ($22/월)", "blocking": true}]</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      이게 정말 무서운 부분이다.
+      <strong>AI는 어차피 잊어먹는다.</strong> 이 사실을 인정하고 — <em>잊어먹어도 괜찮은 구조</em>를 만든 거다.
+    </p>
+    <p>
+      박대표 시리즈도, 유튜브 런칭 계획도, 회사 자동화도 —
+      각각 <span class="hv">.planning/</span> 폴더가 따로 있다.
+      어떤 일을 하다가 다른 일로 넘어갔다가 일주일 뒤에 돌아와도,
+      <span class="hg">정확히 어디서 멈췄는지 그 폴더가 알고 있다.</span>
+    </p>
+  </div>
+  <div class="callout">
+    <p>
+      "AI의 기억력을 신뢰하지 마라.<br>
+      대신 — AI가 기억하도록 강제하는 시스템을 만들어라."
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT 1 -->
+<div class="stmt">
+  <p class="stmt-k">Episode 016 — 핵심 1</p>
+  <p class="stmt-t">
+    AI는 잊는다 —<br>
+    <span style="color:var(--violet)">그래서 파일에 박는다</span>
+  </p>
+  <p class="stmt-s">
+    GSD는 천재 AI가 아니다. 단순한 규칙이다.<br>
+    "끝나기 전에 무조건 적어라. 다음 세션은 무조건 읽어라."<br>
+    이 단순한 규칙 하나가 — 컨텍스트 문제를 거의 다 해결했다.
+  </p>
+</div>
+
+<!-- CH06 -->
+<section class="sec">
+  <p class="label g">Chapter 06</p>
+  <h2 class="sec-title">슬래시 커맨드 — 일하는 방식이<br>완전히 바뀌었다</h2>
+  <div class="prose">
+    <p>
+      GSD를 적용하면 슬래시(<code>/</code>) 하나 치고 명령어를 부른다.
+      이게 평소에 입력하던 자유 문장보다 — <strong>훨씬 정확하고, 훨씬 빠르고, 훨씬 안정적이다.</strong>
+      자주 쓰는 명령어 몇 개는 거의 매일 친다.
+    </p>
+  </div>
+  <div class="cmd-list">
+    <div class="cmd-row"><span class="k">/gsd:new-project</span><span class="v">새 프로젝트 시작 — 정체성·환경·로드맵을 한 번에 잡는다</span></div>
+    <div class="cmd-row"><span class="k">/gsd:plan-phase</span><span class="v">한 단계의 계획을 세운다 — 작업 분해 + 의존성 + 목표 역산 검증</span></div>
+    <div class="cmd-row"><span class="k">/gsd:execute-phase</span><span class="v">계획을 실제로 실행 — 원자적 커밋 + 체크포인트 + 일탈 감지</span></div>
+    <div class="cmd-row"><span class="k">/gsd:resume-work</span><span class="v">전 세션에서 멈춘 일을 정확히 그 자리에서 다시 시작</span></div>
+    <div class="cmd-row"><span class="k">/gsd:pause-work</span><span class="v">중간에 끊을 때 — 다음 세션을 위한 인계서를 자동 생성</span></div>
+    <div class="cmd-row"><span class="k">/gsd:next</span><span class="v">"지금 뭐 해야 해?" — 알아서 다음 단계로 라우팅</span></div>
+    <div class="cmd-row"><span class="k">/gsd:progress</span><span class="v">전체 진행률 + 막힌 곳 + 다음 액션을 한 화면에</span></div>
+    <div class="cmd-row"><span class="k">/gsd:autonomous</span><span class="v">남은 단계를 전부 자동 실행 — 잠자는 동안 일이 끝나 있다</span></div>
+    <div class="cmd-row"><span class="k">/gsd:audit-uat</span><span class="v">계획 대비 실제 산출물 검증 — 빠뜨린 게 있는지 검사</span></div>
+    <div class="cmd-row"><span class="k">/gsd:code-review</span><span class="v">변경된 코드 자동 리뷰 — 버그·보안·코드 품질 점검</span></div>
+  </div>
+  <div class="prose">
+    <p>
+      예전엔 <em>"이거 해줘 / 이거 어떻게 됐어 / 이거 다음에 뭐였지?"</em> 를 매번 자유 문장으로 물었다.
+      말이 길어지면 의도가 흐려지고, 다른 일과 섞인다.<br>
+      슬래시 명령은 — <strong>의도를 한 단어로 못 박는다.</strong>
+      <span class="hv">/gsd:next</span> 한 줄이 <em>"이전 세션 인계서 읽고, 미완 작업 찾아서, 다음 단계 추천해주세요"</em> 와 같다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH07 -->
+<section class="sec">
+  <p class="label gr">Chapter 07</p>
+  <h2 class="sec-title">실제로 — 이 시리즈도<br>GSD로 굴러간다</h2>
+  <div class="prose">
+    <p>
+      이 블로그 시리즈가 어떻게 굴러가는지 보여준다.<br>
+      박대표 시리즈 폴더 안에는 — <span class="hg">.planning/</span>, <span class="hb">marketing/</span>, <span class="hr">devlogs/</span> 세 개의 GSD 영역이 있다.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card v">
+      <p class="card-n">Area 01</p>
+      <p class="card-t">.planning/ — 사이트 운영</p>
+      <p class="card-d">P0~P3 로드맵: 민감정보 grep 자동화, 푸시 전 lint, 백업 미러, 검색 기능 도입까지 6개월 계획</p>
+    </div>
+    <div class="card b">
+      <p class="card-n">Area 02</p>
+      <p class="card-t">marketing/ — 유튜브 런칭</p>
+      <p class="card-d">헌법(00_philosophy.md) + 전략 5종 + 자동화 청사진 + 음성/녹화/편집기 가이드 = 13개 문서</p>
+    </div>
+    <div class="card r">
+      <p class="card-n">Area 03</p>
+      <p class="card-t">devlogs/ — 매 세션 기록</p>
+      <p class="card-d">각 세션 종료 시 의무 작성 — 무엇을, 왜, 어떻게 했고 다음에 뭐 할지</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      에피소드 한 편을 쓰면 — 그 작업의 모든 결정이 <span class="hg">devlogs/YYYY-MM-DD.md</span> 에 적힌다.
+      네비 패치, 마스킹 룰, 톤 결정, 미해결 사항까지.<br>
+      다음에 새 에피소드를 쓸 때 — Claude는 <strong>이 devlog들을 먼저 읽는다.</strong>
+      그래서 톤이 흔들리지 않는다. 마스킹이 빠지지 않는다. 같은 실수를 반복하지 않는다.
+    </p>
+    <p>
+      <em>"AI한테 이 시리즈를 쓰게 하면 톤이 안 맞을 텐데?"</em>
+      그렇게 되지 않는 이유다.<br>
+      AI가 매번 똑똑해서가 아니다. <span class="hv">매번 같은 문서를 먼저 읽어서</span>다.
+    </p>
+  </div>
+  <div class="cmp">
+    <div class="cmp-c before">
+      <p class="cmp-l">Before · GSD 없을 때</p>
+      <p class="cmp-t">매 세션 처음부터</p>
+      <p class="cmp-d">
+        새 대화창을 열 때마다 톤·규칙·진행 상황 다시 설명.
+        대화 중간에 잊어버리면 또 설명.
+        여러 프로젝트가 섞이면 어디 일인지도 모름.
+      </p>
+    </div>
+    <div class="cmp-c after">
+      <p class="cmp-l">After · GSD 도입 후</p>
+      <p class="cmp-t">파일이 다 알고 있다</p>
+      <p class="cmp-d">
+        /gsd:resume-work — 어디서 멈췄는지, 다음 뭐 할지 자동 복원.
+        프로젝트별 .planning/ 폴더가 자기 일을 자기가 기억.
+        실수 재발 거의 0.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH08 -->
+<section class="sec">
+  <p class="label">Chapter 08</p>
+  <h2 class="sec-title">가장 좋아진 게 무엇이냐<br>— 컨텍스트가 흩어지지 않는다</h2>
+  <div class="prose">
+    <p>
+      GSD를 쓰고 가장 좋아진 게 뭐냐 — 한 마디로 <strong>흔들리지 않는다.</strong>
+    </p>
+    <p>
+      나는 코딩하다가 마케팅 일로 넘어갔다가 손해배상 자료 정리로 갔다가
+      다시 블로그를 쓴다. 하루에도 4~5개 컨텍스트가 바뀐다.
+      예전엔 — <span class="hr">옮길 때마다 컨텍스트가 흘렀다.</span>
+      어제 마케팅 회의에서 결정한 게 오늘 블로그 톤에 묻어 들어오고,
+      소송 자료 정리 톤이 코딩 결정에 묻어 들어왔다.
+    </p>
+    <p>
+      지금은 — <span class="hgr">각 프로젝트가 자기 컨텍스트를 자기 폴더에 가두고 있다.</span>
+      마케팅 작업하다 블로그로 넘어가면 <em>/gsd:resume-work</em> 하나 치면 된다.
+      Claude는 블로그 폴더의 .planning과 devlogs를 다시 읽고 — 그 톤으로 일한다.
+      <strong>섞이지 않는다.</strong>
+    </p>
+  </div>
+  <div class="insight">
+    <p class="insight-label">진짜 가치</p>
+    <p class="insight-body">
+      GSD는 신기술이 아니다. <strong>"적어두면 잊지 않는다"</strong>는 너무 당연한 사실을 —<br>
+      AI한테 강제 적용한 시스템일 뿐이다.<br>
+      근데 이 당연한 게 — <span class="hv">바이브 코딩의 한계를 깨는 가장 큰 무기였다.</span>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH09 -->
+<section class="sec">
+  <p class="label v">Chapter 09</p>
+  <h2 class="sec-title">시작하는 법 — 그리고<br>먼저 알아야 할 3가지</h2>
+  <div class="prose">
+    <p>
+      이 글을 보는 다른 비개발자 사장님께 한 마디.<br>
+      Claude Code를 쓰고 있다면 — <strong>지금 당장 GSD를 도입해 봐라.</strong>
+      소스 프롬프트는 <em>mshumer의 GSD GitHub 저장소</em>(github.com/mshumer/gsd)에 공개되어 있다.
+      Claude Project를 새로 만들고 <em>[Set custom instructions]</em>에 Commander 프롬프트를 붙여 넣으면 끝이다.
+    </p>
+    <p>
+      Claude Code 환경이라면 — 슬래시 커맨드 형태로도 같은 운영 체계를 쓸 수 있다.
+      어느 쪽이든, 본질은 같다 — <span class="hv">메인 세션은 지휘관, 서브 세션은 실행자.</span>
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card v">
+      <p class="card-n">START 01</p>
+      <p class="card-t">/gsd:new-project</p>
+      <p class="card-d">새로 시작하는 프로젝트라면 이 한 줄로 .planning 구조 자동 생성</p>
+    </div>
+    <div class="card v">
+      <p class="card-n">START 02</p>
+      <p class="card-t">/gsd:ingest-docs</p>
+      <p class="card-d">기존에 흩어진 PRD·SPEC·메모를 GSD가 일괄 흡수해서 정리</p>
+    </div>
+    <div class="card v">
+      <p class="card-n">START 03</p>
+      <p class="card-t">/gsd:plan-phase</p>
+      <p class="card-d">큰 일을 한 번에 시키지 말고 단계로 쪼개라 — 그게 GSD의 사용법</p>
+    </div>
+    <div class="card v">
+      <p class="card-n">START 04</p>
+      <p class="card-t">/gsd:next</p>
+      <p class="card-d">막혔을 때 — "지금 뭐 해야 해?" 한 마디면 다음 단계로 라우팅</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      그리고 — 시작하기 전에 솔직하게 알려야 할 <strong>3가지 주의사항</strong>이 있다.
+      나도 처음에 모르고 시작해서 한참 헤맸다.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card r">
+      <p class="card-n">CAUTION 01</p>
+      <p class="card-t">귀찮음을 견뎌야 한다</p>
+      <p class="card-d">매번 새 채팅창 여는 게 번거롭다. 처음엔 "그냥 한 창에서 다 하면 안 되나?" 생각이 든다. 안 된다. 프로젝트가 커질수록 그 귀찮음이 회사를 살린다.</p>
+    </div>
+    <div class="card r">
+      <p class="card-n">CAUTION 02</p>
+      <p class="card-t">파일 동기화를 잊지 마라</p>
+      <p class="card-d">서브 세션에서 코드를 수정했다면, 메인 프로젝트의 파일(Project Knowledge / 로컬 파일)도 최신으로 반영해야 한다. 안 하면 지휘관이 옛날 정보로 판단한다.</p>
+    </div>
+    <div class="card r">
+      <p class="card-n">CAUTION 03</p>
+      <p class="card-t">토큰은 결국 절약된다</p>
+      <p class="card-d">메인엔 결과만, 서브엔 과정만 — 이 분리만 잘 지키면 메인 세션의 수명이 비약적으로 늘어난다. 토큰 효율이 따라온다.</p>
+    </div>
+  </div>
+  <div class="callout">
+    <p>
+      "혼자 알면 사라진다. 같이 알면 변한다.<br>
+      GSD도 그래서 공유한다 — 이건 도구 자랑이 아니라<br>
+      살아남는 방법의 공유다."
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      바이브 코딩이 진짜 가능해진 건 — Claude가 똑똑해져서가 아니다.<br>
+      <strong>Claude의 한계(잊어먹음)를 인정하고, 그걸 보완하는 외부 시스템(GSD)이 등장했기 때문</strong>이다.
+      도구가 도구를 보완하는 시대 — 그게 지금이다.
+    </p>
+    <p>
+      한 사람의 머릿속에 모든 걸 넣지 마라.
+      <span class="hgr">한 AI의 컨텍스트에 모든 걸 넣지도 마라.</span>
+      파일에 박아라. 폴더에 분리해라. 시스템에 맡겨라.<br>
+      이게 — 비개발자가 AI랑 일하는 가장 안정적인 방법이다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT 2 -->
+<div class="stmt">
+  <p class="stmt-k">Episode 016 마무리</p>
+  <p class="stmt-t">
+    바이브 코딩의 한계를<br>
+    <span style="color:var(--violet)">깨는 첫 도구</span>
+  </p>
+  <p class="stmt-s">
+    AI한테 일을 시키는 사람은 많다.<br>
+    AI가 잊어먹는 걸 막는 사람은 적다.<br>
+    GSD는 그 차이를 만든다 —<br>
+    그리고 그 차이가 — 회사가 살아남느냐 마느냐를 결정한다.
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 3</p>
+  <h2 class="footer-t">Episode <span style="color:var(--violet)">016</span></h2>
+  <p class="footer-n">이어서 → <a href="epilogue2.html" style="color:var(--violet);text-decoration:none;border-bottom:1px solid var(--violet);"><strong>Epilogue 02 · 내가 가진 것이 비즈니스가 되는 시대가 아니다</strong></a></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(167,139,250,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="ep015.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep011.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">11</a>
+  <a href="epilogue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">E2-1</a>
+  <a href="epilogue2_2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">E2-2</a>
+  <a href="ep012.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">12</a>
+  <a href="ep013.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">12-2</a>
+  <a href="ep014.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">14</a>
+  <a href="ep015.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">15</a>
+  <a href="ep016.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #a78bfa;">16</a>
+  <a href="index.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+</div>
+<!-- BLOG FEATURES (subscribe + comments + analytics) -->
+<div id="blog-features-mount"></div>
+<script src="../assets/blog-features.js"></script>
+</body>
+</html>
