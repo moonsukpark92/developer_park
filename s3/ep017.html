@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP017 · P0 24건 옆에 헌법 6/12 — 잘 돌아가는 줄 알았던 봇들</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 55% at 8% 50%,rgba(232,168,58,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 92% 20%,rgba(251,113,133,.09) 0%,transparent 60%),radial-gradient(ellipse 35% 45% at 80% 85%,rgba(167,139,250,.05) 0%,transparent 55%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,58,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,58,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.4rem,6.5vw,5.6rem);line-height:1.1;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.b{border-color:rgba(56,189,248,.4);color:var(--accent);background:rgba(56,189,248,.06);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
+.tag.v{border-color:rgba(167,139,250,.4);color:var(--violet);background:rgba(167,139,250,.07);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+
+/* SECTION */
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.b{color:var(--accent);} .label.g{color:var(--gold);} .label.gr{color:var(--green);} .label.r{color:var(--rose);} .label.v{color:var(--violet);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+
+/* PROSE */
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.hb{color:var(--accent);font-weight:500;} .hg{color:var(--gold);font-weight:500;}
+.hr{color:var(--rose);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
+.hv{color:var(--violet);font-weight:500;}
+
+/* CALLOUT */
+.callout{border-left:3px solid var(--gold);padding:20px 28px;margin:36px 0;background:rgba(232,168,58,.04);border-radius:0 6px 6px 0;}
+.callout.r{border-color:var(--rose);background:rgba(251,113,133,.05);}
+.callout.g{border-color:var(--gold);background:rgba(232,168,58,.05);}
+.callout.gr{border-color:var(--green);background:rgba(52,211,153,.04);}
+.callout.b{border-color:var(--accent);background:rgba(56,189,248,.04);}
+.callout.v{border-color:var(--violet);background:rgba(167,139,250,.04);}
+.callout p{font-family:var(--serif);font-weight:700;font-size:clamp(1rem,2.2vw,1.35rem);line-height:1.55;color:var(--text);}
+
+/* TERMINAL */
+.term{background:#0a0e14;border:1px solid rgba(232,168,58,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(232,168,58,.04);border-bottom:1px solid rgba(232,168,58,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.82rem;line-height:1.95;color:var(--gold);}
+.cmd{color:rgba(232,230,225,.92);} .cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .err{color:var(--rose);} .dim{color:rgba(232,168,58,.6);} .warn{color:var(--rose);}
+.term-body .you{color:var(--accent);}
+
+/* CARDS */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:36px 0;}
+.card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:20px 22px;position:relative;}
+.card.b{border-color:rgba(56,189,248,.22);} .card.g{border-color:rgba(232,168,58,.25);}
+.card.gr{border-color:rgba(52,211,153,.22);} .card.r{border-color:rgba(251,113,133,.25);}
+.card.v{border-color:rgba(167,139,250,.25);}
+.card-n{font-family:var(--mono);font-size:.62rem;letter-spacing:3px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;}
+.card-t{font-family:var(--sans);font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:8px;line-height:1.45;}
+.card.b .card-t{color:var(--accent);} .card.g .card-t{color:var(--gold);}
+.card.gr .card-t{color:var(--green);} .card.r .card-t{color:var(--rose);}
+.card.v .card-t{color:var(--violet);}
+.card-d{font-family:var(--sans);font-weight:300;font-size:.82rem;line-height:1.75;color:rgba(232,230,225,.62);}
+
+/* QUOTE BOX */
+.qbox{margin:36px 0;padding:28px 32px;border:1px dashed rgba(251,113,133,.3);border-radius:6px;background:rgba(251,113,133,.03);}
+.qbox-l{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--rose);margin-bottom:14px;text-transform:uppercase;}
+.qbox-q{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.95rem,1.6vw,1.1rem);line-height:1.85;color:rgba(232,230,225,.85);}
+
+/* SCORE TABLE */
+.scoretbl{margin:36px 0;border:1px solid rgba(232,168,58,.18);border-radius:8px;overflow:hidden;background:#0a0e14;}
+.scoretbl table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.78rem;}
+.scoretbl th,.scoretbl td{padding:12px 14px;text-align:left;border-bottom:1px solid rgba(255,255,255,.04);}
+.scoretbl th{background:rgba(232,168,58,.06);font-size:.62rem;letter-spacing:2px;color:var(--gold);text-transform:uppercase;font-weight:700;}
+.scoretbl tr:last-child td{border-bottom:0;}
+.scoretbl td.bot{color:var(--text);font-weight:600;}
+.scoretbl td.score{text-align:center;}
+.scoretbl td.high{color:var(--green);font-weight:700;}
+.scoretbl td.mid{color:var(--gold);}
+.scoretbl td.low{color:var(--rose);font-weight:700;}
+.scoretbl td.note{color:rgba(232,230,225,.55);font-family:var(--sans);font-size:.78rem;font-weight:300;}
+
+/* MATRIX */
+.matrix{margin:36px 0;border:1px solid rgba(232,168,58,.18);border-radius:8px;overflow:hidden;background:#0a0e14;}
+.matrix table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.72rem;}
+.matrix th,.matrix td{padding:9px 10px;border-bottom:1px solid rgba(255,255,255,.04);text-align:center;}
+.matrix th{background:rgba(232,168,58,.06);font-size:.58rem;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase;font-weight:700;}
+.matrix th:first-child,.matrix td:first-child{text-align:left;color:rgba(232,230,225,.85);font-family:var(--sans);font-weight:400;font-size:.8rem;}
+.matrix .ok{color:var(--green);font-weight:700;}
+.matrix .x{color:var(--rose);font-weight:700;}
+.matrix .pa{color:var(--gold);}
+.matrix tr:last-child td{border-bottom:0;}
+
+/* COMMAND LIST */
+.cmd-list{margin:36px 0;background:#0a0e14;border:1px solid rgba(232,168,58,.18);border-radius:8px;overflow:hidden;}
+.cmd-row{display:grid;grid-template-columns:240px 1fr;gap:18px;padding:14px 24px;border-bottom:1px solid rgba(232,168,58,.06);font-family:var(--mono);font-size:.8rem;align-items:center;}
+.cmd-row:last-child{border-bottom:0;}
+.cmd-row .k{color:var(--gold);font-weight:600;}
+.cmd-row .v{color:rgba(232,230,225,.7);font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.6;}
+@media(max-width:680px){.cmd-row{grid-template-columns:1fr;gap:6px;}}
+
+/* INSIGHT */
+.insight{background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.22);border-radius:8px;padding:30px 32px;margin:36px 0;}
+.insight-label{font-family:var(--mono);font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--green);margin-bottom:14px;}
+.insight-body{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.18rem);line-height:1.8;color:var(--text);}
+
+/* STMT */
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+
+/* FOOTER */
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--gold);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 3 · Episode 017</p>
+  <h1 class="hero-title">
+    P0 24건 옆에<br>
+    <span style="color:var(--rose)">헌법 6/12</span> —<br>
+    <span style="color:var(--gold)">잘 돌아가는 줄</span><br>
+    알았던 봇들
+  </h1>
+  <p class="hero-desc">
+    SSH로 봇 서버에 들어갔다. 아무 일 없이 굴러가던 봇 5개에<br>
+    AI 6명을 동시에 풀어 코드를 까보라고 시켰다 —<br>
+    <strong>P0(가장 위험) 24건.</strong> 그중 한 건은 <em>한 달 전 사고 코드 그대로</em>였다.<br>
+    그리고 그날 밤, 더 큰 걸 봤다. <span class="hr">코드만 부실한 게 아니었다.</span><br>
+    봇들의 <strong>회사 규칙서(CLAUDE.md)</strong>가 6/12부터 11/12까지 격차였다.
+  </p>
+  <div class="hero-tags">
+    <span class="tag g">코드 리뷰</span>
+    <span class="tag r">P0 Critical 24</span>
+    <span class="tag b">병렬 에이전트 6</span>
+    <span class="tag v">CLAUDE.md 거버넌스</span>
+    <span class="tag">표준 통일 12건</span>
+    <span class="tag gr">5봇 정합 완료</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH01 -->
+<section class="sec">
+  <p class="label r">Chapter 01</p>
+  <h2 class="sec-title">잘 돌아가는 줄 알았다</h2>
+  <div class="prose">
+    <p>
+      회사에 봇이 5개 굴러간다.<br>
+      재무 봇, 인사 봇, 영업 봇, MES·설비 봇, 공장 생산관리 봇.
+      각자 텔레그램 채팅방으로 보고를 쏘고, 자동으로 보고서를 만들고, 사람 대신 사장한테 알림을 던진다.
+    </p>
+    <p>
+      <span class="hgr">알림은 잘 왔다. 보고서는 잘 나왔다.</span>
+      텔레그램방엔 매일 똑같은 시간에 똑같은 형식의 메시지가 박혀 있었다.
+      <em>"오늘도 잘 굴러가고 있구나."</em>
+    </p>
+    <p>
+      이 글은 그 착각을 깨는 이야기다.
+    </p>
+  </div>
+  <div class="qbox">
+    <p class="qbox-l">사장이 봇한테 자주 갖는 환상</p>
+    <p class="qbox-q">
+      "알림이 잘 오니까 = 잘 돌아가는 거다."<br>
+      — 아니다. 알림이 잘 오는 동안에도, 그 봇은 뚫려 있을 수 있다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH02 -->
+<section class="sec">
+  <p class="label g">Chapter 02</p>
+  <h2 class="sec-title">의심 한 줄 —<br>"근데 이거 안전한가?"</h2>
+  <div class="prose">
+    <p>
+      어느 날 의심이 들었다. <em>"근데 이거… 안전한가?"</em><br>
+      누가 이상한 짓 한 적도 없었다. 그냥, 무서워졌다.
+      봇이 다루는 게 사장 텔레그램 알림, 회계 보고서, 직원 명단, DB 비밀번호다.
+      <span class="hr">하나라도 새면 — 회사가 통째로 새는 거다.</span>
+    </p>
+    <p>
+      코딩을 모른다. 코드를 봐도 모른다. 그래서 — <strong>AI한테 시켰다.</strong>
+    </p>
+    <p>
+      VS Code를 열고 SSH로 봇 서버(<span class="hg">moondolbot</span>)에 직접 들어갔다.
+      Linux 터미널이 떴다. 평소엔 들어갈 일이 없다.
+      들어가서 한 일은 단 하나 — <strong>"이 서버 안의 모든 봇 코드를, AI 6명이 동시에 까보라."</strong>
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">moondolbot · SSH 진입 직후</div>
+    <div class="term-body">
+      <div class="you">박대표 ▸ 현재 사용되고 있는 코드들에 대해서 병렬로 전수 코드 리뷰를 실시하고</div>
+      <div class="you">         문제점 보고서를 작성하세요. 이후 시니어개발자의 냉정한 검토를 받고</div>
+      <div class="you">         개선 지시서를 만들고 디버깅을 시작하세요.</div>
+      <div class="cmt"># Claude가 6개 sub-agent를 동시에 풀었다</div>
+      <div class="dim">[agent-1] 메인 봇 리뷰 시작</div>
+      <div class="dim">[agent-2] 모듈 리뷰 시작</div>
+      <div class="dim">[agent-3] ETL/sync/ops 리뷰 시작</div>
+      <div class="dim">[agent-4] 외부 통합(Taskworld/Wehago) 리뷰 시작</div>
+      <div class="dim">[agent-5] KB API/Archive 리뷰 시작</div>
+      <div class="dim">[agent-6] 배포/보안 리뷰 시작</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      나는 그동안 — <strong>커피를 마셨다.</strong> 약 30분 정도.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH03 -->
+<section class="sec">
+  <p class="label r">Chapter 03</p>
+  <h2 class="sec-title">카운트가 올라가기 시작했다</h2>
+  <div class="prose">
+    <p>
+      커피잔을 내려놓고 화면을 봤다. 6개 에이전트가 차례대로 보고를 쏟고 있었다.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">6개 병렬 리뷰 결과 집계</div>
+    <div class="term-body">
+      <div class="ok">✓ 메인 봇 리뷰 완료 — P0 5건</div>
+      <div class="warn">✓ ETL/sync/ops 리뷰 완료 — P0 5건. <strong>4/30 사고 코드 그대로 살아있음</strong></div>
+      <div class="warn">✓ KB API/Archive 완료 — report-portal이 <strong>0.0.0.0</strong>으로 노출되어 있다는 P0 발견</div>
+      <div class="warn">✓ 보안 리뷰 완료 — Gmail App Password 평문, bypassPermissions, 백업 env 등 P0 4건</div>
+      <div class="dim">✓ 모듈 리뷰 완료</div>
+      <div class="dim">✓ 외부 통합 리뷰 완료</div>
+      <div class="cmt">─────────────────────────────────────────────</div>
+      <div class="err">총 P0(Critical) 24건 발견.</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      <span class="hr">스물네 개.</span><br>
+      "P0"는 가장 높은 위험도 등급이다. <em>"지금 당장 고쳐야 한다"</em>는 카드.
+      그런 게 24개 — 5개 봇 안에 박혀 있었다.
+    </p>
+    <p>
+      그것도 — <strong>그동안 알림은 잘 오고 있었다.</strong>
+    </p>
+  </div>
+  <div class="callout r">
+    <p>
+      "잘 굴러간다 ≠ 안전하다.<br>
+      그 둘은 — 다른 차원의 단어였다."
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH04 -->
+<section class="sec">
+  <p class="label r">Chapter 04</p>
+  <h2 class="sec-title">살아있던 폭탄들 —<br>5개의 카드</h2>
+  <div class="prose">
+    <p>
+      24건을 다 풀어 쓸 수는 없다. 그중 가장 가슴이 내려앉은 카드 5개만 적는다.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card r">
+      <p class="card-n">FAIL · 01</p>
+      <p class="card-t">4/30 사고 코드<br>그대로 살아있음</p>
+      <p class="card-d">한 달 전 한 번 무너졌던 코드. 그때 "급한 불만 끄고 나중에 손 보겠다" 한 자리. <strong>그대로였다.</strong></p>
+    </div>
+    <div class="card r">
+      <p class="card-n">FAIL · 02</p>
+      <p class="card-t">report-portal<br>0.0.0.0 노출</p>
+      <p class="card-d">사내 보고용 페이지가 — <em>인터넷 누구나 접속 가능한 주소</em>에 떠 있었다. 비밀번호도 없는 채로.</p>
+    </div>
+    <div class="card r">
+      <p class="card-n">FAIL · 03</p>
+      <p class="card-t">Gmail 앱 비밀번호<br>평문 저장</p>
+      <p class="card-d">봇이 메일을 보내려면 비밀번호가 필요하다. 그게 — 디스크에 그냥 글자로 떠 있었다. 누가 서버 들어오면 그대로 읽힌다.</p>
+    </div>
+    <div class="card r">
+      <p class="card-n">FAIL · 04</p>
+      <p class="card-t">bypassPermissions<br>플래그 켜져 있음</p>
+      <p class="card-d">권한 검사를 우회하는 안전장치 해제 플래그가 — 켜져 있었다. <em>"개발할 때만 잠깐 켰다가 끄려 했던 것"</em> 이 그대로 살아 있었다.</p>
+    </div>
+    <div class="card r">
+      <p class="card-n">FAIL · 05</p>
+      <p class="card-t">PG_PASSWORD<br>chmod 644</p>
+      <p class="card-d">DB 비밀번호 파일이 <em>"누구든 읽을 수 있는 권한"</em>으로 한동안 떠 있었다. 권장 조치: <strong>비밀번호 회전 + 600 권한으로 변경 + 봇 재시작.</strong></p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      이 5개 중 가장 무거운 건 <span class="hr">FAIL 01</span> 이었다.<br>
+      <strong>한 번 사고가 났던 자리</strong> — 그 자리가 그대로였다는 것.
+      그게 가장 아팠다. 안 고친 게 아니라, <em>"고친 줄 알았던" 자리.</em>
+    </p>
+    <p>
+      두 번째로 아팠던 건 <span class="hr">FAIL 04</span>.<br>
+      "이거 잠깐 켜놓고 나중에 끄자" — 비개발자도 알아듣는 그 흔한 말.
+      그 말이 <strong>코드 안에 그대로 화석화돼 있었다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH05 -->
+<section class="sec">
+  <p class="label v">Chapter 05</p>
+  <h2 class="sec-title">코드만 부실한 게 아니었다</h2>
+  <div class="prose">
+    <p>
+      24건을 정리하던 중 — Claude가 한 줄을 보탰다.<br>
+      <em>"코드 리뷰는 됐는데, 이 봇들 각자 가지고 있는 회사 규칙서(CLAUDE.md)도 한번 비교해 보시겠어요?"</em>
+    </p>
+    <p>
+      <span class="hv">CLAUDE.md.</span> 봇마다 하나씩 가지고 있는 파일이다.<br>
+      <em>"이 봇은 누구다, 이 봇이 다루는 채널은 어디다, 비밀번호는 어디서 가져온다, 절대 하지 말아야 할 행동은 무엇이다"</em>
+      가 적혀 있는 — <strong>봇의 회사 규칙서.</strong> 새 Claude 세션이 그 봇한테 들어갈 때 가장 먼저 읽는 문서다.
+    </p>
+    <p>
+      나는 — <em>"있는 줄도 잊고 있었다."</em><br>
+      봇이 5개니까 회사 규칙서도 5개. 5개를 한 번도 비교해 본 적이 없었다.
+      <span class="hg">"있다는 사실"만 알고, "안에 뭐가 적혀 있는지"는 모르고 있었다.</span>
+    </p>
+  </div>
+  <div class="callout v">
+    <p>
+      "코드의 P0 24건 옆에 —<br>
+      또 다른 P0가 있었다.<br>
+      봇이 자기 자신을 모르는 봇이었다는 사실."
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH06 -->
+<section class="sec">
+  <p class="label g">Chapter 06</p>
+  <h2 class="sec-title">5봇의 회사 규칙서 —<br>6/12부터 11/12까지</h2>
+  <div class="prose">
+    <p>
+      AI한테 5개 봇의 CLAUDE.md를 한 줄로 비교해 달라고 했다.
+      30초 만에 표가 떴다.
+    </p>
+  </div>
+  <div class="scoretbl">
+    <table>
+      <thead>
+        <tr><th>봇</th><th>역할</th><th>점수</th><th>한 줄 진단</th></tr>
+      </thead>
+      <tbody>
+        <tr><td class="bot">decofin</td><td class="note">재무회계 전담</td><td class="score high">11 / 12</td><td class="note">표준 (모범 사례)</td></tr>
+        <tr><td class="bot">factory</td><td class="note">공장 생산관리</td><td class="score mid">8 / 12</td><td class="note">호스트·서비스 정보 누락</td></tr>
+        <tr><td class="bot">decosale</td><td class="note">영업 지원</td><td class="score mid">8 / 12</td><td class="note">변경 이력 누락</td></tr>
+        <tr><td class="bot">decohr</td><td class="note">인사 담당</td><td class="score mid">8 / 12</td><td class="note">호스트·운영환경 누락</td></tr>
+        <tr><td class="bot">decomes</td><td class="note">MES·설비</td><td class="score low">6 / 12</td><td class="note">가장 빈약 — 예측 불가능한 봇</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>
+      <strong>decofin이 11/12.</strong> <strong>decomes가 6/12.</strong>
+      같은 회사의 봇인데 — 회사 규칙서 충실도가 거의 두 배 차이였다.
+    </p>
+    <p>
+      더 본 건 항목별 매트릭스였다.
+    </p>
+  </div>
+  <div class="matrix">
+    <table>
+      <thead>
+        <tr><th>섹션</th><th>decofin</th><th>decohr</th><th>decosale</th><th>decomes</th><th>factory</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>텔레그램 보고 규정</td><td class="ok">○</td><td class="ok">○</td><td class="ok">○</td><td class="ok">○</td><td class="ok">○</td></tr>
+        <tr><td>공통 운영 정책 (.env + 검증)</td><td class="ok">○</td><td class="ok">○</td><td class="ok">○</td><td class="ok">○</td><td class="ok">○</td></tr>
+        <tr><td>호칭 규정</td><td class="ok">○</td><td class="pa">△</td><td class="x">×</td><td class="x">×</td><td class="pa">△</td></tr>
+        <tr><td>운영 환경 (호스트·재시작 명령)</td><td class="ok">○</td><td class="x">×</td><td class="ok">○</td><td class="ok">○</td><td class="x">×</td></tr>
+        <tr><td>직원 명단 표 (자체 SoT)</td><td class="x">×</td><td class="pa">△</td><td class="x">×</td><td class="x">×</td><td class="pa">△</td></tr>
+        <tr><td>변경 이력</td><td class="x">×</td><td class="ok">○</td><td class="ok">○</td><td class="ok">○</td><td class="x">×</td></tr>
+        <tr><td>메모리 정책 한 줄</td><td class="x">×</td><td class="ok">○</td><td class="x">×</td><td class="x">×</td><td class="x">×</td></tr>
+        <tr><td>AI 한계 설명 금지</td><td class="x">×</td><td class="ok">○</td><td class="x">×</td><td class="x">×</td><td class="x">×</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="prose">
+    <p>
+      가장 위험한 건 — <span class="hr">"직원 명단 표"가 두 봇에만 있고, 셋엔 없다</span>는 것.
+      직원 명단은 회사에 한 군데만 있어야 한다(<span class="hg">PERSONNEL.md</span>).
+      그게 두 군데에 따로 적혀 있으면 — 한 명 입사·퇴사할 때마다 두 곳을 동시에 고쳐야 한다.
+      <strong>그러다 한 곳을 빠뜨리면 — 봇이 거짓말을 하기 시작한다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH07 -->
+<section class="sec">
+  <p class="label v">Chapter 07</p>
+  <h2 class="sec-title">12건의 표준 통일 —<br>P0 3 + P1 5 + P2 4</h2>
+  <div class="prose">
+    <p>
+      그 자리에서 시켰다 — <em>"표준 통일하세요. P0+P1+P2 다."</em><br>
+      AI는 12건을 한 번에 처리했다. 결과만 적는다.
+    </p>
+  </div>
+  <div class="cmd-list">
+    <div class="cmd-row"><span class="k">P0 · 사실 오류 수정 (3건)</span><span class="v">factory 호칭 예시 "최*현 프로" 제거 + PERSONNEL.md 링크. factory 점검 항목 명확화. decofin §1 "조*진 프로 퇴사" 잔존 문구 → PERSONNEL.md 링크 대체.</span></div>
+    <div class="cmd-row"><span class="k">P1 · SoT 격차 해소 (5건)</span><span class="v">decohr 직원 목록 4-table → PERSONNEL.md 단일 링크. factory 생산팀 인원 line → PERSONNEL.md 링크. decomes "데이터 수집 원칙 §7" + "Decohub API 보조 점검 §8" 신설(4봇 표준 정합). decohr 운영 환경 §추가(호스트·봇 재시작 명령). factory 운영 환경 §추가(호스트·봇 재시작 명령).</span></div>
+    <div class="cmd-row"><span class="k">P2 · 구조 표준화 (4건)</span><span class="v">5봇 모두 "변경 이력 §" 표준화. decosale §7 / decomes §6-1 호칭 규정 추가. factory 교대 근무 4줄 → reference_production_shift.md 링크로 압축. decohr "절대 금지 사항" 16줄 제거(공통 정책 블록으로 승격).</span></div>
+  </div>
+  <div class="prose">
+    <p>
+      마지막 줄이 가장 마음에 들었다 — <span class="hgr">"공통 정책 블록으로 승격"</span>.<br>
+      한 봇에만 있던 안전 규칙을 — <strong>5봇 공통 룰로 끌어올린 것.</strong>
+      이게 — 봇이 늘어도 안 무너지게 만드는 진짜 방법이다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH08 -->
+<section class="sec">
+  <p class="label gr">Chapter 08</p>
+  <h2 class="sec-title">5봇 표준 구조 (정합 완료)</h2>
+  <div class="prose">
+    <p>
+      이제 5개 봇 모두 — 같은 헤더 구조로 정렬됐다.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">5봇 표준 구조 · CLAUDE.md</div>
+    <div class="term-body">
+      <div class="dim">1. 텔레그램 보고 규정 (#1~#9, 5봇 100% 동일)</div>
+      <div class="dim">2. 공통 운영 정책 (5봇 100% 동일)</div>
+      <div class="dim">   ├─ .env 자격증명 자동 수정 금지</div>
+      <div class="dim">   ├─ 데이터 검증 게이트</div>
+      <div class="dim">   └─ AI 기술 한계 설명 금지</div>
+      <div class="dim">3. 봇 정체성 / 업무 범위 / 채널 / 자격증명 / 운영 환경</div>
+      <div class="dim">4. 호칭 규정 (PERSONNEL.md 링크 보유)</div>
+      <div class="dim">5. 데이터 수집 원칙</div>
+      <div class="dim">6. Decohub API 연동</div>
+      <div class="dim">7. 변경 이력</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      이렇게 묶으면 어떤 효과가 있나. 4개로 정리한다.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card gr">
+      <p class="card-n">EFFECT · 01</p>
+      <p class="card-t">인사 SoT 단일화</p>
+      <p class="card-d">PERSONNEL.md 한 곳만 갱신하면 5봇 모두 정합. 이전엔 3~4곳을 동시에 고쳐야 했다.</p>
+    </div>
+    <div class="card gr">
+      <p class="card-n">EFFECT · 02</p>
+      <p class="card-t">봇 격차 해소</p>
+      <p class="card-d">decomes의 표준 누락 격차가 사라졌다. <strong>66점 → 약 85점.</strong> 가장 위험한 봇이 가장 안전한 봇 수준에 근접.</p>
+    </div>
+    <div class="card gr">
+      <p class="card-n">EFFECT · 03</p>
+      <p class="card-t">변경 추적 가능</p>
+      <p class="card-d">5봇 모두 "변경 이력 §"로 갱신 시점이 박힌다. <em>"이거 언제 누가 왜 고쳤지?"</em> 가 사라진다.</p>
+    </div>
+    <div class="card gr">
+      <p class="card-n">EFFECT · 04</p>
+      <p class="card-t">동일 가드레일</p>
+      <p class="card-d">자격증명 자율 수정 금지·검증 게이트·AI 한계 설명 금지. <strong>5봇이 같은 안전벨트를 매고 굴러간다.</strong></p>
+    </div>
+  </div>
+  <div class="insight">
+    <p class="insight-label">오늘의 가장 큰 깨달음</p>
+    <p class="insight-body">
+      AI가 잘못하는 게 아니다. <strong>AI가 잘못할 수밖에 없는 환경</strong>을 우리가 만들어 두고 있었다.
+      회사 규칙서가 빈약하면, 새로 들어온 AI 세션은 매번 다르게 일한다. <em>그게 "봇이 자기 마음대로 일한다"의 진짜 정체다.</em>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH09 -->
+<section class="sec">
+  <p class="label g">Chapter 09</p>
+  <h2 class="sec-title">봇을 늘리려면<br>헌법도 같이 정비해라</h2>
+  <div class="prose">
+    <p>
+      이번 일을 끝내면서 머릿속에 박힌 한 줄이 있다.
+    </p>
+  </div>
+  <div class="callout">
+    <p>
+      "AI 봇이 늘어나는 시대 —<br>
+      봇 추가 비용은 0에 가깝다.<br>
+      <span class="hr">규칙서(CLAUDE.md) 추가 비용</span>은 0이 아니다.<br>
+      그걸 빠뜨리면 — 봇이 사장을 거짓말로 보고하기 시작한다."
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      그러니까 이건 — <strong>봇 5개의 이야기가 아니다. 앞으로 봇 10개, 20개로 늘어날 회사의 이야기다.</strong>
+      그때 무너지지 않으려면, 지금 이 순서를 잡아 둬야 한다.
+    </p>
+  </div>
+  <div class="cmd-list">
+    <div class="cmd-row"><span class="k">① 정기 코드 감사</span><span class="v">분기 1회. AI 6명 풀어서 P0 카운트 받기. 알림 잘 온다고 안심하지 말 것.</span></div>
+    <div class="cmd-row"><span class="k">② 정기 헌법 감사</span><span class="v">분기 1회. 봇별 CLAUDE.md 점수 매트릭스. 6/12 봇이 있으면 즉시 보강.</span></div>
+    <div class="cmd-row"><span class="k">③ 표준 템플릿 동결</span><span class="v">가장 충실한 봇 헌법(이번엔 decofin 11/12)을 마스터로. 새 봇 만들 때 그대로 복사 시작.</span></div>
+    <div class="cmd-row"><span class="k">④ 공통 블록 분리</span><span class="v">5봇 100% 동일한 항목(텔레그램 보고 규정 등)은 공통 파일로 분리. 한 곳 고치면 모든 봇 자동 반영.</span></div>
+    <div class="cmd-row"><span class="k">⑤ 변경 이력 의무화</span><span class="v">모든 봇 헌법에 "변경 이력 §" 강제. 누가·언제·왜 고쳤는지 박혀 있어야 한다.</span></div>
+  </div>
+  <div class="prose">
+    <p>
+      코딩을 모르는 사장이 — 봇 다섯 개의 코드 24건과 헌법 12건을 하루 만에 처리했다.<br>
+      직접 친 줄은 한 줄도 없다. 했다고 할 수 있는 일이라곤 — <strong>"의심 한 줄"</strong> 뿐이었다.
+    </p>
+    <p>
+      <em>"근데 이거… 안전한가?"</em><br>
+      이 한 줄을 매 분기 한 번씩만 던져 주면 — <span class="hgr">회사가 안 무너진다.</span>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT -->
+<div class="stmt">
+  <p class="stmt-k">EP017 · STATEMENT</p>
+  <p class="stmt-t">
+    잘 돌아간다는 말과<br>
+    <span style="color:var(--gold)">안전하다는 말</span>은<br>
+    같은 단어가 아니다
+  </p>
+  <p class="stmt-s">
+    봇이 알림을 잘 쏘는 것과,<br>
+    봇이 안 뚫린다는 것은 다른 차원의 일이다.<br>
+    AI한테 일을 시키는 사장은 — 정기적으로 AI한테 자기 봇을 까보라고 시켜야 한다.<br>
+    그게 — AI 시대 사장이 새로 익혀야 할 단 하나의 습관이다.
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 3</p>
+  <h2 class="footer-t">Episode <span style="color:var(--gold)">017</span></h2>
+  <p class="footer-n">이어서 → <a href="epilogue2.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);"><strong>Epilogue 02 · 내가 가진 것이 비즈니스가 되는 시대가 아니다</strong></a></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="ep016.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">1</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">2</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">3</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">4</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">5</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">6</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">7</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">8</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">9</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep011.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">11</a>
+  <a href="ep012.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">12</a>
+  <a href="ep013.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">12-2</a>
+  <a href="ep014.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">14</a>
+  <a href="ep015.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">15</a>
+  <a href="ep016.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">16</a>
+  <a href="ep017.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">17</a>
+  <a href="epilogue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">E2</a>
+  <a href="epilogue2_2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">E2-2</a>
+  <a href="epilogue2.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+</body>
+</html>

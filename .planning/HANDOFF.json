@@ -1,58 +1,130 @@
 {
-  "version": "2.0",
-  "timestamp": "2026-05-10",
-  "session_type": "main-management",
-  "session_id": "53ea5844-bb42-427f-9544-2ee338369a4c",
-  "phase": "phase-2-complete",
-  "phase_name": "GSD Quality Automation + Tools",
-  "phase_dir": ".planning/phases/phase-1-quality-automation/",
-  "status": "ready-for-handoff",
-  "completed_phases": [
-    "phase-1-quality-automation"
-  ],
-  "current_state": {
-    "total_episodes": 37,
-    "s1_episodes": 8,
-    "s2_episodes": 9,
-    "s3_episodes": 20,
-    "lint_status": "PASS (all 3 lints + sync-index + sync-nav)",
-    "auto_protection": "pre-push hook + GitHub Actions CI active",
-    "blog_features": {
-      "comments": "Giscus active (R_kgDOSD0bmQ / DIC_kwDOSD0bmc4C8rg5)",
-      "subscribe": "Buttondown moonsuk (under review)",
-      "analytics": "GoatCounter developerpark active"
+  "version": "1.0",
+  "timestamp": "2026-05-10T15:09:26.651Z",
+  "source": "auto-postool",
+  "partial": false,
+  "phase": null,
+  "phase_name": null,
+  "phase_dir": null,
+  "plan": null,
+  "task": null,
+  "total_tasks": null,
+  "status": "auto-checkpoint",
+  "completed_tasks": [],
+  "remaining_tasks": [],
+  "blockers": [],
+  "human_actions_pending": [],
+  "decisions": [],
+  "uncommitted_files": [
+    {
+      "status": "M",
+      "path": ".gitignore"
+    },
+    {
+      "status": "M",
+      "path": ".planning/HANDOFF.json"
+    },
+    {
+      "status": "M",
+      "path": "index.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep001.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep002.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep003.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep004.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep005.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep006.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep007.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep008.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep009.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep010.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep011.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep012.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep013.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep014.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep015.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep016.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/epilogue2.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/epilogue2_2.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/index.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/interlude.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/prologue.html"
+    },
+    {
+      "status": "??",
+      "path": "SCOPE_BOUNDARY.md"
+    },
+    {
+      "status": "??",
+      "path": "devlogs/2026-05-10_06.md"
+    },
+    {
+      "status": "??",
+      "path": "s3/ep017.html"
     }
-  },
-  "tools_built": [
-    "tools/lint-sensitive.sh",
-    "tools/lint-company.sh",
-    "tools/lint-html.sh",
-    "tools/run-all-lints.sh",
-    "tools/install-hooks.sh",
-    "tools/sync-index.py",
-    "tools/sync-nav.py",
-    "tools/add-episode.py",
-    ".git/hooks/pre-push",
-    ".github/workflows/lint.yml"
   ],
-  "next_session_start_steps": [
-    "1. CLAUDE.md 자동 로딩 (섹션 0 정체성 + 섹션 8~11 자동화 워크플로우)",
-    "2. MEMORY.md 인덱스 로딩 (8 feedback + 4 project 메모리)",
-    "3. .planning/PROJECT_IDENTITY.md 참조 (불변 정체성)",
-    "4. devlogs/2026-05-10_05.md 읽기 (직전 세션 작업)",
-    "5. .planning/HANDOFF.json 읽기 (이 파일)",
-    "6. _inbox/ 스캔 → 새 파일 있으면 python tools/add-episode.py",
-    "7. 미해결 이슈 또는 사용자 신규 지시 처리"
-  ],
-  "pending_high_priority": [
-    "P1-6 Mirror 저장소 (단일 실패점 제거)",
-    "P1-5 자동수정 화이트/블랙리스트 명문화",
-    "콘텐츠 보강 B 카테고리 (lint 미해당, 멀티라인 검사 필요)",
-    "맞춤법 6건 (S1 ep002 셋팅 등)"
-  ],
-  "user_action_pending": [
-    "GitHub 2FA + 복구코드 audit 템플릿 채우기",
-    "Buttondown 승인 메일 수신 대기"
-  ],
-  "context_notes": "이 세션은 메인 프로젝트 관리 세션입니다. 모든 기록은 devlogs/, .planning/, 메모리에 영구 보존됩니다. 다음 세션은 이 HANDOFF.json + 최근 devlog + 메모리만 읽으면 즉시 이어받기 가능."
+  "next_action": null,
+  "context_notes": "Recent commits:\n55eb0bb youtube: Phase 1 D1 자동 진행 — PVC 음성 클린업 + 시드/스크립트/About 초안\n1d13d94 youtube: 유튜브 트랙 GSD 셋업 + 멀티 트랙 운영 안내\n3a057ad feat: lint-html 보강 — class 속성 흡수 + CSS 닷공백 검출\n56377f6 fix: S3 콘텐츠 정정 4건 — 속성 깨짐 + CSS + 맞춤법\n50ec69f docs: 세션 5 마무리 — 메인 관리 세션 인계 준비"
 }
