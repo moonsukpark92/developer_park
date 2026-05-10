@@ -242,3 +242,28 @@ developer_park_repo/           ← Git 저장소 (../developer_park_repo/)
 - HTML 속성 중복 (class 2번 선언 등) 금지
 - ㈜ 인코딩: ㈜ 사용, &#x338E;(㎎) 사용 금지
 - 박문석 마스킹 금지 (CEO/작가는 그대로)
+
+## 12. 멀티 트랙 운영 (블로그 ↔ 유튜브 분리)
+
+이 프로젝트는 **2개 트랙이 동시 운영**됩니다. 새 세션 시작 시 사용자가 어느 트랙인지 명시하지 않으면 반드시 묻거나 기본값(블로그)으로 진행하세요.
+
+### 트랙 식별
+
+| 트랙 | GSD 디렉토리 | 작업 영역 | 핸드오프 |
+| ------ | ------------- | ----------- | ---------- |
+| **블로그 운영** (메인) | `.planning/` | `s1/`, `s2/`, `s3/`, `tools/`, `assets/blog-features.js`, `index.html` | `.planning/HANDOFF.json` |
+| **유튜브 채널** | `.planning-youtube/` | `marketing/`(원본 인용만), `voice_rec/`, 영상 산출물 | `.planning-youtube/HANDOFF.json` |
+
+### 충돌 방지 규약
+
+- 각 세션은 **자기 트랙의 디렉토리만** 수정합니다. 상대 트랙의 파일은 절대 손대지 않습니다.
+- **공유 자원** (`CLAUDE.md`, 메모리 `MEMORY.md`, `devlogs/YYYY-MM-DD.md`): 변경 시 commit 메시지 첫 단어로 트랙 표기 (`blog: ...` 또는 `youtube: ...`).
+- Git push 전 `git pull --rebase`로 다른 트랙 커밋을 먼저 흡수합니다.
+- 두 트랙이 같은 파일을 동시에 수정해야 하면 즉시 사용자에게 보고하고 한쪽이 양보합니다.
+
+### 신규 세션 시작 절차
+
+1. 사용자 메시지에서 트랙 키워드 확인 ("블로그/콘텐츠/에피소드" → 블로그, "유튜브/영상/트레일러/아바타/음성" → 유튜브)
+2. 트랙 미명시 시 첫 응답에서 1줄로 확인
+3. 해당 트랙의 `HANDOFF.json` + 메모리 (`project_developer_park.md` 또는 `project_youtube_track.md`) 로드
+4. 자기 트랙 외 디렉토리는 read-only로 취급
