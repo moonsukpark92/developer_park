@@ -2,6 +2,16 @@
 _inbox/
 _archive/
 
+# 음성 자산 (생체정보 — 절대 커밋 금지)
+voice_rec/
+*.m4a
+*.wav
+*.mp3
+*.flac
+
+# 마케팅 작업 폴더 (헌법·전략·자동화 청사진)
+marketing/
+
 # 임시 파일
 *.tmp
 *.bak
