@@ -30,12 +30,12 @@ def get_season_order(season):
 
     if season == "s1":
         # ep001 ~ ep008
-        order = sorted([f.replace(".html", "") for f in files if f.startswith("ep")])
+        order = sorted([f.replace(".html", "") for f in files if re.match(r"ep\d+$", f.replace(".html", ""))])
         labels = {ep: ep[2:].lstrip("0") or "0" for ep in order}
         return order, labels
 
     if season == "s2":
-        eps = sorted([f.replace(".html", "") for f in files if f.startswith("ep")])
+        eps = sorted([f.replace(".html", "") for f in files if re.match(r"ep\d+$", f.replace(".html", ""))])
         order = eps[:]
         if "epilogue.html" in files:
             order.append("epilogue")
