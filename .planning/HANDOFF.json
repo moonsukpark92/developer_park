@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-10T02:52:41.872Z",
+  "timestamp": "2026-05-10T04:36:19.964Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -19,80 +19,8 @@
     {
       "status": "M",
       "path": ".planning/HANDOFF.json"
-    },
-    {
-      "status": "M",
-      "path": "index.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep001.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep002.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep003.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep004.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep005.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep006.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep007.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep008.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep009.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep010.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep011.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep012.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/ep013.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/epilogue2.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/index.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/interlude.html"
-    },
-    {
-      "status": "M",
-      "path": "s3/prologue.html"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\n87e91b7 fix: 한글 단어 끊김 방지 (word-break: keep-all) 전체 적용\n09e74e1 fix: 구독 폼 AJAX 처리 + ep012 footer 다음 에피소드 링크 추가\nd8de438 docs: 멀티채널 운영 전략 추가 (블로그 + YouTube + GitHub 소스공개)\nd2424a9 docs: 프로젝트 정체성/사명 명문화 + .planning 인텔/로드맵 구조\n00ad3a6 docs: 폴더 관리 규정 + .gitignore + CLAUDE.md 자동화 워크플로우"
+  "context_notes": "Recent commits:\nfbe3d18 feat: Epilogue 02 → 1부/2부 분리, EP011 다음 위치로 이동\nbe3655c docs: 2026-05-10 세션 3 개발일지 — EP015 작성·검수·배포 기록\n93cb181 fix: 모든 페이지 링크 전수 점검 및 ep015 통합\n6b98720 docs: 2026-05-10 세션 2 개발일지 — EP014 작성 기록\nf434ab2 feat: EP014 추가 — 유튜브 한 영상을 1분 안에 시스템에 이식하는 지식 자동화 실험"
 }
