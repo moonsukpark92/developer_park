@@ -53,10 +53,11 @@ const CONFIG = {
       <div style="font-family:'JetBrains Mono','DM Mono',monospace;font-size:.65rem;letter-spacing:3px;color:#e8a83a;margin-bottom:12px;">SUBSCRIBE</div>
       <h3 style="font-family:'Noto Serif KR',serif;font-size:1.4rem;font-weight:700;margin-bottom:8px;color:#f0e8d0;">새 에피소드 구독하기</h3>
       <p style="font-size:.9rem;color:rgba(240,232,208,.55);margin-bottom:24px;line-height:1.7;">새 글이 발행되면 이메일로 알려드립니다.</p>
-      <form action="https://buttondown.com/api/emails/embed-subscribe/${CONFIG.buttondown}" method="post" target="popupwindow" onsubmit="window.open('https://buttondown.com/${CONFIG.buttondown}', 'popupwindow')" style="display:flex;gap:8px;max-width:400px;margin:0 auto;flex-wrap:wrap;">
+      <form id="bd-subscribe-form" data-username="${CONFIG.buttondown}" style="display:flex;gap:8px;max-width:400px;margin:0 auto;flex-wrap:wrap;">
         <input type="email" name="email" placeholder="your@email.com" required style="flex:1;min-width:200px;padding:12px 16px;background:rgba(255,255,255,.05);border:1px solid rgba(232,168,58,.3);color:#f0e8d0;font-family:inherit;font-size:.9rem;border-radius:4px;outline:none;">
         <button type="submit" style="padding:12px 24px;background:#e8a83a;color:#04050a;border:none;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:2px;font-weight:700;cursor:pointer;border-radius:4px;">구독</button>
       </form>
+      <div id="bd-subscribe-msg" style="margin-top:16px;font-size:.85rem;color:rgba(240,232,208,.7);min-height:1.5em;"></div>
     </div>
   ` : `
     <div style="text-align:center;margin-bottom:60px;">
@@ -104,6 +105,46 @@ const CONFIG = {
       </div>
     </div>
   `;
+
+  // ─── Buttondown 구독 폼 AJAX 처리 ───
+  const subForm = document.getElementById('bd-subscribe-form');
+  if (subForm) {
+    subForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = subForm.dataset.username;
+      const emailInput = subForm.querySelector('input[name="email"]');
+      const button = subForm.querySelector('button');
+      const msg = document.getElementById('bd-subscribe-msg');
+      const email = emailInput.value.trim();
+      if (!email) return;
+
+      button.disabled = true;
+      button.style.opacity = '.5';
+      button.textContent = '...';
+      msg.style.color = 'rgba(240,232,208,.55)';
+      msg.textContent = '구독 신청 중...';
+
+      try {
+        const fd = new FormData();
+        fd.append('email', email);
+        await fetch(`https://buttondown.com/api/emails/embed-subscribe/${username}`, {
+          method: 'POST',
+          body: fd,
+          mode: 'no-cors',
+        });
+        msg.style.color = '#34d399';
+        msg.innerHTML = '✓ 구독 완료. 확인 이메일을 보냈으니 받은편지함을 확인하세요.';
+        emailInput.value = '';
+      } catch (err) {
+        msg.style.color = '#fb7185';
+        msg.textContent = '오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+      } finally {
+        button.disabled = false;
+        button.style.opacity = '1';
+        button.textContent = '구독';
+      }
+    });
+  }
 
   // ─── Giscus 댓글 로드 (설정된 경우) ───
   if (isConfigured(CONFIG.giscus.repoId) && isConfigured(CONFIG.giscus.categoryId)) {
