@@ -1,28 +1,60 @@
 {
   "version": "1.0",
   "timestamp": "2026-05-10T00:00:00.000Z",
-  "source": "youtube-track-init",
-  "partial": false,
+  "source": "youtube-track-d1-progress",
+  "session_role": "content (YouTube Launch)",
+  "scope_authority": "SCOPE_BOUNDARY.md §1.B",
   "phase": "phase-1-week1-infrastructure",
   "phase_name": "Week 1 인프라 구축 (D1~D7)",
   "phase_dir": ".planning-youtube/phases/phase-1-week1-infrastructure",
   "plan": "PLAN.md",
-  "task": null,
-  "total_tasks": 9,
-  "status": "ready-to-execute",
-  "completed_tasks": [],
-  "remaining_tasks": [],
-  "blockers": [],
+  "current_wave": "W1 도구 결제 대기 (인간) + W5 PVC 음성 준비 완료 (D2~D3 자동 산출)",
+  "status": "human-input-needed",
+  "completed_tasks": [
+    "Wave 5 부분: stage3_clean_pvc/ 2개 PVC 후보 클린업 완료 (5.04분 + 4.58분 = 9.62분, LUFS -16~-17, LRA 3.3~4.2)",
+    "Wave 2 부분 W2-1: 박대표·문실장 Midjourney 시드 프롬프트 작성 (marketing/visual_assets/avatar_prompts.md)",
+    "Wave 6 부분 W6-1: 트레일러 90초 스크립트 v1 초안 (marketing/scripts/trailer_v1_draft.md, 박대표 검수 대기)",
+    "Wave 3 부분 W3-4: About 한국어/영어 초안 (marketing/channel_copy/about_v1_draft.md, 박대표 검수 대기)",
+    "marketing/HANDOFF.json 신설 (SCOPE_BOUNDARY 표 준수)",
+    "stage3_clean_pvc/_NOTE.md 작성 (인계 가능 상태)"
+  ],
+  "remaining_tasks": [
+    "W1 (인간): ElevenLabs $22, Descript $24, Canva $13, Midjourney $10 결제 + Stibee 가입",
+    "W1 (인간): YouTube 채널 개설 + LinkedIn 정비",
+    "W5 (인간): ElevenLabs PVC에 stage3_clean_pvc/ 2개 파일 업로드 + 학습",
+    "W2 (인간): Midjourney 시드 프롬프트 실행 → 박대표 본인 채택 (D2~D3)",
+    "W6 (인간): 트레일러 스크립트 v1 검수·수정·서명 → trailer_final.md (헌법 §6 저자권)",
+    "W3 (인간): About 검수 → about_final_*.md → YouTube Studio 등록",
+    "W4 (D3): 아바타 표정 풀 6+4종 생성",
+    "W7 (D6): Descript 합성",
+    "W8 (D7): 발행"
+  ],
+  "blockers": [
+    "W2/W4 진행은 Midjourney 결제 의존",
+    "W5 ElevenLabs 학습 진행은 Creator 결제 의존",
+    "W6 합성은 W5 학습 완료 후 가능"
+  ],
   "human_actions_pending": [
-    "YouTube 채널명 확정 (개발자 박대표)",
-    "ElevenLabs/Descript/Canva 결제 카드 결정"
+    "도구 결제 5종 (ElevenLabs/Descript/Canva/Midjourney/Stibee 무료)",
+    "YouTube 채널 개설 (Google 계정 moonsukpark92@gmail.com)",
+    "트레일러 스크립트 v1 검수·수정·서명",
+    "About 한/영 검수",
+    "stage1_wav 나머지 10개 파일 처리 결정 (즉시 삭제 권장)",
+    "트레일러 발행 D7 vs D14 선택"
   ],
   "decisions": [
-    "유튜브 트랙은 .planning-youtube/ 별도 디렉토리 운영",
-    "블로그 트랙(.planning/)과 디렉토리 분리 — 세션 충돌 방지",
-    "marketing/ 11개 문서를 intel 단일 진실 원본으로 사용"
+    "PVC 학습용 음성: 260413_231852 + 260503_211842 (총 9.62분, ElevenLabs 권장 5~10분 정중앙)",
+    "Stage P2 Whisper 전사 생략 (PVC 목적상 불필요)",
+    "마케팅 작업 산출물은 marketing/ 하위 카테고리 디렉토리 (visual_assets/, scripts/, channel_copy/) 운영",
+    "marketing/은 .gitignore 차단 → 모든 콘텐츠 산출물 로컬만 (외부 노출 안 됨)"
+  ],
+  "inherited_artifacts": [
+    {
+      "path": "voice_rec/stage1_wav/",
+      "decision": "PVC 후보 2건 stage3로 이동 완료, 나머지 10건 삭제 권장 (대기)"
+    }
   ],
   "uncommitted_files": [],
-  "next_action": "/gsd:execute-phase phase-1-week1-infrastructure (D1: YouTube 채널 개설부터)",
-  "context_notes": "이 세션은 유튜브 트랙 전용. 블로그 트랙(.planning/, s1/s2/s3/, tools/)은 절대 수정 금지."
+  "next_action": "박대표 결정 4건 수집 → 도구 결제 → ElevenLabs PVC 업로드 → Midjourney 아바타 생성 → 스크립트 검수 → D6 합성",
+  "context_notes": "콘텐츠 세션 — SCOPE_BOUNDARY §1.B 준수. 메인 영역(.planning/, s1/s2/s3/, tools/, .gitignore, CLAUDE.md, MEMORY.md, devlogs) 절대 수정 금지. 콘텐츠 산출물은 marketing/ 하위에만 작성하며, 이 .planning-youtube/는 GSD 진행 추적용 메타만 보관."
 }
