@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP015 · 직원이 한 달간 멈춘 일을, AI 봇이 하루 만에 끝냈다</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 55% at 8% 50%,rgba(251,113,133,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 92% 20%,rgba(232,168,58,.08) 0%,transparent 60%),radial-gradient(ellipse 35% 45% at 80% 85%,rgba(56,189,248,.05) 0%,transparent 55%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,58,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,58,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.4rem,6.5vw,5.6rem);line-height:1.1;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.b{border-color:rgba(56,189,248,.4);color:var(--accent);background:rgba(56,189,248,.06);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+
+/* SECTION */
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.b{color:var(--accent);} .label.g{color:var(--gold);} .label.gr{color:var(--green);} .label.r{color:var(--rose);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+
+/* PROSE */
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.hb{color:var(--accent);font-weight:500;} .hg{color:var(--gold);font-weight:500;}
+.hr{color:var(--rose);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
+
+/* CALLOUT */
+.callout{border-left:3px solid var(--accent);padding:20px 28px;margin:36px 0;background:rgba(56,189,248,.04);border-radius:0 6px 6px 0;}
+.callout.r{border-color:var(--rose);background:rgba(251,113,133,.05);}
+.callout.g{border-color:var(--gold);background:rgba(232,168,58,.05);}
+.callout.gr{border-color:var(--green);background:rgba(52,211,153,.04);}
+.callout p{font-family:var(--serif);font-weight:700;font-size:clamp(1rem,2.2vw,1.35rem);line-height:1.55;color:var(--text);}
+
+/* TIMELINE */
+.tl{position:relative;margin:36px 0;padding-left:28px;border-left:1px solid rgba(232,168,58,.18);}
+.tli{position:relative;padding:8px 0 22px 22px;}
+.tli::before{content:'';position:absolute;left:-35px;top:14px;width:11px;height:11px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 3px rgba(232,168,58,.15);}
+.tli.r::before{background:var(--rose);box-shadow:0 0 0 3px rgba(251,113,133,.18);}
+.tli.gr::before{background:var(--green);box-shadow:0 0 0 3px rgba(52,211,153,.15);}
+.tld{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.tlt{font-family:var(--sans);font-weight:700;font-size:.96rem;color:var(--text);margin-bottom:6px;}
+.tlx{font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.78;color:rgba(232,230,225,.6);}
+
+/* TERMINAL */
+.term{background:#0a0e14;border:1px solid rgba(232,168,58,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(232,168,58,.04);border-bottom:1px solid rgba(232,168,58,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.82rem;line-height:1.95;color:var(--gold);}
+.cmd{color:rgba(232,230,225,.92);} .cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .err{color:var(--rose);} .dim{color:rgba(232,168,58,.65);}
+.term-body .you{color:var(--accent);}
+
+/* CARDS GRID — 9대 변론 카드 */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:36px 0;}
+.card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:20px 22px;position:relative;}
+.card.b{border-color:rgba(56,189,248,.22);} .card.g{border-color:rgba(232,168,58,.25);}
+.card.gr{border-color:rgba(52,211,153,.22);} .card.r{border-color:rgba(251,113,133,.25);}
+.card-n{font-family:var(--mono);font-size:.62rem;letter-spacing:3px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;}
+.card-t{font-family:var(--sans);font-weight:700;font-size:.88rem;color:var(--text);margin-bottom:8px;line-height:1.45;}
+.card.b .card-t{color:var(--accent);} .card.g .card-t{color:var(--gold);}
+.card.gr .card-t{color:var(--green);} .card.r .card-t{color:var(--rose);}
+.card-d{font-family:var(--sans);font-weight:300;font-size:.8rem;line-height:1.7;color:rgba(232,230,225,.6);}
+.card-star{position:absolute;top:14px;right:16px;font-size:.72rem;color:var(--gold);}
+
+/* INSIGHT */
+.insight{background:rgba(232,168,58,.05);border:1px solid rgba(232,168,58,.22);border-radius:8px;padding:30px 32px;margin:36px 0;}
+.insight-label{font-family:var(--mono);font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.insight-body{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.18rem);line-height:1.8;color:var(--text);}
+
+/* STMT */
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+
+/* FOOTER */
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{font-family:var(--sans);font-weight:300;font-size:.92rem;line-height:1.85;color:var(--muted);margin-bottom:30px;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;}
+
+/* QUOTE BLOCK */
+.qbox{margin:36px 0;padding:28px 32px;border:1px dashed rgba(251,113,133,.3);border-radius:6px;background:rgba(251,113,133,.03);}
+.qbox-l{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--rose);margin-bottom:14px;text-transform:uppercase;}
+.qbox-q{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.95rem,1.6vw,1.1rem);line-height:1.85;color:rgba(232,230,225,.85);}
+
+/* COMPARE */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:36px 0;}
+@media(max-width:680px){.cmp{grid-template-columns:1fr;}}
+.cmp-c{padding:24px;border-radius:8px;background:#0d1117;border:1px solid var(--border);}
+.cmp-c.before{border-color:rgba(251,113,133,.28);}
+.cmp-c.after{border-color:rgba(52,211,153,.28);}
+.cmp-l{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.cmp-c.before .cmp-l{color:var(--rose);} .cmp-c.after .cmp-l{color:var(--green);}
+.cmp-t{font-family:var(--sans);font-weight:700;font-size:1rem;color:var(--text);margin-bottom:10px;}
+.cmp-d{font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.78;color:rgba(232,230,225,.65);}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 3 · Episode 015</p>
+  <h1 class="hero-title">
+    직원이 <span style="color:var(--rose)">한 달간 멈춘 일</span>을,<br>
+    AI 봇이 <span style="color:var(--gold)">하루 만에</span> 끝냈다
+  </h1>
+  <p class="hero-desc">
+    공기업이 손해배상 소장을 보냈다. 답변서를 쓰려면 사실관계부터 정리돼야 했다.<br>
+    4월 3일, 직원에게 자료 공유를 지시했다. 한 달이 지났다. 아무도 손대지 않았다.<br>
+    답답해서 문돌실장한테 맡겼다. 일주일 전에 만들어 둔 토대 위에 skill을 하나 얹었다.<br>
+    결과물을 본 순간 — <em>변호사의 역할이 의심될 정도였다.</em>
+  </p>
+  <div class="hero-tags">
+    <span class="tag r">한 달간 정체</span>
+    <span class="tag g">AI 자동화</span>
+    <span class="tag b">Skill 시스템</span>
+    <span class="tag">Claude</span>
+    <span class="tag gr">실제 사건</span>
+    <span class="tag">바이브 매니지먼트</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH01 -->
+<section class="sec">
+  <p class="label r">Chapter 01</p>
+  <h2 class="sec-title">4월 3일, 새벽 1시 1분<br>— 자료 공유하라고 지시했다</h2>
+  <div class="prose">
+    <p>
+      공기업 한 곳이 우리 회사를 상대로 <span class="hr">손해배상 소송</span>을 걸었다.
+      청구액은 ****만 원. 지연이자까지 붙으면 더 커진다.
+      변호사한테 답변서 골격을 잡아줘야 하는데,
+      그러려면 먼저 <strong>지난 2년간의 자료가 한군데로 모여야</strong> 했다.
+    </p>
+    <p>
+      메일, 회의록, 시험성적서, 합의서, 공문, 코멘트 — 다 흩어져 있다.
+      혼자선 못 본다. 각자 책임지고 있는 자료를 가진 직원들이 합쳐줘야 한다.
+      그래서 새벽 1시에 메시지를 보냈다.
+    </p>
+  </div>
+  <div class="qbox">
+    <p class="qbox-l">2026-04-03 · 01:01 · 단톡방</p>
+    <p class="qbox-q">
+      "@류*영 @임*영<br>
+      기존의 ***(공기업)과 있었던 모든 자료 공유 진행 하세요"
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      한 줄. 명확하다. <em>모든 자료. 공유. 진행.</em>
+      이 정도면 다음 날부터 뭔가 올라올 줄 알았다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH02 -->
+<section class="sec">
+  <p class="label">Chapter 02</p>
+  <h2 class="sec-title">한 달이 지났다<br>— 아무도 손대지 않았다</h2>
+  <div class="prose">
+    <p>
+      4월 3일. 4월 10일. 4월 20일. 4월 30일.<br>
+      <span class="hr">아무 반응이 없었다.</span>
+    </p>
+    <p>
+      회의 때 물어보면 <em>"하고 있습니다"</em>, <em>"정리 중입니다"</em>.
+      메시지로 물어보면 읽고 답이 없다.
+      이게 사보타주인지, 바빠서인지, 아니면 이 일이 너무 커서 어디서부터 시작해야 할지 모르는 건지 —
+      알 수가 없었다.
+    </p>
+    <p>
+      답답한 건 둘째 치고 <strong>시간이 없었다.</strong>
+      소장이 송달된 순간부터 시계는 돌아간다.
+      답변서 제출기한은 송달 + 30일.
+      변호사가 답변서를 쓰려면 <span class="hr">먼저 사실관계가 정리되어 있어야</span> 한다.
+      그게 없으면 변호사도 못 쓴다.
+    </p>
+  </div>
+  <div class="callout r">
+    <p>
+      "지시를 했는데 한 달이 지나도 안 움직인다.<br>
+      이게 회사인지, 박물관인지."
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      옛날 같으면 어떻게 했을까. 화를 냈을 거다.
+      누구한테는 다그치고, 누구한테는 사정하고,
+      그러다가 결국 내가 새벽까지 자료를 뒤졌을 거다.
+      그게 한국 중소기업 사장이 일하는 방식이었다.
+    </p>
+    <p>
+      근데 이번엔 — <em>다른 카드를 꺼냈다.</em><br>
+      그 카드는 사실 <strong>일주일 전부터 조용히 만들어지고 있었다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH03 -->
+<section class="sec">
+  <p class="label b">Chapter 03</p>
+  <h2 class="sec-title">일주일 전 — AI가 못 읽는 문서를<br>전부 읽게 만들고 있었다</h2>
+  <div class="prose">
+    <p>
+      이 일을 봇한테 맡기기 일주일 전. 나는 전혀 다른 작업을 하고 있었다.<br>
+      회사 <span class="hb">전사 아카이브</span>를 만드는 중이었다.
+      지난 10년치 회사 문서를 한군데로 모으는 일이었다.
+    </p>
+    <p>
+      그러다 한 가지 사실을 마주쳤다.<br>
+      <strong>사람이 읽는 파일을 AI가 못 읽는다.</strong><br>
+      정확히는, 못 읽는 게 너무 많았다.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card r">
+      <p class="card-n">FAIL 01</p>
+      <p class="card-t">아래한글 (.hwp/.hwpx)</p>
+      <p class="card-d">한국 공공·중소기업의 표준 — AI는 그냥 깨진 글자만 본다</p>
+    </div>
+    <div class="card r">
+      <p class="card-n">FAIL 02</p>
+      <p class="card-t">엑셀 (.xls/.xlsx)</p>
+      <p class="card-d">병합 셀, 수식, 시트 여러 장 — 표 구조가 그대로 살아오지 않는다</p>
+    </div>
+    <div class="card r">
+      <p class="card-n">FAIL 03</p>
+      <p class="card-t">파워포인트 (.ppt/.pptx)</p>
+      <p class="card-d">텍스트는 추출돼도 도형·도표·발표자 노트의 맥락이 죽는다</p>
+    </div>
+    <div class="card r">
+      <p class="card-n">FAIL 04</p>
+      <p class="card-t">스캔 PDF / 이미지</p>
+      <p class="card-d">계약서, 시험성적서, 공문 — 사진처럼 찍힌 글자는 그냥 그림이다</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      이걸 깨닫는 순간 답답했다.
+      회사의 진짜 자료는 — <em>다 이런 형식으로 쌓여 있다.</em>
+      한글로 쓴 의견서, 엑셀로 정리한 납품 내역, PPT 보고서, PDF로 받은 공문, 핸드폰으로 찍은 시험성적서 사진.
+      <span class="hr">10년치가 다 그렇다.</span>
+    </p>
+    <p>
+      그래서 그 아카이브 안에 작은 프로그램을 하나 만들었다.<br>
+      <strong>모든 종류의 문서를 일단 다 받아서 — LLM이 직접 읽고, AI가 활용 가능한 형태로 다시 쓰는 파이프라인.</strong>
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">archive · convert pipeline</div>
+    <div class="term-body">
+      <div class="cmt"># 입력: 사람이 만든 모든 문서</div>
+      <div class="dim">[in]  .hwp .hwpx .doc .docx .xls .xlsx .ppt .pptx .pdf .jpg .png .heic ...</div>
+      <div class="cmt"># 단계 1 — 형식 파괴: 사람용 포맷 → 텍스트/구조 추출</div>
+      <div class="dim">[s1]  HWP → 텍스트  ·  엑셀 → 마크다운 표  ·  PPT → 슬라이드별 텍스트</div>
+      <div class="dim">[s1]  PDF/이미지 → OCR → 본문 + 표 좌표</div>
+      <div class="cmt"># 단계 2 — LLM이 다시 쓴다: 의미 단위로 재구성</div>
+      <div class="dim">[s2]  요약 · 항목 분리 · 관련 인덱스 태그 · 발생일자 추정</div>
+      <div class="cmt"># 단계 3 — AI 친화 포맷으로 저장</div>
+      <div class="ok">[out] 메타데이터 + 본문 .md  ·  근거 인용용 원본 링크 동봉</div>
+      <div class="cmt"># 결과: 다른 AI가 그 아카이브를 자기 자료처럼 쓴다</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      이 파이프라인이 한 번 돌고 나면 — <span class="hg">아카이브가 AI한테 살아있는 도서관이 된다.</span>
+      어떤 AI가 들어와도 한글 파일을 읽을 수 있고, 엑셀을 표로 이해하고, 사진 속 도장 찍힌 공문도 본문으로 읽는다.
+      <em>"AI들끼리 같은 자료를 본다"</em> — 그게 이 아카이브의 목적이었다.
+    </p>
+    <p>
+      소송 사건이 터졌을 때 — 나는 갑자기 깨달았다.<br>
+      <strong>이 사건의 코멘트 69건과 첨부 33건도, 결국 같은 종류의 문서다.</strong>
+      한글로 쓴 의견서, 엑셀로 정리한 납품 내역, PDF 공문, 사진으로 찍힌 시험성적서, m4a 회의 녹음.
+    </p>
+    <p>
+      <span class="hgr">"이 모든 파일을 문돌실장이 읽고 분석하면 어떻게 될까?"</span><br>
+      이 한 문장이 이번 일의 진짜 시작이었다.
+    </p>
+  </div>
+  <div class="callout">
+    <p>
+      "사람이 읽는 모든 파일을<br>
+      AI가 읽게 만든다 —<br>
+      이거 하나가 회사를 바꿨다."
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      이 토대 위에서 — 소송 사건이 터졌을 때 내가 한 일은 아주 단순했다.<br>
+      <strong>그 위에 skill 하나를 더 얹는 것뿐.</strong>
+      <em>"이 사건 폴더를 통째로 읽고, 변호사용 답변서 골격까지 뽑아라"</em>라는 절차를 한 번 정의해 두었다.
+      이게 다음 챕터의 시작이다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH04 -->
+<section class="sec">
+  <p class="label g">Chapter 04</p>
+  <h2 class="sec-title">문돌실장에게 맡겼다<br>— skill 한 줄을 얹어서</h2>
+  <div class="prose">
+    <p>
+      문돌실장은 우리 회사 AI 봇이다. 경영지원실장 역할.
+      텔레그램에 붙어 있고, 사내 협업툴·메일·캘린더 다 읽는다.
+      평소엔 업무일지 체크, 대외공문 모니터링 같은 일을 한다.
+    </p>
+    <p>
+      이번엔 그 위에 <span class="hg">소송 자료 분석 skill</span>을 한 줄 추가했다.<br>
+      Claude Code의 skill 시스템을 쓰면, AI한테 <em>"이 절차로 일해라"</em>를 영구 저장할 수 있다.
+      한 번 만들어 두면 계속 재사용된다. 사람으로 치면 <strong>매뉴얼이 머리에 박힌 직원</strong>이 한 명 더 생기는 거다.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">/skill 생성</div>
+    <div class="term-body">
+      <div class="you">박대표 ▸ 이 사건 자료 다 읽고 답변서 골격 잡아라</div>
+      <div class="cmt"># skill: legal_case_analyzer 로딩</div>
+      <div class="dim">[1/5] 사내 협업툴 task 코멘트 69건 정독</div>
+      <div class="dim">[2/5] 첨부파일 33건 다운로드 + 본문 추출</div>
+      <div class="dim">[3/5] 시간순 사실관계 재구성</div>
+      <div class="dim">[4/5] 변론 카드 추출 + 위험 매트릭스</div>
+      <div class="dim">[5/5] 변호사 자문 요청서 + 답변서 골격 작성</div>
+      <div class="ok">✓ 6개 문서 생성 완료 (총 85KB)</div>
+      <div class="cmt"># 소요 시간: 약 4시간 (배경 실행)</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      내가 한 일은 — <em>자, 시작해.</em> 한 마디였다.<br>
+      그리고 다른 일을 했다. 다음 날 아침에 결과를 봤다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT 1 -->
+<div class="stmt">
+  <p class="stmt-k">Episode 015 — 핵심 1</p>
+  <p class="stmt-t">
+    skill은 매뉴얼을<br>
+    <span style="color:var(--gold)">머리에 박은 직원이다</span>
+  </p>
+  <p class="stmt-s">
+    한 번 만들어두면 사라지지 않는다.<br>
+    퇴사도 안 한다. 잊어버리지도 않는다.<br>
+    같은 일을 시키면 같은 품질로 또 한다.
+  </p>
+</div>
+
+<!-- CH05 -->
+<section class="sec">
+  <p class="label b">Chapter 05</p>
+  <h2 class="sec-title">아침에 결과를 봤다<br>— 상상 이상이었다</h2>
+  <div class="prose">
+    <p>
+      모니터를 켰다. 6개 마크다운 파일이 있었다.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card g">
+      <p class="card-n">FILE 00</p>
+      <p class="card-t">Executive Summary</p>
+      <p class="card-d">5분 안에 사건 전체를 파악할 수 있는 한 장 요약 + 한 줄 결론</p>
+    </div>
+    <div class="card b">
+      <p class="card-n">FILE 01</p>
+      <p class="card-t">Case Chronology</p>
+      <p class="card-d">2023.11 납품부터 2026.04 소장까지 시간순 사실관계 + 인물·증거 인덱스</p>
+    </div>
+    <div class="card r">
+      <p class="card-n">FILE 02</p>
+      <p class="card-t">Legal Analysis v1</p>
+      <p class="card-d">변론 9대 카드 + 승소·패소 위험 매트릭스 + 변론 시퀀스</p>
+    </div>
+    <div class="card gr">
+      <p class="card-n">FILE 03</p>
+      <p class="card-t">Counsel Question List</p>
+      <p class="card-d">변호사한테 즉시 결정 요청할 10가지 질문 — 정식 본문 형태</p>
+    </div>
+    <div class="card g">
+      <p class="card-n">FILE 04</p>
+      <p class="card-t">Legal Reference Pack</p>
+      <p class="card-d">관련 법령·KS 표준·판례·학술자료 + 답변서 골격 권고 (24KB)</p>
+    </div>
+    <div class="card b">
+      <p class="card-n">FILE 05</p>
+      <p class="card-t">Automation Blueprint</p>
+      <p class="card-d">앞으로 비슷한 사건이 생겼을 때 똑같이 처리하는 자동화 청사진</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      이 중 하나는 <strong>변론 9대 카드</strong>였다.
+      <em>"우리는 이 사건을 어떻게 다툴 것인가"</em>를 9개 항목으로 분리하고,
+      각각의 근거 자료까지 인덱스로 붙어 있었다.
+      별표(★) 표시는 <span class="hg">결정적 카드</span>다.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <p class="card-n">CARD 01</p>
+      <p class="card-t">발주자 귀책 납기 압박</p>
+      <p class="card-d">동절기 7일 양생 사전 고지에도 결정 당일 생산 강요</p>
+    </div>
+    <div class="card">
+      <p class="card-n">CARD 02</p>
+      <p class="card-t">검수 절차 위반</p>
+      <p class="card-d">시방서상 시공 전 검수 미이행</p>
+    </div>
+    <div class="card">
+      <p class="card-n">CARD 03</p>
+      <p class="card-t">부적절한 KS 기준 적용</p>
+      <p class="card-d">천연석재용 기준을 콘크리트 평판에 적용한 부당함</p>
+    </div>
+    <div class="card">
+      <p class="card-n">CARD 04</p>
+      <p class="card-t">공인기관 적합 판정</p>
+      <p class="card-d">한국건설시험연구소 KS F **** 적합 시험성적서 보유</p>
+    </div>
+    <div class="card g">
+      <p class="card-n">★ CARD 05</p>
+      <p class="card-t">5개월 이상 적치 방치</p>
+      <p class="card-d">발주처 설계변경으로 시공 지연 — 보양 자재 내구연한 초과<span class="card-star">★</span></p>
+    </div>
+    <div class="card g">
+      <p class="card-n">★ CARD 06</p>
+      <p class="card-t">합의서 적용범위 한정</p>
+      <p class="card-d">발주처 자체 공문에서 "합의서는 1차 부적합 한정" 자인<span class="card-star">★</span></p>
+    </div>
+    <div class="card">
+      <p class="card-n">CARD 07</p>
+      <p class="card-t">일부 시공 강행 모순</p>
+      <p class="card-d">하자 주장 물량 중 절반 가까이 실제 시공 — 본질적 하자 부정</p>
+    </div>
+    <div class="card g">
+      <p class="card-n">★ CARD 08</p>
+      <p class="card-t">미수금 상계</p>
+      <p class="card-d">청구액과 거의 동일한 미수금 보유 — 상계 시 실질 청구 봉쇄<span class="card-star">★</span></p>
+    </div>
+    <div class="card">
+      <p class="card-n">CARD 09</p>
+      <p class="card-t">증거 가치 약화</p>
+      <p class="card-d">원고측 사진 1장의 동일성 미입증 + 업계 관행 반박</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      여기서 끝이 아니었다.
+      봇은 <strong>발주처가 자기들 공문에서 자인한 부분</strong>까지 찾아냈다.
+      "1차 부적합은 합의서로 처리되어 하자신고 대상이 아님" — 발주처가 자기 입으로 한 말이다.
+      이게 우리가 다투는 2,210㎡와 합쳐지면 <span class="hg">합의서로 본 사건을 막을 수 없다는 결정타</span>가 된다.
+    </p>
+    <p>
+      나는 이 자료를 직원에게 한 달 전에 부탁했다.<br>
+      직원은 <span class="hr">한 줄도 안 썼다.</span><br>
+      봇은 <span class="hgr">하루 만에 6개 문서, 약 85KB를 썼다.</span>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH06 -->
+<section class="sec">
+  <p class="label">Chapter 06</p>
+  <h2 class="sec-title">변호사한테 보냈다<br>— 그리고 멍했다</h2>
+  <div class="prose">
+    <p>
+      문돌실장이 만든 자문 요청서 본문을 그대로 변호사에게 보냈다.
+      소장 송달 일자, 합의서 효력 범위, 9대 카드 우선순위, 미수금 상계 vs 반소,
+      부진정연대 분리 가능성, 감정 신청 항목, 회의녹음 STT 변환 검수,
+      가집행 면제 신청 시기 — <strong>10가지 항목이 정식 문서 형태로 정리되어 있었다.</strong>
+    </p>
+    <p>
+      변호사한테 보내고 — 멍하니 모니터를 봤다.<br>
+      <em>이게 가능한 일인가.</em>
+    </p>
+  </div>
+  <div class="cmp">
+    <div class="cmp-c before">
+      <p class="cmp-l">Before · 직원에게 지시</p>
+      <p class="cmp-t">한 달 · 0건</p>
+      <p class="cmp-d">
+        지시 → 한 달 침묵 → 답변서 기한 임박 → 변호사도 못 움직임.
+        결국 사장이 새벽까지 자료를 뒤지는 시나리오.
+      </p>
+    </div>
+    <div class="cmp-c after">
+      <p class="cmp-l">After · 봇에게 시킴</p>
+      <p class="cmp-t">하루 · 6개 문서</p>
+      <p class="cmp-d">
+        skill 한 번 → 코멘트 69건·첨부 33건 정독 → 시간순 정리 →
+        9대 카드 + 위험 매트릭스 + 자문 요청서 + 답변서 골격까지.
+      </p>
+    </div>
+  </div>
+  <div class="qbox">
+    <p class="qbox-l">박대표의 솔직한 한 줄</p>
+    <p class="qbox-q">
+      "정말 변호사의 역할이 의심될 정도였다.<br>
+      그러면 안 되는데 — 머릿속에 그 생각이 스쳐 지나갔다."
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      이 말이 위험하다는 건 안다.
+      변호사는 법정에서 변론하고, 협상하고, 책임을 진다.
+      봇은 자료 정리를 한다. <strong>역할이 다르다.</strong>
+    </p>
+    <p>
+      근데 그 <em>"자료 정리"</em>가 변호사 일의 절반이라면?
+      변호사한테 보내기 전에 <span class="hg">사장이 핵심 카드를 다 정리해서 보내는 경우</span>와
+      <span class="hr">"변호사님 알아서 해주세요"</span> 하고 보내는 경우 —
+      결과가 같을 리가 없다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH07 -->
+<section class="sec">
+  <p class="label gr">Chapter 07</p>
+  <h2 class="sec-title">무서운 일이 일어나고 있다<br>— 그리고 우리는 그걸 못 본다</h2>
+  <div class="prose">
+    <p>
+      이 사건에서 내가 진짜로 두려운 건 <em>소송이 아니었다.</em><br>
+      소송은 변호사한테 맡기면 된다. 카드도 정리됐다.
+    </p>
+    <p>
+      두려운 건 — <strong>한 달간 직원이 못 한 일을 봇이 하루에 했다</strong>는 그 사실이다.
+      이게 한 번이 아니라 앞으로 <span class="hr">계속</span> 그럴 거라는 점이다.
+    </p>
+    <p>
+      소송 자료 정리는 시작이다. 다음은 견적, 다음은 계약서 검토, 다음은 보고서, 다음은 분석…
+      한국 중소기업의 '사무직'이 하던 일 중에 <strong>봇이 못 하는 일이 거의 없어진다.</strong>
+    </p>
+  </div>
+  <div class="insight">
+    <p class="insight-label">진짜로 무서운 부분</p>
+    <p class="insight-body">
+      나는 직원을 자르려고 이 글을 쓰는 게 아니다.<br>
+      <span class="hr">자르고 싶지 않아서 쓰는 거다.</span><br>
+      봇이 하루에 끝낸 일을 한 달간 안 하면 —<br>
+      <strong>다음에 자를 사람을 정해야 하는 건 사장이 아니라 시장이다.</strong>
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      직원에게 다시 메시지를 보냈다. 화내지 않았다.
+      <em>"봇이 정리해 둔 자료가 있다. 거기 빠진 부분만 채워달라."</em>
+      이게 새 시대의 일하는 방식이라고 생각한다.
+      봇이 70%를 한다. 사람은 30%를 채운다. 합치면 100%.
+      <strong>혼자 100%를 한다고 우기는 사람이 가장 위험하다.</strong>
+    </p>
+    <p>
+      나는 코딩을 모르는 중소기업 사장이다.
+      한 달 전까지만 해도 — <span class="hr">"이런 일은 직원이 해야지"</span> 라고 생각했다.
+      지금은 다르다.
+    </p>
+    <p>
+      <span class="hgr">"이 일은 누가 하면 가장 잘하나?"</span><br>
+      이렇게 묻는다. 답은 그때그때 다르다. 사람일 때도 있고, 봇일 때도 있다.
+      그 답을 정확히 고르는 사람이 살아남는다.
+    </p>
+  </div>
+  <div class="callout gr">
+    <p>
+      "이 글을 보는 다른 회사 사장님께 —<br>
+      봇 하나 만들어 두세요. 직원이 멈춘 일을<br>
+      봇은 어떻게든 시작합니다."
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT 2 -->
+<div class="stmt">
+  <p class="stmt-k">Episode 015 마무리</p>
+  <p class="stmt-t">
+    바이브 코딩이 아니다<br>
+    <span style="color:var(--rose)">바이브 매니지먼트다</span>
+  </p>
+  <p class="stmt-s">
+    이젠 코딩만 AI가 하는 게 아니다.<br>
+    경영, 법무, 분석 — 다 AI에게 시킬 수 있다.<br>
+    사장은 묻는 사람이고, 봇은 하는 사람이다.<br>
+    이 구조에 적응하지 않으면 — 회사는 사라진다.
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 3</p>
+  <h2 class="footer-t">Episode <span style="color:var(--gold)">015</span></h2>
+  <p class="footer-n">이어서 → <a href="epilogue2.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);"><strong>Epilogue 02 · 내가 가진 것이 비즈니스가 되는 시대가 아니다</strong></a></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="ep014.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep011.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">11</a>
+  <a href="ep012.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">12</a>
+  <a href="ep013.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">12-2</a>
+  <a href="ep014.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">14</a>
+  <a href="ep015.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">15</a>
+  <a href="epilogue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">E2</a>
+  <a href="epilogue2.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+<!-- BLOG FEATURES (subscribe + comments + analytics) -->
+<div id="blog-features-mount"></div>
+<script src="../assets/blog-features.js"></script>
+</body>
+</html>
