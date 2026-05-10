@@ -1,0 +1,38 @@
+name: Lint & Index Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    name: 콘텐츠 무결성 검사
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 민감정보 검사
+        run: bash tools/lint-sensitive.sh
+
+      - name: 회사명 표기 검사
+        run: bash tools/lint-company.sh
+
+      - name: HTML/CSS 무결성 검사
+        run: bash tools/lint-html.sh
+
+      - name: 인덱스 카운트 동기 검사
+        run: python tools/sync-index.py --check
+
+      - name: 시즌 네비 동기 검사 (S1/S2/S3)
+        run: |
+          python tools/sync-nav.py s1 --check
+          python tools/sync-nav.py s2 --check
+          python tools/sync-nav.py s3 --check

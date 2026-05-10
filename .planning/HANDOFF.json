@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "timestamp": "2026-05-10T04:36:19.964Z",
+  "timestamp": "2026-05-10T06:03:26.220Z",
   "source": "auto-postool",
   "partial": false,
   "phase": null,
@@ -19,8 +19,36 @@
     {
       "status": "M",
       "path": ".planning/HANDOFF.json"
+    },
+    {
+      "status": "M",
+      "path": "index.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/ep016.html"
+    },
+    {
+      "status": "M",
+      "path": "s3/index.html"
+    },
+    {
+      "status": "??",
+      "path": ".github/"
+    },
+    {
+      "status": "??",
+      "path": "tools/add-episode.py"
+    },
+    {
+      "status": "??",
+      "path": "tools/sync-index.py"
+    },
+    {
+      "status": "??",
+      "path": "tools/sync-nav.py"
     }
   ],
   "next_action": null,
-  "context_notes": "Recent commits:\nfbe3d18 feat: Epilogue 02 → 1부/2부 분리, EP011 다음 위치로 이동\nbe3655c docs: 2026-05-10 세션 3 개발일지 — EP015 작성·검수·배포 기록\n93cb181 fix: 모든 페이지 링크 전수 점검 및 ep015 통합\n6b98720 docs: 2026-05-10 세션 2 개발일지 — EP014 작성 기록\nf434ab2 feat: EP014 추가 — 유튜브 한 영상을 1분 안에 시스템에 이식하는 지식 자동화 실험"
+  "context_notes": "Recent commits:\nd8d27f3 docs: 2026-05-10 세션 4 개발일지 — EP016 작성·통합·검수·배포\n56cbc35 feat: EP016 추가 — GSD, 컨텍스트 문제를 깬 운영 체계\n0dd124e fix: ㈜ 인코딩 변종 4건 정정 (Phase 2)\ne480399 feat(phase-1): 자동 안전망 도구 5개 + pre-push hook + 1차 audit\nfbe3d18 feat: Epilogue 02 → 1부/2부 분리, EP011 다음 위치로 이동"
 }
