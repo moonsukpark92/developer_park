@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP014 · 유튜브 한 영상을 시스템에 이식한다</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#060809; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#f59e0b; --rose:#fb7185; --green:#34d399;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 55% 55% at 8% 50%,rgba(56,189,248,.09) 0%,transparent 65%),radial-gradient(ellipse 40% 40% at 92% 20%,rgba(245,158,11,.06) 0%,transparent 60%),radial-gradient(ellipse 35% 45% at 80% 85%,rgba(52,211,153,.05) 0%,transparent 55%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,248,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.025) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.6rem,7vw,6rem);line-height:1.08;max-width:880px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:640px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.b{border-color:rgba(56,189,248,.4);color:var(--accent);background:rgba(56,189,248,.06);}
+.tag.g{border-color:rgba(245,158,11,.4);color:var(--gold);background:rgba(245,158,11,.06);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.tag.r{border-color:rgba(251,113,133,.35);color:var(--rose);background:rgba(251,113,133,.05);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+
+/* SECTION */
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.b{color:var(--accent);} .label.g{color:var(--gold);} .label.gr{color:var(--green);} .label.r{color:var(--rose);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.7rem,4vw,2.8rem);line-height:1.2;margin-bottom:32px;}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+
+/* PROSE */
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.hb{color:var(--accent);font-weight:500;} .hg{color:var(--gold);font-weight:500;}
+.hr{color:var(--rose);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
+
+/* CALLOUT */
+.callout{border-left:3px solid var(--accent);padding:20px 28px;margin:36px 0;background:rgba(56,189,248,.04);border-radius:0 6px 6px 0;}
+.callout.r{border-color:var(--rose);background:rgba(251,113,133,.04);}
+.callout.g{border-color:var(--gold);background:rgba(245,158,11,.04);}
+.callout.gr{border-color:var(--green);background:rgba(52,211,153,.04);}
+.callout p{font-family:var(--serif);font-weight:700;font-size:clamp(1rem,2.2vw,1.35rem);line-height:1.55;color:var(--text);}
+
+/* TERMINAL */
+.term{background:#0a0e14;border:1px solid rgba(56,189,248,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(56,189,248,.04);border-bottom:1px solid rgba(56,189,248,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.82rem;line-height:1.95;color:var(--accent);}
+.cmd{color:rgba(232,230,225,.92);} .cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .err{color:var(--rose);} .dim{color:rgba(245,158,11,.75);}
+.term-body .you{color:var(--gold);}
+.term-body .gem{color:var(--accent);}
+
+/* STAGE GRID */
+.stage{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:36px 0;}
+.scell{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:22px 22px;position:relative;}
+.scell.b{border-color:rgba(56,189,248,.22);} .scell.g{border-color:rgba(245,158,11,.22);}
+.scell.gr{border-color:rgba(52,211,153,.22);} .scell.r{border-color:rgba(251,113,133,.22);}
+.scell-n{font-family:var(--mono);font-size:.62rem;letter-spacing:3px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;}
+.scell-t{font-family:var(--sans);font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:8px;}
+.scell.b .scell-t{color:var(--accent);} .scell.g .scell-t{color:var(--gold);}
+.scell.gr .scell-t{color:var(--green);} .scell.r .scell-t{color:var(--rose);}
+.scell-d{font-family:var(--sans);font-weight:300;font-size:.83rem;line-height:1.75;color:rgba(232,230,225,.62);}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column;margin:36px 0;}
+.fs{display:flex;gap:20px;align-items:flex-start;padding-bottom:24px;position:relative;}
+.fs:last-child{padding-bottom:0;}
+.fn{flex-shrink:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:.7rem;font-weight:700;background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.3);color:var(--accent);position:relative;z-index:1;}
+.fs.g .fn{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);color:var(--gold);}
+.fs.gr .fn{background:rgba(52,211,153,.1);border-color:rgba(52,211,153,.3);color:var(--green);}
+.fs.r .fn{background:rgba(251,113,133,.1);border-color:rgba(251,113,133,.3);color:var(--rose);}
+.fl{position:absolute;left:17px;top:36px;bottom:0;width:1px;background:linear-gradient(180deg,rgba(56,189,248,.25) 0%,transparent 100%);}
+.fs.g .fl{background:linear-gradient(180deg,rgba(245,158,11,.3) 0%,transparent 100%);}
+.fs.gr .fl{background:linear-gradient(180deg,rgba(52,211,153,.25) 0%,transparent 100%);}
+.fs:last-child .fl{display:none;}
+.fc{padding-top:6px;}
+.ft{font-family:var(--sans);font-weight:700;font-size:.94rem;color:var(--text);margin-bottom:6px;}
+.fd{font-family:var(--sans);font-weight:300;font-size:.87rem;line-height:1.78;color:rgba(232,230,225,.62);}
+
+/* INSIGHT */
+.insight{background:rgba(245,158,11,.05);border:1px solid rgba(245,158,11,.22);border-radius:8px;padding:30px 32px;margin:36px 0;}
+.insight-label{font-family:var(--mono);font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.insight-body{font-family:var(--serif);font-weight:400;font-size:clamp(1rem,2vw,1.2rem);line-height:1.75;color:var(--text);}
+.insight.gr{background:rgba(52,211,153,.05);border-color:rgba(52,211,153,.22);}
+.insight.gr .insight-label{color:var(--green);}
+
+/* MD CARDS — 결과물 4개 */
+.mds{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:32px 0;}
+.mdc{background:#0a0e14;border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:20px 22px;font-family:var(--mono);}
+.mdc-tag{font-size:.58rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+.mdc-name{font-size:.78rem;color:var(--text);font-weight:700;margin-bottom:14px;word-break:break-all;}
+.mdc-meta{font-size:.7rem;color:rgba(232,230,225,.45);line-height:1.85;}
+.mdc-meta span{color:var(--accent);}
+
+/* STATEMENT */
+.stmt{padding:clamp(80px,12vw,160px) clamp(24px,8vw,100px);background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center;position:relative;overflow:hidden;}
+.stmt::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 60% at 50% 50%,rgba(56,189,248,.05) 0%,transparent 70%);pointer-events:none;z-index:0;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin-bottom:32px;position:relative;z-index:1;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.9rem,5vw,4.2rem);line-height:1.15;max-width:840px;margin:0 auto;position:relative;z-index:1;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.85rem,1.4vw,1rem);color:var(--muted);max-width:600px;margin:28px auto 0;line-height:1.9;position:relative;z-index:1;}
+
+/* FOOTER */
+.footer{padding:clamp(60px,8vw,100px) clamp(24px,8vw,100px) clamp(40px,5vw,60px);border-top:1px solid var(--border);display:flex;flex-direction:column;align-items:center;text-align:center;gap:20px;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--muted);}
+.footer-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.4rem,3.5vw,2.4rem);line-height:1.2;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.8rem;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--accent);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;color:rgba(255,255,255,.16);line-height:2;text-transform:uppercase;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+
+
+<!-- HERO -->
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 3 · Episode 014</p>
+  <h1 class="hero-title">
+    <span style="color:var(--accent)">유튜브 한 영상</span>을<br>
+    1분 안에 시스템에<br>
+    <span style="color:var(--gold)">이식한다</span>
+  </h1>
+  <p class="hero-desc">
+    이전 에피소드에서 "AI한테 새 기술을 분석시키고 우리 시스템에 이식한다"고 말만 했다.<br>
+    이번엔 실제로 보여준다 — 제미나이로 Gem을 만들었다. 한 번에 안 됐다.<br>
+    프롬프트를 고쳤다. 결국 유튜브 링크 하나로 보고서 + MD 4개가 나왔다.
+  </p>
+  <div class="hero-tags">
+    <span class="tag b">Gemini Gems</span>
+    <span class="tag g">프롬프트 엔지니어링</span>
+    <span class="tag">RAG</span>
+    <span class="tag gr">지식 자동화</span>
+    <span class="tag r">시행착오</span>
+    <span class="tag">바이브 엔지니어링</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH01 -->
+<section class="sec">
+  <p class="label">Chapter 01</p>
+  <h2 class="sec-title">새 기술이 너무 빨리 쏟아진다<br>— 다 공부하는 건 불가능하다</h2>
+  <div class="prose">
+    <p>
+      유튜브에 매일 새로운 오픈소스, 새로운 AI 도구가 올라온다.
+      "이거 우리 회사에 쓰면 좋겠는데?" 싶은 영상이 하루에도 서너 개씩 보인다.
+      <span class="hr">근데 다 본다고 내 것이 되는 게 아니다.</span>
+      영상은 그냥 영상이다.
+    </p>
+    <p>
+      나는 코딩을 모른다.
+      영상에서 스쳐 지나가는 라이브러리 이름, 아키텍처 도표 —
+      한 번 보고 이해할 수 있는 게 아니다.
+      그래서 보고 나면 <em>"좋네"</em>로 끝났다.
+    </p>
+    <p>
+      그러다 깨달았다.<br>
+      <strong>내가 직접 공부할 게 아니다.</strong> AI한테 시키면 된다.<br>
+      분석시키고, 검색으로 보강시키고, 그걸 <span class="hb">다른 AI(Claude Code)가 학습할 수 있는 형태로 변환</span>시키면 된다.
+    </p>
+  </div>
+  <div class="callout">
+    <p>
+      "영상 한 편을 1분 안에<br>
+      실행 가능한 기술 문서로 만든다."
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH02 -->
+<section class="sec">
+  <p class="label g">Chapter 02</p>
+  <h2 class="sec-title">제미나이 Gems로 만들어봤다<br>— 첫 시도는 멈춰버렸다</h2>
+  <div class="prose">
+    <p>
+      제미나이에는 "Gems"라는 기능이 있다. 자기만의 전용 AI 도우미를 만들 수 있다.
+      나는 이름을 <span class="hg">"기술 지식 엔지니어 & MD 오토메이터"</span>로 지었다.
+      유튜브 링크를 던지면 자동으로 분석 → 검색 보강 → 보고서 → MD 파일까지 만들어주는 봇.
+    </p>
+    <p>
+      처음에 욕심이 많았다. 한 프롬프트에 다 넣었다.
+      <em>"분석해라, 검색해라, 보고서 써라, MD 파일 4개 만들어라."</em>
+      유튜브 링크 던졌다. 잠깐 돌더니 — <span class="hr">화면이 멈췄다.</span>
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">Gemini · 첫 시도</div>
+    <div class="term-body">
+      <div class="you">박대표 ▸ https://youtu.be/4JNHUpU4Vs0</div>
+      <div class="cmt"># Gem 작동 시작...</div>
+      <div class="dim">... 영상 분석 중</div>
+      <div class="dim">... 웹 검색 보강 중</div>
+      <div class="dim">... 보고서 생성 중</div>
+      <div class="dim">... MD 파일 생성 중</div>
+      <div class="err">✗ 응답 시간 초과 — 화면 멈춤</div>
+      <div class="cmt"># 한 번에 너무 많은 걸 시켰다.</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      처음엔 <em>"Gem이 고장 났나?"</em> 싶었다.
+      근데 다시 생각해 보니 — <strong>한 응답에 너무 많은 양을 출력시키려고 한 게 문제였다.</strong>
+      AI한테도 호흡이 필요한 거다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH03 -->
+<section class="sec">
+  <p class="label gr">Chapter 03</p>
+  <h2 class="sec-title">프롬프트를 다시 짰다<br>— "단계별로 멈춰서 물어봐라"</h2>
+  <div class="prose">
+    <p>
+      해결책은 단순했다. <span class="hgr">한 번에 다 시키지 말고, 단계를 끊는다.</span>
+      각 단계가 끝날 때마다 멈춰서 나한테 <em>"계속할까요?"</em>라고 물어보게 만들었다.
+    </p>
+    <p>
+      이게 사실 사람한테 일 시킬 때랑 똑같다.
+      <strong>큰 일을 한 번에 던지면 어디서부터 시작해야 할지 모른다.</strong>
+      쪼개서, 단계마다 확인받고, 다음 단계로 넘어가는 게 안전하다.
+    </p>
+  </div>
+  <div class="flow">
+    <div class="fs">
+      <div class="fn">①</div><div class="fl"></div>
+      <div class="fc">
+        <p class="ft">[1단계] 영상 스캔 — 제목·주제·기술 스택만 뽑고 멈춤</p>
+        <p class="fd">"이거 분석할까요?" 라고 물어본다. 내가 "네"라고 해야 다음 단계로 간다.</p>
+      </div>
+    </div>
+    <div class="fs g">
+      <div class="fn">②</div><div class="fl"></div>
+      <div class="fc">
+        <p class="ft">[2단계] 검색 보강 + 보고서 작성 — 출력하고 멈춤</p>
+        <p class="fd">웹 검색으로 최신 정보를 보태서 보고서를 쓴다. "MD 파일 만들까요?" 물어보고 또 멈춘다.</p>
+      </div>
+    </div>
+    <div class="fs gr">
+      <div class="fn">③</div>
+      <div class="fc">
+        <p class="ft">[3단계] AI 학습용 MD 파일 생성</p>
+        <p class="fd">Cursor·Claude Code가 바로 학습할 수 있는 형태(YAML 메타데이터 + 모듈별 MD)로 출력.</p>
+      </div>
+    </div>
+  </div>
+  <div class="callout gr">
+    <p>
+      "한 번에 전부 시키지 마라.<br>
+      쪼개서, 확인받고, 다음 단계 — 그게 안 멈추는 비결이다."
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT 1 -->
+<div class="stmt">
+  <p class="stmt-k">Episode 014 — 핵심 1</p>
+  <p class="stmt-t">
+    프롬프트는 한 번에 안 된다<br>
+    <span style="color:var(--gold)">고쳐가며 만드는 거다</span>
+  </p>
+  <p class="stmt-s">
+    완벽한 프롬프트를 처음부터 쓰려고 하지 마라.<br>
+    돌려보고, 막히면 고치고, 다시 돌린다.<br>
+    이게 바이브 엔지니어링의 진짜 모습이다.
+  </p>
+</div>
+
+<!-- CH04 -->
+<section class="sec">
+  <p class="label b">Chapter 04</p>
+  <h2 class="sec-title">실제로 돌려봤다<br>— 유튜브 한 영상이 이렇게 변했다</h2>
+  <div class="prose">
+    <p>
+      두 번째 시도에선 멈추지 않았다.<br>
+      <strong>"오픈소스 모던 AI 개발자 Top 20"</strong>이라는 영상을 던졌다.
+      Gem이 단계별로 차근차근 작업했다.
+    </p>
+  </div>
+  <div class="stage">
+    <div class="scell b">
+      <p class="scell-n">Stage 01</p>
+      <p class="scell-t">Initial Scan</p>
+      <p class="scell-d">제목 / 핵심 주제 / 13개 오픈소스 도구 리스트 추출 → "분석할까요?"</p>
+    </div>
+    <div class="scell g">
+      <p class="scell-n">Stage 02</p>
+      <p class="scell-t">Deep Report</p>
+      <p class="scell-d">실시간 검색 결합 → Executive Summary + 4계층 아키텍처 도표 + 도입 로드맵</p>
+    </div>
+    <div class="scell gr">
+      <p class="scell-n">Stage 03</p>
+      <p class="scell-t">RAG-Ready MD</p>
+      <p class="scell-d">Cursor·Claude Code 학습용 모듈형 MD 파일 4개 자동 생성</p>
+    </div>
+    <div class="scell">
+      <p class="scell-n">Total</p>
+      <p class="scell-t">소요 시간</p>
+      <p class="scell-d">유튜브 링크 입력부터 MD 4개 출력까지 — 약 <span class="hb">3분</span></p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      그리고 마지막에 — Gem이 4개의 마크다운 파일을 토해냈다.<br>
+      각 파일은 YAML 메타데이터(<em>tech_stack, category, related_files</em>)가 위에 붙어 있고,
+      <strong>Concept · Technical Specs · Logic Flow · References</strong> 구조로 정리되어 있었다.
+    </p>
+  </div>
+  <div class="mds">
+    <div class="mdc">
+      <p class="mdc-tag">FILE 01</p>
+      <p class="mdc-name">01_Modular_Agent_Architecture.md</p>
+      <p class="mdc-meta">
+        <span>tech_stack:</span> Hello Agent, Modular AI<br>
+        <span>category:</span> AI Architecture<br>
+        인지·기억·행동 모듈 조립
+      </p>
+    </div>
+    <div class="mdc">
+      <p class="mdc-tag">FILE 02</p>
+      <p class="mdc-name">02_Private_Local_Workflow.md</p>
+      <p class="mdc-meta">
+        <span>tech_stack:</span> Cloak, LDR, SLM<br>
+        <span>category:</span> Privacy &amp; Sovereignty<br>
+        외부 유출 없는 로컬 연구
+      </p>
+    </div>
+    <div class="mdc">
+      <p class="mdc-tag">FILE 03</p>
+      <p class="mdc-name">03_System_Performance.md</p>
+      <p class="mdc-meta">
+        <span>tech_stack:</span> C, DS4, DLC<br>
+        <span>category:</span> System Infra<br>
+        저수준 메모리 / I/O 최적화
+      </p>
+    </div>
+    <div class="mdc">
+      <p class="mdc-tag">FILE 04</p>
+      <p class="mdc-name">04_Knowledge_Orchestration.md</p>
+      <p class="mdc-meta">
+        <span>tech_stack:</span> LobeHub, Obsidian<br>
+        <span>category:</span> Knowledge Eng.<br>
+        로컬 RAG / 제2의 뇌
+      </p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      이 4개 파일을 그대로 복사해서 우리 프로젝트의 <span class="hg">/knowledge/</span> 폴더에 넣는다.
+      그다음 Claude Code한테 말한다 —<br>
+      <em>"이 폴더에 있는 지식을 바탕으로 우리 시스템에 적용 계획서를 만들어라."</em>
+    </p>
+    <p>
+      그러면 Claude Code가 <strong>영상을 본 적도 없으면서</strong>
+      그 13개 오픈소스 도구를 다 이해한 상태로 코딩을 도와준다.
+      이게 바로 <span class="hb">"AI에게 AI를 학습시키는"</span> 방법이다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH05 -->
+<section class="sec">
+  <p class="label r">Chapter 05</p>
+  <h2 class="sec-title">이게 왜 의미 있나<br>— 시스템 이식의 진짜 모습</h2>
+  <div class="prose">
+    <p>
+      이전 에피소드에서 말했었다 —
+      <em>"Gemini가 분석하고, Perplexity로 보강해서 .md로 만들어 Claude Code에게 준다."</em>
+      말은 쉽게 했지만, <span class="hr">실제로 이걸 어떻게 하는지는 보여주지 못했다.</span>
+    </p>
+    <p>
+      이번 에피소드는 <strong>그 과정을 처음부터 끝까지 다 보여준 것이다.</strong>
+      Gem 만들기, 첫 실패, 프롬프트 수정, 단계별 분할, 결과물 4개 — 전부.
+    </p>
+  </div>
+  <div class="insight">
+    <p class="insight-label">핵심 인사이트</p>
+    <p class="insight-body">
+      나는 그 영상의 13개 도구를 <strong>한 줄도 읽지 않았다.</strong><br>
+      근데 우리 회사 시스템엔 <span class="hg">그 13개 도구의 지식이 다 들어와 있다.</span><br>
+      이게 1인 중소기업이 대기업 R&amp;D 팀과<br>경쟁할 수 있는 유일한 방법이다.
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      예전엔 새 기술 하나 배우는 데 며칠이 걸렸다.
+      유튜브 보고, 블로그 찾고, 깃허브 들어가서 README 읽고,
+      샘플 코드 따라 해보고, 우리 시스템에 어떻게 맞출지 고민하고…
+    </p>
+    <p>
+      이젠 <strong>유튜브 링크 하나 → 3분 → 시스템 이식 가능한 지식</strong>이다.<br>
+      <span class="hgr">속도가 다른 게 아니라 차원이 다르다.</span>
+    </p>
+  </div>
+  <div class="callout r">
+    <p>
+      "혼자 알면 사라진다.<br>
+      같이 알면 변한다.<br>
+      이 Gem 프롬프트도 그래서 공유한다."
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      이 시리즈를 보고 있는 다른 중소기업 대표한테 말한다.<br>
+      <em>제미나이 들어가서 Gem 하나 만들어보세요.</em>
+      처음엔 멈춥니다. 프롬프트 고치세요. 단계 쪼개세요.
+      <strong>두 번째엔 됩니다.</strong> 세 번째엔 자기 회사에 맞게 진화시킬 수 있습니다.
+    </p>
+    <p>
+      여러분이 매일 보는 유튜브가 — 사라지는 정보가 아니라
+      회사 자산이 되기 시작합니다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT 2 -->
+<div class="stmt">
+  <p class="stmt-k">Episode 014 마무리</p>
+  <p class="stmt-t">
+    유튜브를 자산으로<br>
+    <span style="color:var(--green)">바꾸는 순간이다</span>
+  </p>
+  <p class="stmt-s">
+    영상은 흘러가는 정보가 아니다.<br>
+    Gem 하나만 잘 만들어두면 — 매일 보던 유튜브가<br>
+    회사 시스템에 이식 가능한 지식 자산이 된다.
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 3</p>
+  <h2 class="footer-t">Episode <span style="color:var(--accent)">014</span></h2>
+  <p class="footer-n">이어서 → <strong>Epilogue 02 · 내가 가진 것이 비즈니스가 되는 시대가 아니다</strong></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="ep013.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">01</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">02</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">03</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">04</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">05</a>
+  <a href="interlude.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">IL</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">06</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">07</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">08</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">09</a>
+  <a href="ep010.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">10</a>
+  <a href="ep011.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">11</a>
+  <a href="ep012.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">12</a>
+  <a href="ep013.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">12-2</a>
+  <a href="ep014.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">14</a>
+  <a href="epilogue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">E2</a>
+  <a href="epilogue2.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+<!-- BLOG FEATURES (subscribe + comments + analytics) -->
+<div id="blog-features-mount"></div>
+<script src="../assets/blog-features.js"></script>
+</body>
+</html>
