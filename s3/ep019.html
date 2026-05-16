@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP019 · 자체 LLM을 갖는 순간</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa; --core:#6aaf85;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(106,175,133,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(52,211,153,.08) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#060e10 50%,#0a1218 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(106,175,133,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(106,175,133,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--core);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.4rem,6.5vw,5.6rem);line-height:1.1;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.tag.core{border-color:rgba(106,175,133,.4);color:var(--core);background:rgba(106,175,133,.06);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--core);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.gr{color:var(--green);} .label.core{color:var(--core);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.sec-title em{font-style:normal;color:var(--core);}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.prose code{font-family:var(--mono);font-size:.86em;color:var(--core);background:rgba(106,175,133,.08);padding:1px 6px;border-radius:3px;}
+.hg{color:var(--gold);font-weight:500;} .hgr{color:var(--green);font-weight:500;} .hcore{color:var(--core);font-weight:500;}
+
+.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--core);background:linear-gradient(90deg,rgba(106,175,133,.08) 0%,transparent 100%);position:relative;}
+.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--core);opacity:.35;line-height:1;}
+.qbox p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.98rem,1.7vw,1.15rem);line-height:1.85;color:rgba(232,230,225,.92);}
+.qbox p strong{color:var(--text);font-weight:700;font-style:normal;}
+
+.term{background:#080d0c;border:1px solid rgba(106,175,133,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(106,175,133,.04);border-bottom:1px solid rgba(106,175,133,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--core);}
+.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:var(--accent);} .dim{color:rgba(106,175,133,.6);}
+
+.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:36px 0;}
+.metric{background:#0d1117;border:1px solid rgba(106,175,133,.22);border-radius:8px;padding:22px 18px;text-align:center;}
+.metric-num{font-family:var(--serif);font-size:2.2rem;font-weight:800;color:var(--core);line-height:1;margin-bottom:8px;}
+.metric-label{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;color:rgba(232,230,225,.5);text-transform:uppercase;}
+
+.timeline{margin:36px 0;padding-left:1.8rem;border-left:1px solid rgba(106,175,133,.25);}
+.timeline-item{position:relative;padding:0 0 28px 24px;}
+.timeline-item:last-child{padding-bottom:0;}
+.timeline-item::before{content:'';position:absolute;left:-30px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--core);box-shadow:0 0 10px rgba(106,175,133,.6);}
+.timeline-label{font-family:var(--mono);font-size:.6rem;letter-spacing:2.5px;color:var(--core);text-transform:uppercase;margin-bottom:6px;}
+.timeline-item p{font-family:var(--sans);font-weight:300;font-size:.92rem;line-height:1.75;color:rgba(232,230,225,.75);margin:0;}
+.timeline-item p strong{color:var(--text);font-weight:700;}
+
+.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(20,45,30,.35) 0%,rgba(106,175,133,.06) 100%);border:1px solid rgba(106,175,133,.2);text-align:center;}
+.insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.2rem);line-height:1.8;color:var(--text);margin:0;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--core);text-transform:uppercase;margin-top:14px;}
+
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--core);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--core);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--core);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(106,175,133,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#6aaf85;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #6aaf85;padding-bottom:2px;">S3</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 3 · Episode 019 · W20-2</p>
+  <h1 class="hero-title">
+    자체 LLM을<br>
+    <span style="color:var(--core)">갖는</span> 순간
+  </h1>
+  <p class="hero-desc">
+    외부 API 비용 종속에서 해방되는 순간이 아니다.<br>
+    모든 정보를 AI에게 줄 수 있는 순간이다.<br>
+    해답은 없다. 상상하고, 현실이 되도록 해본다.<br>
+    30만 원짜리 그래픽카드 한 장이 회사를 다시 짰다.
+  </p>
+  <div class="hero-tags">
+    <span class="tag core">RTX 3060 12GB</span>
+    <span class="tag gr">EXAONE 3.5 · qwen2.5</span>
+    <span class="tag g">Decopave-KB · 164 문서</span>
+    <span class="tag">FTS5 · semantic</span>
+    <span class="tag">W20-2 · 변곡점</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH01 -->
+<section class="sec">
+  <p class="label core">Chapter 01 · 5월 12일 오전 10시 58분</p>
+  <h2 class="sec-title">서버를 한 번 <em>껐다</em>,<br>그리고 다시 켰다</h2>
+  <div class="prose">
+    <p>
+      RTX 3060 12GB. 가격은 30만 원이 안 됐다. 게이밍용으로 나오는 그래픽카드를 하나 사서, 우리 회사 서버 본체를 열고, 메인보드 PCIe 슬롯에 꽂았다.
+      기존에 디스플레이용으로 들어가 있던 Quadro K620 옆에. 듀얼 GPU 가 됐다.
+      하나는 화면 뿌리는 용, 새로 꽂은 RTX 3060 은 AI 추론 전용.
+    </p>
+    <p>
+      설치 자체는 30분이었다. 그 30분 뒤가 문제였다. 드라이버 설치 1차 실패.
+      <code>cc: error: unrecognized command-line option '-ftrivial-auto-var-init=zero'</code>.
+      한국말로 풀면 <em>"내가 쓰는 컴파일러가 이 옵션을 모르겠다"</em> 는 뜻이다. 커널은 GCC 12 로 빌드된 건데 시스템 기본 컴파일러는 GCC 11.4 였다.
+      <strong>한 단계 위 컴파일러를 설치하면 풀리는 문제</strong>였다.
+    </p>
+    <p>
+      그걸 모르던 나는 30분 동안 ChatGPT와 Claude 사이를 오가며 <em>"이거 왜 안 되냐"</em> 고 묻고 또 물었다. 답이 갈렸다.
+      결국 GCC 12 설치 후 다시 빌드. 성공. 재부팅. <code>nvidia-smi</code> 가 정상 출력. 봇 4개가 자동으로 살아 돌아왔다.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">TERMINAL · 2026-05-12 · 10:58 KST</div>
+    <div class="term-body">
+      <div class="you">$ ollama run exaone3.5:7.8b "5월 ERP 보고 요약해줘"</div>
+      <div class="cmt">  → warm 추론 시간: <span class="ok">1.46초</span></div>
+      <div class="cmt">  → CPU 추론 (지난주까지): 30 ~ 120초</div>
+      <div class="cmt">  → 약 20 ~ 80배 가속.</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      숫자가 너무 깔끔해서 잠깐 의심이 들었다. 다시 돌려봤다. 또 1.46초. 그 다음 그리고 또. 매번 1초대.
+      <strong>지난주까지는 같은 모델로 같은 일을 시키면 30초 이상 걸렸다.</strong>
+      봇이 정기 보고를 만들면서 그 모델을 호출했다가 자주 timeout 으로 죽었다. 그게 한순간에 사라졌다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH02 -->
+<section class="sec">
+  <p class="label g">Chapter 02 · 이건 비용 절감 이야기가 아니다</p>
+  <h2 class="sec-title">매달 빠져나가던 돈이<br><em>0</em> 이 됐다</h2>
+  <div class="prose">
+    <p>
+      처음에는 비용으로 봤다. Claude API, Gemini API, OpenAI API. 우리는 매달 외부 LLM에 비용을 내고 있었다.
+      여러 봇이 24시간 돌아가는 회사에서, 토큰당 종량제 청구는 정액제와 다르게 달마다 달랐다.
+    </p>
+    <p>
+      자체 LLM 을 우리 서버 안에 두는 순간, 그 변동 비용이 크게 줄었다. 정확히는 — Anthropic의 Claude는 Max 구독(OAuth) 으로 정액화하고,
+      Gemini API는 그대로 두되 자동 폴백으로만 쓰고, <strong>운영 LLM 전체를 EXAONE 3.5 와 qwen2.5 14B 로 일괄 전환</strong>했다.
+      한 달에 대략 약 ** 절감 추정.
+    </p>
+  </div>
+  <div class="metric-row">
+    <div class="metric"><div class="metric-num">20~80×</div><div class="metric-label">CPU → GPU 가속</div></div>
+    <div class="metric"><div class="metric-num">1.46s</div><div class="metric-label">warm 추론</div></div>
+    <div class="metric"><div class="metric-num">12GB</div><div class="metric-label">VRAM</div></div>
+    <div class="metric"><div class="metric-num">~$0</div><div class="metric-label">월 외부 API 비용</div></div>
+  </div>
+  <div class="prose">
+    <p>
+      하지만 비용은 곁가지였다. 정작 깨달은 건 그게 아니었다.
+      <strong>비용을 0 으로 만든 일이, 정보 흐름의 방향을 통째로 바꿨다는 것</strong>이었다.
+    </p>
+    <p>
+      외부 API 를 쓰던 때, 우리는 자료를 외부로 보냈다. 변호사한테 보낼 자료 정리하려면 그 자료가 외부 LLM 서버로 송신됐다.
+      직원 일지를 분석하려면 그 일지가 외부 LLM 서버로 갔다. 내가 직접 친 텔레그램 채팅 내용 일부도 그렇게 외부로 흘러갔다.
+      그게 일상이었다. 정확히는, <em>그게 일상인 줄도 몰랐다.</em>
+      <strong>외부 API 쓰면 외부로 가는 게 당연한 거니까.</strong>
+    </p>
+    <p>
+      자체 LLM이 들어온 후, 그 흐름이 안으로 돌아왔다. 변호사 자료는 우리 서버 안에서 분석된다. 직원 일지도 그 안에서.
+      매출 데이터·미수금 회수 전망·소송 위험 평가·인사 평가까지 전부. <strong>외부로 나가지 않는다.</strong>
+      그게 가능한 회사가 된 것이다, 30만 원대 그래픽카드 하나로.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH03 -->
+<section class="sec">
+  <p class="label core">Chapter 03 · 그리고 진짜 시작된 일</p>
+  <h2 class="sec-title">아카이브를 <em>짓는다</em></h2>
+  <div class="prose">
+    <p>
+      자체 LLM이 손에 들어오자, 그동안 못 했던 일이 하나 보였다.
+      <strong>5년치 회사 정보를 전부 한 곳에 모으고, AI가 그걸 자유롭게 볼 수 있게 만드는 것.</strong>
+    </p>
+    <p>
+      우리는 그걸 <span class="hcore">Decopave-KB</span> 라고 부른다. KB는 Knowledge Base, 지식 베이스.
+      Taskworld 5년치 task 81개(590MB), 1년치 업무일지 25개, 운영 메모리 56건, 의사결정 기록까지 — 총 164 문서를 첫 1차에 인덱싱했다.
+      FTS5 (Full-Text Search 5세대 — SQLite 의 한국어 전문검색 엔진) 위에 얹었다.
+      회사 모든 봇이 나에게 답하기 전에 이 KB를 먼저 한 번 본다.
+      <em>"내가 이 주제를 작년에 뭐라 했더라"</em> 가 1초 만에 나온다.
+    </p>
+    <p>
+      아카이브의 핵심은 단순히 "데이터를 모으는 것" 이 아니다. <strong>그 데이터가 살아 있게 만드는 것</strong>이다.
+      사람이 5년치 Taskworld 코멘트를 다 읽고 기억할 수는 없다. 노인이 책장에 책을 다 쌓아놓고 펼치지 않는 것처럼.
+      그런데 AI는 다르다. 묻기만 하면 그 자리에서 꺼낸다. 인덱싱 된 자료라면. <span class="hg">그래서 인덱싱이 곧 자산화다.</span>
+    </p>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-label">5/7</div>
+      <p>Decopave-KB Phase 0 — 디렉터리·SQLite 골격</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-label">5/7 밤</div>
+      <p>TW 81 task + memory 56 + worklog 25 + decisions 2 = <strong>총 164 문서 적재</strong></p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-label">5/8 00:30</div>
+      <p>FastAPI systemd 정식 등록 — 본체 봇 KB hook 활성</p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-label">5/8 14:57</div>
+      <p>본체 5봇 (decofin · decohr · factory · decosale · decomes) KB hook 통합. <strong>6봇 전체가 같은 KB를 본다.</strong></p>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-label">5/12 GPU 도입 후</div>
+      <p>임베딩 가속 → 향후 Decopave-KB 의미 검색(semantic search) 재구축 길 열림</p>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      5월 13일 아침에는 신입직원 교육용으로 또 하나의 아카이브를 짓기 시작했다.
+      project/945 의 165개 task 를 FTS5 로 인덱싱하고, 첨부 파일 385건 802MB 를 다운로드했다.
+      한 직원이 5년 동안 모은 회사 매뉴얼·검사 기준·KS F **** 같은 KS 표준·품질관리 보고서가 다 그 안에 있다.
+      신입이 입사하면 그 아카이브 위에 올라탄다. 기존 직원에게 안 묻고도, 자기가 묻고 자기가 답을 받는다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH04 -->
+<section class="sec">
+  <p class="label gr">Chapter 04 · 협업할 방법을 연구한다</p>
+  <h2 class="sec-title">해답은 <em>없다</em></h2>
+  <div class="prose">
+    <p>
+      자체 LLM 과 아카이브가 손에 들어오자, 다음 질문이 자연스레 따라왔다.
+      <strong>이걸 가지고 우리 직원하고 어떻게 협업할 것인가.</strong>
+      이 질문에는 책에 답이 안 적혀 있다. 외국 IT 회사 사례도 우리 상황에 안 맞는다.
+      한국 작은 제조 중소기업이 자체 LLM 하나 들고 직원하고 협업하는 모델을 짠 회사는 거의 없다.
+    </p>
+    <p>
+      우리는 그래서 상상하기 시작했다. Taskworld 안에 AI 직원이 같이 들어 있고, 그 AI가 사람 직원에게 코멘트를 단다.
+      일을 안 하면 D-3에 다시 코멘트, D-5에 다시, D-7에 대표 1:1 DM.
+      그게 6대 봇별 페르소나로 분리되어 있다 — 인사총무는 김인사, 재무회계는 김보선, 영업본부는 Ashley Kim 같은 식으로.
+      단일 Taskworld 계정을 6 페르소나가 공유하되, 코멘트 앞에는 <code>[봇명 / 가상직원명]</code> prefix 가 의무로 붙는다.
+      모든 코멘트가 문돌실장 게이트를 거친다. 그 게이트는 <span class="hcore">SendGuard</span> 라는 보안 룰을 거친다.
+    </p>
+    <p>
+      5월 13일에 그 골격을 짰다. 이름은 「project/682 부서별 현안업무 협업 공간」.
+      5봇 + 문돌실장이 함께 일하는 가상 공간. <strong>현재 dryrun 모드.</strong>
+      진짜 가동은 5월 14일 새벽 0시 31분에 매출채권 동기화 작업이 정상 돌면, 그 후.
+      대표 결재 후 enforce 모드로 전환. 그게 다음 주의 일이다.
+    </p>
+    <p>
+      이 협업 방식이 정답인지는 모른다.
+      6봇 페르소나가 너무 인격화돼서 직원이 헷갈리진 않을지, 자동 코멘트가 직원에게 모욕적으로 들리진 않을지, D-7 대표 호출이 실제로 작동할지.
+      <em>시도해 본 적이 없으니 데이터가 없다.</em>
+    </p>
+  </div>
+  <div class="qbox" style="margin:42px 0;">
+    <p>
+      자체 LLM 을 가지는 순간<br>
+      이제 우리는 모든 정보를 AI 가 보고 분석할 수 있도록 만들고<br>
+      아카이브를 구축하고<br>
+      함께 협업할 수 있는 방법을 연구한다.<br><br>
+      <strong>해답은 없다.</strong><br>
+      하지만 상상하고 그것을 현실이 되도록 해본다.
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      이게 5월 13일 내가 우리 회사 AI 운영 룰 마스터 파일 안에 남긴 한 문장이다.
+      해답 없는 일을, 내 말로 <em>"상상하고 현실로"</em> 만드는 일.
+      이건 컨설팅 회사에 의뢰하는 일이 아니다.
+      작은 한국 제조 중소기업 대표가, 본업이 도장 만드는 회사인데, 내가 직접 코딩하고 GitHub 뒤지고 F12 개발자 모드 열어가며 하는 일이다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH05 -->
+<section class="sec">
+  <p class="label core">Chapter 05 · 왜 이런 일을 하는가</p>
+  <h2 class="sec-title">대표 한 명이<br><em>회사 한 곳</em>을 살린다</h2>
+  <div class="prose">
+    <p>
+      한국에는 작은 제조 중소기업이 수만 개 있다. 대부분 대표가 매일 직접 일을 챙긴다.
+      메일도 직접 보고, 공장도 직접 다니고, 변호사 자문도 직접 받고, 직원 일지도 대표가 머릿속에 들고 있다.
+      그 대표가 일이 늘면 다음 단계로 사람을 뽑는다. 경영지원 실장, 부장, 임원, 누구든. 그 사람한테 <em>"대표 대신 일하라"</em> 고 한다.
+    </p>
+    <p>
+      그 사람이 5년 안에 떠난다. 거의 항상.
+      왜냐하면 그 자리는 — 31살에 이사 달고 사장 대신 욕먹는 자리 — 인간이 오래 하면 망가지는 자리이기 때문이다.
+      자기가 한 일이 아니라 대표 대신 답하는 자리, 자기 사업이 아니라 남의 회사 직원에게 욕먹는 자리.
+      <strong>똑똑한 사람일수록 빨리 떠난다.</strong> 똑똑하기 때문에 떠나는 게 합리적이라는 걸 안다.
+    </p>
+    <p>
+      그 자리를 AI가 메우는 일을 우리가 하고 있는 거다. 5년 동안 모은 데이터 위에, 30만 원짜리 GPU 위에,
+      자체 LLM 위에, 아카이브 위에, Taskworld 라는 협업 공간 위에.
+      내가 직접 코딩하면서, 시간이 있을 때마다, 본업 도장 만드는 일 짬짬이.
+    </p>
+  </div>
+  <div class="insight">
+    <p>
+      회사를 살리는 일이<br>
+      외부 컨설팅 비용이 아니라<br>
+      본인이 직접 짓는 시스템이 되는 순간,<br>
+      <strong>작은 제조 중소기업이 다음 5년을 산다.</strong>
+    </p>
+    <p class="sub">자체 LLM · 2026-05-12 · 변곡점</p>
+  </div>
+  <div class="prose">
+    <p>
+      자체 LLM이 손에 들어왔다는 건, 그 일을 외부 누구한테 의존하지 않고 본인이 직접 할 수 있게 됐다는 뜻이다.
+      시간이 걸린다. 해답은 없다. 그래도 상상하고 현실로 만든다.
+      <strong>그게 작은 한국 제조 중소기업 대표가 왜 이 일을 하는지의 답이다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT -->
+<div class="stmt">
+  <p class="stmt-k">EP019 · STATEMENT</p>
+  <p class="stmt-t">
+    자체 LLM을 갖는 순간,<br>
+    <span style="color:var(--core)">모든 정보가 안으로</span> 돌아왔다
+  </p>
+  <p class="stmt-s">
+    외부로 보내던 자료가 외부로 안 보내진다.<br>
+    그 흐름의 방향이 바뀐 순간, 회사의 정의도 바뀐다.<br>
+    30만 원짜리 그래픽카드 하나로 — 다음 5년이 결정된다.
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 3 · W20-2</p>
+  <h2 class="footer-t">Episode <span style="color:var(--core)">019</span></h2>
+  <p class="footer-n">이어서 → <a href="ep020.html" style="color:var(--core);text-decoration:none;border-bottom:1px solid var(--core);"><strong>EP020 · 회사 우편물은 이제 사람이 안 연다</strong></a></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(106,175,133,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="ep018.html" style="color:#6aaf85;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#6aaf85;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR2</a>
+  <a href="ep017.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">17</a>
+  <a href="ep018.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">18</a>
+  <a href="ep019.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #6aaf85;">19</a>
+  <a href="ep020.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">20</a>
+  <a href="ep021.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">21</a>
+  <a href="ep022.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">22</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
+  <a href="ep020.html" style="color:#6aaf85;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+</body>
+</html>

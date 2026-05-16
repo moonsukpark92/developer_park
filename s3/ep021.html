@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP021 · 메일은 더 이상 내 화면에 들어오지 않는다</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(232,168,58,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(56,189,248,.07) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#0a0e16 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,58,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,58,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.4rem,6.5vw,5.6rem);line-height:1.1;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.b{border-color:rgba(56,189,248,.4);color:var(--accent);background:rgba(56,189,248,.06);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.b{color:var(--accent);} .label.r{color:var(--rose);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.sec-title em{font-style:normal;color:var(--gold);}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.prose code{font-family:var(--mono);font-size:.86em;color:var(--gold);background:rgba(232,168,58,.08);padding:1px 6px;border-radius:3px;}
+.hg{color:var(--gold);font-weight:500;} .hb{color:var(--accent);font-weight:500;} .hr{color:var(--rose);font-weight:500;}
+.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--gold);background:linear-gradient(90deg,rgba(232,168,58,.07) 0%,transparent 100%);position:relative;}
+.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--gold);opacity:.35;line-height:1;}
+.qbox p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.98rem,1.7vw,1.15rem);line-height:1.85;color:rgba(232,230,225,.92);}
+.qbox p strong{color:var(--text);font-weight:700;font-style:normal;}
+.term{background:#0a0e14;border:1px solid rgba(232,168,58,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(232,168,58,.04);border-bottom:1px solid rgba(232,168,58,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--gold);}
+.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:var(--accent);} .dim{color:rgba(232,168,58,.6);} .urg{color:var(--rose);}
+.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin:36px 0;}
+.metric{background:#0d1117;border:1px solid rgba(232,168,58,.22);border-radius:8px;padding:22px 18px;text-align:center;}
+.metric-num{font-family:var(--serif);font-size:2.2rem;font-weight:800;color:var(--gold);line-height:1;margin-bottom:8px;}
+.metric-label{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;color:rgba(232,230,225,.5);text-transform:uppercase;}
+.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(60,40,15,.4) 0%,rgba(232,168,58,.06) 100%);border:1px solid rgba(232,168,58,.22);text-align:center;}
+.insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.2rem);line-height:1.8;color:var(--text);margin:0;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-top:14px;}
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--gold);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S3</a>
+</div>
+
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 3 · Episode 021 · W20-4</p>
+  <h1 class="hero-title">메일은 더 이상<br>내 화면에<br><span style="color:var(--gold)">들어오지 않는다</span></h1>
+  <p class="hero-desc">
+    매일 100통씩 들어오는 메일을 더 이상 사람이 한 통씩 열어보지 않는다.<br>
+    AI가 먼저 본다. 분류한다. 태스크로 등록한다. 추적한다.<br>
+    하루 두 번 — 08:25 와 15:10. 그 외에는 사람이 안 열어도 된다.
+  </p>
+  <div class="hero-tags">
+    <span class="tag g">3 채널 메일계정</span>
+    <span class="tag b">urgent · high · normal · noise</span>
+    <span class="tag r">15:10 미처리 자동 팔로업</span>
+    <span class="tag">메일 = task 1건</span>
+    <span class="tag">W20-4</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label r">Chapter 01 · 사람이 싫어하는 일</p>
+  <h2 class="sec-title">메일 100통 중에<br><em>중요한 건 5통</em></h2>
+  <div class="prose">
+    <p>
+      우리 회사 메일계정은 3개다. 재무회계가 받는 <code>m**@*****.co.kr</code>, 인사가 받는 <code>j*******@*****.co.kr</code>, 영업이 받는 <code>s****@*****.co.kr</code>.
+      평일 하루 평균 들어오는 메일이 약 100통이다.
+      그 중에 회사 운영에 중요한 건 매일 5~12통. 나머지 90통 가까이는 광고, 뉴스레터, 호스팅 리포트, 외부 서비스 알림, 똑같은 발신자가 보내는 정기 메일 같은 것이다.
+    </p>
+    <p>
+      메일을 받는 사람 입장에서, 이건 끝없는 일이다. 받은편지함을 열면 빨간 숫자가 100. 그 100 안에서 진짜 일을 찾아내는 데만 30분이 간다.
+      진짜 일을 찾으면 그제야 누가 답할지 정해야 한다. 입사지원이면 인사한테, 세금계산서면 재무한테, 거래처 견적이면 영업한테.
+      그러면서 답이 안 오면 <em>"그 메일 답장 안 왔어요?"</em> 라고 누군가가 와서 나에게 물을 거다. 그 때 나는 답을 모른다.
+      <strong>답을 모르는 게 일상이었다.</strong>
+    </p>
+    <p>
+      메일이 싫은 건 양이 많아서가 아니다. <strong>책임이 모호해서</strong> 싫은 거다.
+      광고와 진짜 일이 같은 받은편지함에 섞여 있는 것, 그게 진짜 문제다. 책임이 모호해지면 일이 묵는다. 묵으면 비용이 생긴다.
+      마감을 놓치는 일이 매년 몇 건씩 있었다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label r">Chapter 02 · 안 굴러갔던 일</p>
+  <h2 class="sec-title">"그 입사지원자<br>연락 왔어요?"</h2>
+  <div class="prose">
+    <p>
+      한 사례. 우리 회사에 입사지원이 오면 거의 항상 인사 메일계정으로 온다.
+      그 메일이 인사 담당자한테 가야 하고, 인사 담당자가 1차 검토를 하고, 대표한테 보고를 하고, 면접 일정이 잡혀야 한다.
+      그게 평균 1주일 안에 일어나야 한다고 직원도 알고 대표도 안다.
+    </p>
+    <p>
+      실제로는 안 그랬다. 인사 담당자가 휴가를 갔거나, 다른 일이 쌓였거나, 그냥 그날 메일을 안 봤거나. 5일 묵는 일이 잦았다.
+      묵는 동안 입사지원자는 다른 회사 합격 통지를 받았다. <strong>좋은 사람일수록 그렇게 빨리 떠났다.</strong>
+      우리가 보낼 회신은 일주일 후의 회신이었고, 받는 사람 입장에서는 무성의해 보였다.
+    </p>
+    <p>
+      내가 매번 같은 질문을 했다. <em>"그 입사지원자 연락 왔어요?"</em> 그러면 답이 같았다. <em>"아 그게요, 메일이 어디에 묻혀서요."</em>
+      <strong>묻혀서, 라는 단어를 5년 동안 들었다.</strong> 메일에 묻힌다는 표현이 회사 안에 진짜 있었다.
+    </p>
+    <p>
+      세금계산서 누락도 비슷했다. 재무 메일계정에 거래처가 세금계산서를 보냈는데, 재무 담당자가 광고 사이에서 못 찾았다.
+      두 달 후 세무사가 부가세 신고하면서 발견한다. 거래처에 다시 요청한다. 거래처 입장에서는 우리 회사가 일을 못 한다고 본다.
+      <span class="hr">작은 일이 신뢰로 연결된다.</span>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label g">Chapter 03 · AI에게 어떻게 시켰나</p>
+  <h2 class="sec-title">하루 두 번,<br><em>08:25 와 15:10</em></h2>
+  <div class="prose">
+    <p>
+      3 채널 메일계정에 각각 봇을 붙였다. 자기 인격을 가진 봇들 — 재무회계의 김보선 프로(Decofin), 인사의 DECO HR, 영업의 Ashley Kim(DecoSale).
+      각 봇이 자기 메일함에 IMAP 으로 매일 두 번 자동 접속한다.
+      <strong>08:25에 한 번, 15:10에 한 번.</strong> 그 외에는 사람이 안 열어도 된다.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">morning_email_check · 2026-05-12 · 08:25</div>
+    <div class="term-body">
+      <div class="you">  Decofin (재무) 15건 수집 — high 2건</div>
+      <div class="you">  DECO HR  (인사) 15건 수집 — high 6건</div>
+      <div class="you">  Ashley   (영업) OAuth 토큰 갱신 필요 (skip)</div>
+      <br>
+      <div class="cmt">  → high 8건 자동 분류:</div>
+      <div class="cmt">    · 입사지원 5건 (김*환·김*훈·나*연·임*훈·임*훈)</div>
+      <div class="cmt">    · 세금계산서 1건 (거래처)</div>
+      <div class="cmt">    · 공기업 추가자료 요청 1건</div>
+      <div class="urg">    · 한전 해지예고서 1건  ←  urgent</div>
+      <br>
+      <div class="ok">  → Taskworld 자동 태스크 생성 8건, 담당자 자동 멘션 완료.</div>
+      <div class="ok">  → 대표 1:1 DM 알림 (urgent 1건만).</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      3 단계로 진행된다. 첫째 — IMAP 으로 메일 수집. 둘째 — 분류기에 통과시킨다.
+      분류기의 기준은 4단계: <strong>urgent · high · normal · noise</strong>.
+      한전 해지예고서 같은 게 들어오면 자동 urgent. 입사지원·세금계산서·공기업 추가자료 같은 거는 high. 일반 거래처 견적·문의는 normal.
+      광고와 뉴스레터·자동 알림은 자동 noise 분류로 받은편지함에서 안 떠 있게 처리한다.
+    </p>
+    <p>
+      셋째 — high 이상은 자동으로 Taskworld 태스크가 된다. 메일 1건에 task 1개. 담당자가 자동 멘션된다.
+      인사 메일이면 DECO HR 페르소나가, 재무면 김보선 프로가 자기 자격으로 코멘트를 남긴다.
+      즉, <strong>"메일이 등록됐다 = task가 생성됐다 = 담당자가 멘션됐다 = 추적이 시작됐다"</strong> 가 한 흐름에 일어난다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label g">Chapter 04 · 진짜 핵심은 15:10</p>
+  <h2 class="sec-title">"아직 답 안 왔는데요?"<br>를 <em>AI가</em> 한다</h2>
+  <div class="prose">
+    <p>
+      그날 08:25에 생성된 task 들이 점심 지나고도 처리가 안 되어 있으면, 15:10에 AI가 자동으로 같은 task에 코멘트를 단다. <em>"아직 답이 없습니다."</em>
+      채팅방으로도 메시지가 나간다 — 재무회계방 1메시지, 인사업무방 1메시지. 도메인별 통합 1메시지 형태로 깔끔하게.
+    </p>
+    <p>
+      이게 진짜로 작동하는 이유는, <strong>사람이 그 말을 하지 않기 때문이다.</strong>
+      <em>"박 프로님, 그 메일 답 아직 안 갔는데요?"</em> 라고 사람이 말하면 두 가지가 일어난다.
+      (1) 박 프로가 부끄러워한다. (2) 박 프로가 말한 사람한테 화가 난다. 회사 안에 작은 갈등이 또 하나 쌓인다.
+      AI가 그 말을 하면 둘 다 안 일어난다. <strong>그냥 시스템 메시지다.</strong> 사람한테 화 낼 일이 없다.
+    </p>
+  </div>
+  <div class="metric-row">
+    <div class="metric"><div class="metric-num">100통/일</div><div class="metric-label">수집</div></div>
+    <div class="metric"><div class="metric-num">5~12건</div><div class="metric-label">high 분류</div></div>
+    <div class="metric"><div class="metric-num">1 task</div><div class="metric-label">메일 1건당</div></div>
+    <div class="metric"><div class="metric-num">15:10</div><div class="metric-label">자동 팔로업</div></div>
+  </div>
+  <div class="prose">
+    <p>
+      5월 11일 일요일에도, 5월 12일 화요일에도, 5월 13일 수요일에도 — 매일 같은 시간에 같은 일이 일어났다.
+      내가 메일함을 열지 않은 채로. <span class="hg">내 받은편지함은 텅 비어 있는 게 정상 상태가 됐다.</span>
+      <strong>거기에 들어오는 일은 진짜로 내가 결정해야 하는 일 뿐이다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label b">Chapter 05 · AI가 더 잘 하는 점</p>
+  <h2 class="sec-title">광고와 진짜 일이<br><em>같은 공간</em>에 안 섞인다</h2>
+  <div class="prose">
+    <p>
+      기능 단위로 보면 메일 분류는 그렇게 어려운 일이 아니다. Gmail 도 분류기를 갖고 있다.
+      그런데 회사 메일에서 중요한 건 분류 정확도가 아니라, <strong>분류 결과가 Taskworld task가 되고 그 task에 책임자가 지정된다는 것</strong>이다.
+      Gmail 분류기는 "프로모션" 으로 분류하고 끝난다.
+      우리 AI는 "프로모션 = 자동 noise, 폐기" + "입사지원 = 인사 DECO HR 담당 task 자동 생성 + D-3 미응답 추적" 까지 한 흐름에 일어난다.
+    </p>
+    <p>
+      그리고 같은 일을 매일 두 번씩 한다. 사람은 못 한다. 직원이 휴가 가도 안 멈춘다.
+      휴일에도 알림은 오지만 task 생성만 되고 push 알림은 안 보낸다. 똑똑하지는 않지만, <strong>꾸준하다.</strong>
+    </p>
+    <p>
+      세 번째 — 책임이 처음부터 지정된다. 한 사람이 분류하고 다른 사람한테 넘기는 단계 자체가 없다.
+      AI가 분류한 결과가 곧 task 의 담당자다. <strong>메일이 묻힐 일이 없다.</strong>
+      <em>"묻혔어요" 라는 말 자체가 회사 안에서 사라졌다.</em>
+    </p>
+  </div>
+  <div class="insight">
+    <p>
+      받은편지함을 비우는 게<br>
+      회사가 일을 안 하는 거라고 생각했다.<br>
+      받은편지함을 안 보는 게<br>
+      <strong>회사가 진짜로 일을 하는 거였다.</strong>
+    </p>
+    <p class="sub">매일 08:25 + 15:10 · 한 주 운영 연속체</p>
+  </div>
+  <div class="prose">
+    <p>
+      우리가 Taskworld 라는 공간을 5년 동안 쌓아온 게 이번에도 답이 됐다.
+      메일이 분류된 결과를 어디에 적을 것인가. Slack 같은 채팅 메신저에 적으면 흘러가 버린다. 엑셀에 적으면 직원이 안 본다.
+      <strong>Taskworld 에 적으면 글로 남는다. 글로 남으면 D-3에 다시 코멘트, D-5에 다시, D-7에 나한테 호출.</strong>
+      그 흐름이 자리 잡힌다. 사람이 욕먹지 않아도 일이 굴러간다.
+      작은 한국 제조 중소기업 대표가 매일 죽어라 이 일을 하는 이유의 한 조각이 또 채워졌다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<div class="stmt">
+  <p class="stmt-k">EP021 · STATEMENT</p>
+  <p class="stmt-t">메일함을 <span style="color:var(--gold)">안 보는 게</span><br>일을 더 잘 하는 방법이었다</p>
+  <p class="stmt-s">
+    100통 중 진짜 5통을 사람이 찾던 30분이 사라진다.<br>
+    "묻혔어요" 라는 말이 회사 안에서 사라진다.<br>
+    AI가 매일 두 번 자동 접속하고, 사람은 본업으로 돌아간다.
+  </p>
+</div>
+
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 3 · W20-4</p>
+  <h2 class="footer-t">Episode <span style="color:var(--gold)">021</span></h2>
+  <p class="footer-n">이어서 → <a href="ep022.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);"><strong>EP022 · 사장이 부서장의 follower로 갇혀 있던 5년</strong></a></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="ep020.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR2</a>
+  <a href="ep017.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">17</a>
+  <a href="ep018.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">18</a>
+  <a href="ep019.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">19</a>
+  <a href="ep020.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">20</a>
+  <a href="ep021.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">21</a>
+  <a href="ep022.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">22</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
+  <a href="ep022.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+</body>
+</html>

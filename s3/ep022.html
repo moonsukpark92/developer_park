@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP022 · 사장이 부서장의 follower로 갇혀 있던 5년</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(251,113,133,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(232,168,58,.07) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#100a0e 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(251,113,133,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--rose);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6vw,5.2rem);line-height:1.12;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--rose);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.r{color:var(--rose);} .label.gr{color:var(--green);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.sec-title em{font-style:normal;color:var(--rose);}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.prose code{font-family:var(--mono);font-size:.86em;color:var(--rose);background:rgba(251,113,133,.08);padding:1px 6px;border-radius:3px;}
+.hg{color:var(--gold);font-weight:500;} .hr{color:var(--rose);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
+.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--rose);background:linear-gradient(90deg,rgba(251,113,133,.06) 0%,transparent 100%);position:relative;}
+.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--rose);opacity:.35;line-height:1;}
+.qbox p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.98rem,1.7vw,1.15rem);line-height:1.85;color:rgba(232,230,225,.92);}
+.qbox p strong{color:var(--text);font-weight:700;font-style:normal;}
+.term{background:#100a0e;border:1px solid rgba(251,113,133,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(251,113,133,.04);border-bottom:1px solid rgba(251,113,133,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--rose);}
+.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:var(--accent);} .dim{color:rgba(251,113,133,.6);} .warn{color:var(--gold);}
+.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:36px 0;}
+.metric{background:#0d1117;border:1px solid rgba(251,113,133,.25);border-radius:8px;padding:24px 18px;text-align:center;}
+.metric-num{font-family:var(--serif);font-size:2.4rem;font-weight:800;color:var(--rose);line-height:1;margin-bottom:8px;}
+.metric-label{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;color:rgba(232,230,225,.5);text-transform:uppercase;}
+.factory-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:36px 0;}
+@media(max-width:680px){.factory-row{grid-template-columns:1fr;}}
+.factory{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:22px 20px;}
+.factory.warn{border-color:rgba(251,113,133,.4);background:rgba(251,113,133,.04);}
+.factory-label{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--rose);margin-bottom:10px;text-transform:uppercase;}
+.factory-name{font-family:var(--sans);font-weight:700;font-size:1rem;color:var(--text);margin-bottom:10px;}
+.factory.warn .factory-name{color:var(--rose);}
+.factory-status{font-family:var(--sans);font-weight:300;font-size:.82rem;line-height:1.65;color:rgba(232,230,225,.65);}
+.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(60,20,30,.35) 0%,rgba(251,113,133,.05) 100%);border:1px solid rgba(251,113,133,.2);text-align:center;}
+.insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.2rem);line-height:1.8;color:var(--text);margin:0;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--rose);text-transform:uppercase;margin-top:14px;}
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--rose);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--rose);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--rose);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(251,113,133,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#fb7185;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #fb7185;padding-bottom:2px;">S3</a>
+</div>
+
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 3 · Episode 022 · W20-5</p>
+  <h1 class="hero-title">
+    사장이 부서장의<br>
+    <span style="color:var(--rose)">follower로 갇혀</span><br>
+    있던 5년
+  </h1>
+  <p class="hero-desc">
+    단양 1·2·3공장 task 478건 중 54%가 사장 follower.<br>
+    부서장이 못 보는 공장을 사장 폰이 보고 있던 5년 —<br>
+    그게 정상이 아니라는 걸 알면서도, 다른 길이 없었다.<br>
+    매일 아침 9시 30분, 한 줄로 그 자리를 끝낸다.
+  </p>
+  <div class="hero-tags">
+    <span class="tag r">follower 54%</span>
+    <span class="tag g">factory_tw_analyzer</span>
+    <span class="tag">마감 지남 20 · 무담당 47</span>
+    <span class="tag gr">매일 09:30 한 줄</span>
+    <span class="tag">W20-5</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label r">Chapter 01 · 사람이 싫어하는 일</p>
+  <h2 class="sec-title">사장이 매일<br>공장 3곳을 <em>볼 수가</em> 없다</h2>
+  <div class="prose">
+    <p>
+      우리 회사 R&amp;D센터는 경기도 하남에 있고, 단양에 공장 3곳이 있다. 1공장, 2공장, 3공장. 하남에서 단양은 차로 2시간 안팎이다.
+      왕복으로 4시간이다. 사장이 한 번 다녀오면 그날 반나절이 길에서 지나간다. 매일 가는 건 현실적이지 않다.
+      한 달에 한 번 가면 자주 가는 편이다.
+    </p>
+    <p>
+      대신 공장장이 있다. 부서장이 있다. 그 사람들이 매일 현장을 본다는 게 회사의 설계다.
+      그런데 그 부서장들이 5개의 Taskworld 프로젝트를 매일 들어가서 본다는 약속은, 5년 동안 한 번도 지켜진 적이 없다.
+      1공장 정비 프로젝트, 2공장 정비, 3공장 정비, 청소 운영, 공통 관리 — 5개 보드를 일주일에 한 번 들어가도 잘 들어가는 거다.
+      <strong>매일 들여다보는 건 인간의 일이 아니다.</strong>
+    </p>
+    <p>
+      그래서 사장은 한 가지를 5년 동안 했다. <strong>사장이 직접 5개 보드의 follower 로 자기를 등록했다.</strong>
+      한 task 에 새 코멘트가 달리면 사장 폰에 알림이 떴다. 그래야 무슨 일이 일어나는지 사장이 알았다.
+      5월 13일 1차 진단 결과, 단양 공장 5개 TW 프로젝트에 있는 task 478건 중 사장 follower 가 들어가 있는 task 가
+      <strong>259건 (54%)</strong>이었다. 절반이 넘었다. <span class="hr">사장이 부서장 대신 follower가 되어 있었다는 뜻이다.</span>
+    </p>
+  </div>
+  <div class="qbox">
+    <p>
+      사장이 follower 면<br>
+      부서장이 follower 가 아니라는 뜻이다.<br>
+      그 말은,<br>
+      <strong>그 일을 사장 외에는 보고 있지 않다</strong>는 뜻이다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label r">Chapter 02 · 안 굴러갔던 일</p>
+  <h2 class="sec-title">마감 지난 정비 task가<br>평균 <em>60일</em> 묵었다</h2>
+  <div class="prose">
+    <p>
+      5월 13일 첫 진단 결과를 한 줄로 정리하면 이렇다.
+    </p>
+  </div>
+  <div class="metric-row">
+    <div class="metric"><div class="metric-num">478</div><div class="metric-label">전체 task</div></div>
+    <div class="metric"><div class="metric-num">20</div><div class="metric-label">마감 지남</div></div>
+    <div class="metric"><div class="metric-num">47</div><div class="metric-label">무담당</div></div>
+    <div class="metric"><div class="metric-num">54%</div><div class="metric-label">사장 follower</div></div>
+  </div>
+  <div class="prose">
+    <p>
+      478건의 task가 운영되고 있는데 마감 지난 게 20건. 그 20건은 평균 두 달 이상 묵어 있었다.
+      정비 task — 가령 1공장 송풍기 부품 교체 — 가 마감 지난 채로 60일을 있으면 다음 점검 때 큰 사고로 이어진다.
+      그런데도 묵어 있었다. 이유는 단순했다. <strong>누구도 책임지고 있지 않았기 때문이다.</strong>
+    </p>
+    <p>
+      더 무서운 게 <span class="hr">「무담당 47건」</span>이었다.
+      누가 책임자인지 정해지지 않은 task가 47개다. 47개의 일이 회사 안에서 떠 있는데 누가 책임지는지 아무도 모른다.
+      그 중 어떤 게 진짜로 중요한 일이고, 어떤 게 그냥 적어둔 메모인지도 분리되지 않는다.
+      사장이 follower라서 알림은 받지만, 사장이 거기 일일이 <em>"이거 누가 하실 거예요?"</em> 라고 적을 시간은 없다.
+    </p>
+    <p>
+      3공장은 더 심했다. 1차 진단에서 <strong>3공장 정비가 5개 프로젝트 중 가장 위험 상태</strong>로 나왔다.
+      무담당과 마감 지남이 가장 많이 몰려 있었다. 3공장은 다른 두 공장보다 가동 시간이 길다. 가동이 길수록 정비가 더 자주 필요하다.
+      그런데 정작 정비 보드는 가장 묵어 있었다.
+    </p>
+  </div>
+  <div class="factory-row">
+    <div class="factory">
+      <div class="factory-label">단양 1공장</div>
+      <div class="factory-name">정비 · 청소</div>
+      <p class="factory-status">정상 가동 / 사장 follower 비율 평균 / 마감 지남 소수</p>
+    </div>
+    <div class="factory">
+      <div class="factory-label">단양 2공장</div>
+      <div class="factory-name">정비 · 청소</div>
+      <p class="factory-status">정상 가동 / 사장 follower 비율 평균 / 마감 지남 소수</p>
+    </div>
+    <div class="factory warn">
+      <div class="factory-label">단양 3공장</div>
+      <div class="factory-name">정비 (최위험)</div>
+      <p class="factory-status">가동시간 최장 / 무담당·마감 지남 가장 많음 / 즉시 점검 권고</p>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label g">Chapter 03 · AI에게 어떻게 시켰나</p>
+  <h2 class="sec-title">매일 <em>09:30</em>,<br>한 줄로 발사</h2>
+  <div class="prose">
+    <p>
+      5월 13일 오전 11시 10분에 분석기를 만들었다. 이름은 <code>factory_tw_analyzer.py</code>.
+      한 일이 단순하다 — TW 5개 프로젝트를 한 줄로 묶어서 4가지 지표를 산출한다.
+      「전체 task 수 / 마감 지남 / 무담당 / 사장 follower 비율」.
+      그리고 그 결과를 매일 아침 09시 30분에 <strong>대표 1:1 DM으로 발사한다.</strong>
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">FactoryMbot · 정공장 페르소나 · 2026-05-13 09:30</div>
+    <div class="term-body">
+      <div class="you">단양 공장 3곳 일일 점검 — 2026-05-13 09:30</div>
+      <br>
+      <div class="dim">전체 task: 478건</div>
+      <div class="warn">⚠ 마감 지남: 20건  (전일 대비 ±0)</div>
+      <div class="warn">⚠ 무담당:   47건  (전일 대비 +2)</div>
+      <div class="dim">사장 follower: 259건 (54%)</div>
+      <br>
+      <div class="cmt">최위험: <span style="color:var(--rose);font-weight:700;">단양 3공장 정비</span></div>
+      <div class="cmt">  · #176 송풍기 정비 — 마감 지남 73일</div>
+      <div class="cmt">  · #914 야드 청소 — 무담당 + 마감 지남 22일</div>
+      <br>
+      <div class="ok">→ 권고 액션: 3공장 부서장 직접 호출</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      기술적으로는 두 단계로 들어갔다. 첫째 — Phase A (5월 13일 11:18 가동).
+      cron — 우리 서버에서 정해진 시간에 자동으로 어떤 명령을 실행해주는 운영체제 기능 — 으로 매일 09:30에 분석기를 띄운다.
+      둘째 — Phase B (5월 13일 12:08 가동). TW 의 공식 API (GraphQL) 로 직접 5개 프로젝트 데이터를 우리 서버에 동기화.
+      우리 서버 안 SQLite (<code>factory_tw.sqlite</code>) 에 475 task가 저장됐다. CSV 와 SQLite 가 99.4% 일치.
+      <strong>회사 5개 보드 전체 상태가 1초 만에 우리 서버 안에서 조회되는 회사가 됐다.</strong>
+    </p>
+    <p>
+      그리고 <strong>24h dedupe</strong>(중복 알림 차단) 가 들어왔다.
+      같은 마감 지남 task가 매일 같은 코멘트로 또 와서 사장이 무뎌지지 않게. 새로 마감 지난 task만 알림이 온다.
+      그런 작은 디테일이 결국 시스템이 살아 있나 죽어 있나를 가른다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label g">Chapter 04 · 이*희 팀장에게 협업 요청을 보냈다</p>
+  <h2 class="sec-title">사람한테는 못 하던 말을<br><em>AI가</em> 한다</h2>
+  <div class="prose">
+    <p>
+      5월 13일 오후 12시 14분에, 우리 회사 설비관리팀의 이*희 팀장에게 협업 요청 메시지가 발사됐다.
+      설비관리방으로 한 통, 대표 1:1 DM으로 한 통. 내용은 부드럽지만 정확했다 —
+      <em>"3년 넘게 정체된 task 17건의 분류를 부탁드립니다. 1년 넘게 코멘트가 갱신되지 않은 task의 갱신을 부탁드립니다.
+      신규 task 등록 시 담당자와 마감일 기입을 의무로 해주십시오. <strong>5월 16일까지 1차 회신 부탁드립니다.</strong>"</em>
+    </p>
+    <p>
+      이 메시지를 사람이 보냈다면, 두 가지가 일어났을 것이다. (1) 이 팀장이 부담스러워한다. (2) 보낸 사람을 원망한다.
+      AI가 보내면 다르다. <strong>그냥 시스템 메시지다.</strong> "정공장 페르소나" 가 정해진 양식으로 보내는 것.
+      사람 한 명에게 일을 시키는 게 아니라, 시스템이 시스템에게 시키는 형식.
+      <span class="hgr">회사 안의 작은 갈등 한 톨이 또 없어진 자리다.</span>
+    </p>
+    <p>
+      그리고 베이스라인 스냅샷이 저장됐다. 5월 13일 이전 상태가 사진처럼 보존됐다.
+      <strong>5월 20일에 다시 측정해서, 정체된 task가 줄었는지를 숫자로 본다.</strong>
+      사람이 말로 약속해서 안 지키는 일이 사라진다. 글로 기록된 숫자가 일주일 후 비교된다.
+      매주 월요일 09:05에 자동으로 diff(차이) 가 발사된다. <code>weekly_diff</code> 스크립트가 그 일을 한다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label gr">Chapter 05 · AI가 더 잘 하는 점</p>
+  <h2 class="sec-title">5곳을 <em>동시에</em> 본다</h2>
+  <div class="prose">
+    <p>
+      사람 부서장은 자기 공장만 본다. 1공장 부서장은 1공장만 본다. 정비 담당자는 정비 보드만 본다.
+      그게 인간이 회사 안에서 작동하는 방식이다. 시야가 좁아진다. 서로의 영역을 넘기 어려워한다.
+      회사 전체가 어떻게 돌아가는지 볼 수 있는 사람은 사장 한 명이다.
+      <strong>그 한 명이 길에서 왕복 4시간을 쓰고 있으면 그날 회사 전체 판단은 잠시 멈춘다.</strong>
+    </p>
+    <p>
+      AI는 그 한계가 없다. 5개 프로젝트를 동시에 본다. 1공장 정비가 2공장 청소 일정과 충돌하면 자동으로 잡아낸다.
+      3공장 정비 task가 평소보다 빨리 늘면 자동으로 잡아낸다.
+      사장이 부서장보다 공장 상태를 더 잘 안다는 건 작은 회사에서는 정상이 아니다.
+      <strong>그런데 사장이 부서장만큼 잘 알기 위해서 매일 5개 보드를 들어가는 것도 정상이 아니다.</strong>
+      그래서 AI가 그 사이를 메운다. 사장은 더 이상 보드를 들어가지 않는다.
+      부서장은 매일 자기 보드만 본다. AI가 5개를 묶어서 한 줄로 사장에게 보낸다. <span class="hgr">모두가 자기 자리에 있다.</span>
+    </p>
+    <p>
+      두 번째 — AI는 <strong>"이 일이 누구의 책임인가" 를 물어보는 일을 피하지 않는다.</strong>
+      무담당 47건. 사람한테 <em>"이거 누가 해요?"</em> 라고 물으면 부담스러워서 다들 답이 길어진다.
+      AI가 task에 코멘트로 <em>"@해당 부서장 / 본 task 의 담당자 미정. 5월 16일까지 지정 부탁드립니다"</em> 라고 적으면 그건 그냥 시스템 메시지다.
+      답해야 하는 답이다. <strong>무담당 47건이 한 달 안에 47건 아래로 내려갈 것이라는 게 우리 첫 가설이다.</strong>
+      6월 13일에 비교해 본다.
+    </p>
+  </div>
+  <div class="insight">
+    <p>
+      사장이 왕복 4시간을 운전해야<br>
+      공장 상태를 직접 볼 수 있던 회사가<br>
+      이제는 달라졌다.<br><br>
+      <strong>매일 아침 9시 30분.</strong> 한 줄.
+    </p>
+    <p class="sub">단양 1·2·3공장 · Phase A → Phase B · 2026-05-13</p>
+  </div>
+  <div class="prose">
+    <p>
+      이 분석기 한 개를 만드는 데 본업 짬짬이 쓴 시간은 약 3시간이다.
+      그 3시간으로 사장이 직접 단양에 가지 않아도 단양 공장 3곳의 상태를 매일 9시 30분에 한 줄로 받게 됐다.
+      <strong>작은 한국 제조 중소기업 대표가 매일 죽어라 이 일을 하는 이유의 한 조각이 또 채워진다.</strong>
+      다음 편에서는 그 모든 일의 진짜 시작점 — 사람을 다루는 일 — 으로 가본다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<div class="stmt">
+  <p class="stmt-k">EP022 · STATEMENT</p>
+  <p class="stmt-t">왕복 4시간이 사라진 자리에<br><span style="color:var(--rose)">아침 9시 30분</span> 한 줄이 들어왔다</p>
+  <p class="stmt-s">
+    사장이 follower로 갇혀 있던 5년 — 그건 자랑할 일이 아니라 비정상이었다.<br>
+    부서장이 본업으로 돌아가고, 사장이 본업으로 돌아간다.<br>
+    AI가 그 사이를 메운다. 모두가 자기 자리에 있다.
+  </p>
+</div>
+
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 3 · W20-5</p>
+  <h2 class="footer-t">Episode <span style="color:var(--rose)">022</span></h2>
+  <p class="footer-n">이어서 → <a href="final.html" style="color:var(--rose);text-decoration:none;border-bottom:1px solid var(--rose);"><strong>FINAL · 좋은 사람과 일하고 싶어요</strong></a> <span style="color:var(--muted);">· 시즌 3 마무리</span></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(251,113,133,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="ep021.html" style="color:#fb7185;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#fb7185;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR2</a>
+  <a href="ep017.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">17</a>
+  <a href="ep018.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">18</a>
+  <a href="ep019.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">19</a>
+  <a href="ep020.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">20</a>
+  <a href="ep021.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">21</a>
+  <a href="ep022.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #fb7185;">22</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
+  <a href="final.html" style="color:#fb7185;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+</body>
+</html>

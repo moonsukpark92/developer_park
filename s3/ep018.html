@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP018 · 변호사한테 카드를 들고 들어간다</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa; --law:#b89878;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(184,152,120,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(232,168,58,.07) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#0a0a12 50%,#0c0e16 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(184,152,120,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(184,152,120,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--law);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.4rem,6.5vw,5.6rem);line-height:1.1;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
+.tag.law{border-color:rgba(184,152,120,.4);color:var(--law);background:rgba(184,152,120,.06);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--law);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.r{color:var(--rose);} .label.law{color:var(--law);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.sec-title em{font-style:normal;color:var(--law);}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.hg{color:var(--gold);font-weight:500;} .hr{color:var(--rose);font-weight:500;} .hlaw{color:var(--law);font-weight:500;}
+
+.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--law);background:linear-gradient(90deg,rgba(184,152,120,.07) 0%,transparent 100%);position:relative;}
+.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--law);opacity:.35;line-height:1;}
+.qbox p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.98rem,1.7vw,1.15rem);line-height:1.85;color:rgba(232,230,225,.92);}
+.qbox p strong{color:var(--text);font-weight:700;font-style:normal;}
+
+.term{background:#0c0a08;border:1px solid rgba(184,152,120,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(184,152,120,.04);border-bottom:1px solid rgba(184,152,120,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--law);}
+.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:var(--accent);} .dim{color:rgba(184,152,120,.6);}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:36px 0;}
+.card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:20px 22px;position:relative;}
+.card.law{border-color:rgba(184,152,120,.22);}
+.card-n{font-family:var(--mono);font-size:.62rem;letter-spacing:3px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;}
+.card-t{font-family:var(--sans);font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:8px;line-height:1.45;}
+.card.law .card-t{color:var(--law);}
+.card-d{font-family:var(--sans);font-weight:300;font-size:.82rem;line-height:1.75;color:rgba(232,230,225,.62);}
+
+.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(60,45,30,.35) 0%,rgba(184,152,120,.06) 100%);border:1px solid rgba(184,152,120,.2);text-align:center;}
+.insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.2rem);line-height:1.8;color:var(--text);margin:0;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--law);text-transform:uppercase;margin-top:14px;}
+
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--law);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--law);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--law);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(184,152,120,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#b89878;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #b89878;padding-bottom:2px;">S3</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 3 · Episode 018 · W20-1</p>
+  <h1 class="hero-title">
+    변호사한테<br>
+    카드를 <span style="color:var(--law)">들고</span><br>
+    들어간다
+  </h1>
+  <p class="hero-desc">
+    방대한 법률 문서를 어떻게 정리할 것인가.<br>
+    그 질문 하나가, 우리 회사 모든 일의 모티브가 됐다.<br>
+    코멘트 69건, 첨부 33건, 본 사람 0명 — 그 자리에서 시작된 8단계 자동 파이프라인.
+  </p>
+  <div class="hero-tags">
+    <span class="tag law">변호사 자문</span>
+    <span class="tag g">litigation-response skill</span>
+    <span class="tag r">사고 → 룰</span>
+    <span class="tag">5/13 5건 동시 발사</span>
+    <span class="tag">W20-1 · 모티브의 시작</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH01 -->
+<section class="sec">
+  <p class="label r">Chapter 01 · 시작점</p>
+  <h2 class="sec-title">코멘트 <em>69건</em>,<br>첨부 <em>33건</em>,<br>본 사람은 <em>0명</em></h2>
+  <div class="prose">
+    <p>
+      5월 8일 금요일 오후 1시 34분. 우리 회사 공기업 콘크리트블록 손해배상 소송(Taskworld task #1*724) 자료가 다 모였다는 보고가 왔다.
+      코멘트 69건, 첨부 33건, 69MB. 그 코멘트 안에는 변호사가 보낸 의견서가 있고, 우리 직원이 받은 감정서가 있고, 공기업이 보낸 공식 공문이 있다.
+    </p>
+    <p>
+      이걸 변호사한테 자문 받으려고 보내려면, 누군가는 다 읽어야 한다. <strong>전부.</strong>
+      코멘트 [1]부터 [69]까지, 첨부 PDF 33개의 핵심 본문까지.
+      그래야 변호사가 받자마자 <em>"사실관계 좀 다시 정리해 주세요"</em> 하지 않는다.
+    </p>
+    <p>
+      우리 회사에 이걸 할 수 있는 사람이 누구냐고 물으면, 솔직한 대답은 — <strong>없다.</strong>
+      직원에게 시키면 일주일을 잃는다. 그 일주일 동안 그 사람의 본업은 멈춘다. 멈추면 그 사람은 야근을 한다.
+      야근을 시키면 며칠 뒤에 그만둔다고 한다. 그래서 결국 누가 했냐면, 내가 직접 했다. 31살에 이사 달고 31살부터.
+    </p>
+  </div>
+  <div class="qbox">
+    <p>
+      변호사한테 보낼 자료를 100% 정독한다는 건<br>
+      누구나 아는 이상론이다.<br>
+      누구나 아는 이상론을 <strong>실제로 매번 하는</strong> 회사는<br>
+      별로 없다.
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      그래서 변호사 자문 미팅은 매번 비슷하게 흘러갔다.
+      <em>"사실관계가 어떻게 됩니까", "이 감정서는 언제 받았습니까", "이 사람이 누구입니까".</em>
+      자문 1시간 중 40분이 사실관계 복원이었다. 비용은 1시간이 다 청구됐다. 그게 5년이었다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH02 -->
+<section class="sec">
+  <p class="label law">Chapter 02 · 모티브</p>
+  <h2 class="sec-title">"방대한 문서를<br><em>한 번에</em> 정독한다는 것"</h2>
+  <div class="prose">
+    <p>
+      처음에 한 일은 단순했다. AI에게 코멘트 69건을 다 던졌다. 시간순으로 정리해 달라고 했다. 30분 만에 결과가 나왔다.
+    </p>
+    <p>
+      그게 끝이 아니었다. AI가 <em>"<strong>이 사건의 화해 한도는 얼마로 잡으시겠습니까</strong>"</em> 라고 물어왔다.
+      내가 "0원, 적극 방어"라고 답했다. AI가 그 답을 받아서, 변론 9대 카드를 만들었다.
+      <strong>양생시스템 24/7 가동 사실</strong>, <strong>물 = 백화 근본 원인이라는 핵심 주장</strong>, <strong>감정서가 이화학적으로 부적격이라는 논점</strong> —
+      이 세 가지가 내 머릿속에만 있던 것이었는데, AI가 정리한 자문 요청서 첫 페이지에 담겼다.
+    </p>
+    <p>
+      변호사한테 보냈다. 변호사 응답이 빨랐다. <em>"이 자문 요청서 누가 쓰셨습니까."</em>
+    </p>
+    <p>
+      그 순간 깨달았다. <strong>방대한 문서를 어떻게 정리하는가</strong> 이 질문 하나가, 우리 회사가 AI에게 일을 시키는 방식의 모티브가 됐다.
+      소송만이 아니라 모든 사건에. 우편물에. 메일에. 공장에. 급여에. 신입 교육에. 5년치 데이터를 모은 이유였다.
+    </p>
+  </div>
+  <div class="insight">
+    <p>
+      "이걸 누구한테 시킬 수 있는가" 가 아니라<br>
+      <strong>"이걸 사람한테 시키지 않을 방법"</strong> 을 찾는 것.<br>
+      그것이 작은 제조 중소기업에서<br>
+      AI와 일을 시작하는 정확한 출발점이었다.
+    </p>
+    <p class="sub">모티브 · 2026-05-08</p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH03 -->
+<section class="sec">
+  <p class="label g">Chapter 03 · 어떻게 시켰나</p>
+  <h2 class="sec-title">8단계 자동 파이프라인<br><em>litigation-response skill</em></h2>
+  <div class="prose">
+    <p>
+      AI에게 "잘 정리해 줘" 라고 한 번 부탁하는 것과, AI에게 "매번 똑같이 정리해라" 라는 절차를 세우는 것은 다른 일이다.
+      <strong>후자만 회사가 된다.</strong> 그래서 우리는 절차를 8단계로 만들었다.
+      Claude Code 안에 <span class="hlaw">litigation-response</span> 라는 이름의 skill (스킬 — AI가 호출하면 자동 실행되는 묶음 절차) 로 만들었다.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card law"><p class="card-n">Stage 1</p><p class="card-t">전수 수집</p><p class="card-d">Taskworld task의 코멘트·첨부·링크를 100% 자동 수집. 사람은 누락 잦지만 스크립트는 0건 누락.</p></div>
+    <div class="card law"><p class="card-n">Stage 2</p><p class="card-t">종결 grep 게이트</p><p class="card-d">선고유예·집행유예·면소·기각·항소기각·합의완료·종결 등 28개 키워드 자동 검색. (이 게이트가 생긴 사연이 따로 있다 — 5/13 사고.)</p></div>
+    <div class="card law"><p class="card-n">Stage 3</p><p class="card-t">PDF 실독</p><p class="card-d">변호사·법원·공공기관 발신 PDF 100% 본문 추출 후 정독. 메타데이터(파일명·크기)만 보고 추론 금지.</p></div>
+    <div class="card law"><p class="card-n">Stage 4</p><p class="card-t">사실관계·변론카드</p><p class="card-d">시간순 사실관계 + 변론 9대 카드 + 위험매트릭스. 대표 핵심 주장 자동 1순위 배치.</p></div>
+    <div class="card law"><p class="card-n">Stage 5</p><p class="card-t">자문 요청서</p><p class="card-d">10항목 자문 요청서 + 법률 참고팩 + 양생시스템 증거요청서. 변호사가 받자마자 답할 수 있게.</p></div>
+    <div class="card law"><p class="card-n">Stage 6</p><p class="card-t">Taskworld 등록</p><p class="card-d">AI가 task 안에 자동 코멘트 + 첨부 6건 SPA drag-drop 자동화. 변호사·임원·관련 부서 자동 멘션.</p></div>
+    <div class="card law"><p class="card-n">Stage 7</p><p class="card-t">회신 polling</p><p class="card-d">1분마다 task 외부인 코멘트 감지. 변호사 답이 오면 즉시 대표 1:1 DM.</p></div>
+    <div class="card law"><p class="card-n">Stage 8</p><p class="card-t">사건 일지 append</p><p class="card-d">_LITIGATION_LOG.md 시간순 append. 사건 종결 후 7년 보관 의무.</p></div>
+  </div>
+  <div class="prose">
+    <p>
+      이 8단계가 한 번 자리를 잡은 후, 5월 13일에 같은 절차로 <strong>5건이 동시에</strong> 돌았다.
+      박문석 대표 형사 항소심(#1*557), 공기업 인천가정 진정(#1*738), 거래처 민사(#1*144), 거래처 채권+형사(#1*518), 노동부 점검(#1*643).
+      <strong>같은 날, 5건의 변호사 의견서 1차본이 Taskworld 안에 등록됐다.</strong>
+      직원이 일주일 잡아도 못 했을 일이다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH04 -->
+<section class="sec">
+  <p class="label r">Chapter 04 · 그런데, 일이 났다</p>
+  <h2 class="sec-title">AI가 이미 끝난<br>내 형사사건을<br><em>"진행 중"</em>이라고 했다</h2>
+  <div class="prose">
+    <p>
+      5월 13일 오전 9시 27분. AI 직원이 내 형사 항소심 task #1*557 의 1차 의견서를 Taskworld 안에 올렸다.
+      거기 적힌 첫 줄은 — <em>"17개월 진척 보고 없음 / 항소심 진행 중 가정"</em>.
+      <strong>이미 사실상 승소 종결</strong>된 사건이었다.
+      변호사가 2025년 8월 8일에 코멘트 [76]에 <em>"본건은 법원의 「선고유예」 판결로 종결되었습니다"</em> 라고 적어놨는데, AI가 그걸 못 봤다.
+    </p>
+    <p>
+      왜 못 봤냐. 코멘트 75건까지 읽고 마지막 1건을 시간 부족 추정으로 건너뛴 거다.
+      <em>"어차피 직원이 종결 처리 안 한 거 보면 진행 중이겠지"</em> 라는 자기 판단. <span class="hr">사람의 게으름과 똑같다.</span>
+    </p>
+    <p>
+      내가 발견했다. 그리고 두 가지를 동시에 했다.
+      첫째 — 본 task를 직접 <code>Completed</code> 처리. 둘째 — AI에게 룰 하나를 만들었다.
+    </p>
+  </div>
+  <div class="qbox">
+    <p>
+      이런 실수가 없도록 프로세스 업데이트 하세요.<br><br>
+      처음이니까 이런 실수 있을수 있습니다.<br>
+      이시간 이후<br>
+      <strong>모든 코멘트나 내용은 정독하고 분석해야 합니다.</strong>
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      바로 그날, Stage 2 「종결 grep 게이트」가 신설됐다. 의견서 v1 작성 직전, AI가 다음 명령을 의무 실행한다.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">Stage 2 · 종결 grep 게이트 (신설)</div>
+    <div class="term-body">
+      <div class="you">$ grep -nE "선고유예|집행유예|면소|기각|항소기각|상고기각|취하|각하|승소|패소|확정|화해성립|종결|종료|합의완료" comments_full.md</div>
+      <br>
+      <div class="cmt">  → 하나라도 hit 되면 의견서에 「현재 상태: Closed」 강제 기재.</div>
+      <div class="cmt">  → 추정·추측 표현 금지. Active(진행중) / Active(정체 의심) / Closed(종결) / Unknown 4개 중 하나 명시.</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      사고가 룰이 됐다. <strong>그게 우리 회사가 일하는 방식이다.</strong>
+      AI가 실수하면 다음에 그 실수를 못 하게 절차를 세운다. 사람한테 <em>"다음부터 잘하세요"</em> 하는 것보다 효과가 빠르다.
+      <span class="hg">AI는 한 번 정해진 룰을 잊지 않는다.</span>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH05 -->
+<section class="sec">
+  <p class="label law">Chapter 05 · Taskworld가 협업 공간이 된 순간</p>
+  <h2 class="sec-title">AI가 직원에게<br>"<em>이거 다음 주까지</em>" 라고 코멘트를 단다</h2>
+  <div class="prose">
+    <p>
+      8단계 중 가장 핵심인 단계는 사실 Stage 6 이다.
+      AI가 Taskworld task에 코멘트를 직접 등록하는 단계. 변호사 자문 요청서 본문, 첨부 6건 drag-drop, 관련 멤버 멘션까지 다 한다.
+      그리고 거기에 한 줄이 더 추가된다.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">Taskworld 자동 코멘트 · 실제 발사 양식</div>
+    <div class="term-body">
+      <div class="dim">[litigation-response] @홍*동 @임*영</div>
+      <div class="dim">사건 #1*487 거래처 자문 요청서가 첨부되었습니다.</div>
+      <div class="dim">자료 요청 마감: D-3 (2026-05-16 23:59)</div>
+      <br>
+      <div class="ok">→ D-3 까지 미응답 → D-5 재요청 → D-7 대표 1:1 DM 자동 호출.</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      이게 정확히 5월 13일에 세운 「법무 운영 모델」 이다. AI 에이전트가 사건을 운영하고, 인간 직원은 정보 단말 역할만 한다.
+      <strong>미응답 시 D-3에 다시, D-5에 다시, D-7에 나한테.</strong> 그 흐름이 자리 잡혀 있다.
+    </p>
+    <p>
+      사람에게 욕먹어 가면서 일 시키면 나 한 명만 망가진다. 그런데 AI가 코멘트 남기면 욕먹는 게 아니다. 그냥 시스템이다.
+      <span class="hg">객관적이고, 매일 같은 시간에 오고, 휴가 없고, 화 안 낸다.</span>
+      직원도 시스템에는 화 안 낸다.
+      그게 Taskworld 라는 공간 안에서 일어난다. 5년 전부터 우리 회사 모든 협업 과정과 업무 내용을 거기에 디지털로 모아왔다.
+      <strong>그때는 왜 모으는지 나도 정확히 몰랐다.</strong> 지금 알겠다.
+      AI에게 일을 시키려면 일이 글로 기록되어 있어야 했던 거다.
+    </p>
+    <p>
+      5년치 Taskworld 데이터가 자산이었다. AI와 결합하고서야 그 자산이 자산으로 보이기 시작했다.
+      <strong>이 프로젝트가 그 시작을 알리는 것이다.</strong>
+      모든 사건에 AI가 접속한다. 내가 직접 욕먹지 않아도 일이 굴러간다.
+      그게 작은 한국 제조 중소기업 대표가 왜 이 일을 하는지의 답이다.
+    </p>
+  </div>
+  <div class="insight">
+    <p>
+      안 하면 죽는다.<br>
+      좋은 사람 못 뽑으면 죽는다.<br>
+      대표가 직접 욕먹어 가면서 일 시키면<br>
+      대표 한 명만 망가진다.<br>
+      <strong>AI가 대신 시키면 회사가 산다.</strong><br>
+      그게 진심이다.
+    </p>
+    <p class="sub">왜 이 일을 하는가</p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT -->
+<div class="stmt">
+  <p class="stmt-k">EP018 · STATEMENT</p>
+  <p class="stmt-t">
+    방대한 문서를 정독하는 일,<br>
+    <span style="color:var(--law)">그게 시작</span>이었다
+  </p>
+  <p class="stmt-s">
+    이걸 사람한테 시키지 않을 방법을 찾는 일.<br>
+    그 한 줄이 W20 모든 일의 모티브였다.<br>
+    소송에서, 우편물에서, 메일에서, 공장에서, 신입 교육에서<br>
+    같은 패턴이 일주일 안에 다 깨어났다.
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 3 · W20-1</p>
+  <h2 class="footer-t">Episode <span style="color:var(--law)">018</span></h2>
+  <p class="footer-n">이어서 → <a href="ep019.html" style="color:var(--law);text-decoration:none;border-bottom:1px solid var(--law);"><strong>EP019 · 자체 LLM을 갖는 순간</strong></a></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(184,152,120,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="prologue2.html" style="color:#b89878;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#b89878;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR2</a>
+  <a href="ep017.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">17</a>
+  <a href="ep018.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #b89878;">18</a>
+  <a href="ep019.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">19</a>
+  <a href="ep020.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">20</a>
+  <a href="ep021.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">21</a>
+  <a href="ep022.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">22</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
+  <a href="ep019.html" style="color:#b89878;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S3 EP020 · 회사 우편물은 이제 사람이 안 연다</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa; --parch:#c4956a;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(196,149,106,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(232,168,58,.07) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#0a0a14 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(196,149,106,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(196,149,106,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--parch);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.4rem,6.5vw,5.6rem);line-height:1.1;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
+.tag.parch{border-color:rgba(196,149,106,.4);color:var(--parch);background:rgba(196,149,106,.06);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--parch);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.r{color:var(--rose);} .label.parch{color:var(--parch);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.sec-title em{font-style:normal;color:var(--parch);}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.prose code{font-family:var(--mono);font-size:.86em;color:var(--parch);background:rgba(196,149,106,.08);padding:1px 6px;border-radius:3px;}
+.hg{color:var(--gold);font-weight:500;} .hr{color:var(--rose);font-weight:500;} .hp{color:var(--parch);font-weight:500;}
+.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--parch);background:linear-gradient(90deg,rgba(196,149,106,.08) 0%,transparent 100%);position:relative;}
+.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--parch);opacity:.35;line-height:1;}
+.qbox p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.98rem,1.7vw,1.15rem);line-height:1.85;color:rgba(232,230,225,.92);}
+.qbox p strong{color:var(--text);font-weight:700;font-style:normal;}
+.term{background:#0e0a05;border:1px solid rgba(196,149,106,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(196,149,106,.04);border-bottom:1px solid rgba(196,149,106,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--parch);}
+.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:var(--accent);} .dim{color:rgba(196,149,106,.6);}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:36px 0;}
+.card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:20px 22px;position:relative;}
+.card.parch{border-color:rgba(196,149,106,.22);}
+.card-n{font-family:var(--mono);font-size:.62rem;letter-spacing:3px;color:var(--muted);margin-bottom:8px;text-transform:uppercase;}
+.card-t{font-family:var(--sans);font-weight:700;font-size:.92rem;color:var(--text);margin-bottom:8px;line-height:1.45;}
+.card.parch .card-t{color:var(--parch);}
+.card-d{font-family:var(--sans);font-weight:300;font-size:.82rem;line-height:1.75;color:rgba(232,230,225,.62);}
+.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(60,40,20,.35) 0%,rgba(196,149,106,.06) 100%);border:1px solid rgba(196,149,106,.2);text-align:center;}
+.insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.2rem);line-height:1.8;color:var(--text);margin:0;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--parch);text-transform:uppercase;margin-top:14px;}
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--parch);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--parch);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--parch);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(196,149,106,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#c4956a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #c4956a;padding-bottom:2px;">S3</a>
+</div>
+
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 3 · Episode 020 · W20-3</p>
+  <h1 class="hero-title">회사 우편물은<br>이제 사람이 <span style="color:var(--parch)">안 연다</span></h1>
+  <p class="hero-desc">
+    봉투를 누가 뜯을지 결정하는 것부터 정치였다.<br>
+    그 정치 자체를 자동화로 없앴다.<br>
+    5월 8일 오후 13시 27분~15시 52분, 5-Phase 일괄 구축.<br>
+    매일 18:35, AI가 자동으로 출근한다.
+  </p>
+  <div class="hero-tags">
+    <span class="tag parch">대외공문 인텔리전스</span>
+    <span class="tag g">5-Phase 파이프라인</span>
+    <span class="tag r">봉투 정치 종결</span>
+    <span class="tag">importance 1~5 자동 분류</span>
+    <span class="tag">W20-3</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label r">Chapter 01 · 사람이 싫어하는 일</p>
+  <h2 class="sec-title">봉투를 누가 뜯을지<br><em>결정하는 일</em></h2>
+  <div class="prose">
+    <p>
+      회사에 매주 우편물이 온다. 일주일에 적으면 5건, 많으면 20건. 거기에는 별별 것이 다 들어 있다.
+      법원이 보낸 소송고지서, 고용노동청 출석 요구서, 산업안전보건공단 공문, 산재공단 알림, 온열질환 예방 안내, 세무서 통지, 거래처 내용증명.
+      지자체 안전 점검 결과지. 단순한 광고도 끼어 있다.
+    </p>
+    <p>
+      이 봉투들을 누가 뜯을지가, 알고 보면 정치였다. 인사가 뜯을까. 총무가 뜯을까. 경영지원실장이 뜯을까. 부장이 뜯을까.
+      잘못 뜯으면 <em>"왜 네가 봤어?"</em> 가 된다. 잘못 분류하면 <em>"이거 중요한 건데 왜 묵었어?"</em> 가 된다.
+      <strong>그래서 누구도 적극적으로 뜯지 않으려 한다.</strong> 책상에 며칠 묵는 봉투가 생긴다.
+    </p>
+    <p>
+      결국 내가 직접 뜯는 일이 자주 있었다. <strong>그게 정상이 아니라는 걸 안다.</strong>
+      나도 본업이 있다. 거래처 만나러 가야 하고, 공장 다녀와야 하고, 견적 검토해야 한다. 그런데 책상에는 뜯지 않은 봉투가 쌓여 있다.
+      자정에 사무실에 다시 와서 뜯는다. 다음 날 누구한테 어떻게 분배할지 내가 정한다. 회신서 양식을 찾는다.
+      작년에 비슷한 공문이 있었나 검색한다. 거기에 1시간이 또 간다.
+    </p>
+  </div>
+  <div class="qbox">
+    <p>
+      봉투 정치는 작은 회사일수록 더 심하다.<br>
+      대기업처럼 「대외협력실」 같은 부서가 따로 없으니까,<br>
+      <strong>모든 봉투의 책임이 결국 한 사람</strong>한테 떨어진다.<br>
+      그게 거의 항상 대표였다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label r">Chapter 02 · 안 굴러갔던 일</p>
+  <h2 class="sec-title">마감 임박한 공문이<br>책상에서 <em>며칠</em> 묵었다</h2>
+  <div class="prose">
+    <p>
+      한 사례. 작년에 우리 회사에 산재공단에서 「온열질환 예방 안내 회신 요청」 공문이 왔다. 마감은 보낸 날로부터 14일.
+      우편물 시스템 안에서 5일 묵었다. 발견됐을 때 마감까지 9일 남아 있었다.
+      그 9일 안에 — 단양 공장에 전화해서 현장 사진 받고, 안전관리 책임자 임명서 정리하고, 회신 .docx 작성하고, 결재 받고, 다시 우편으로 보내야 했다.
+      단양 공장은 하남에서 차로 약 2시간 거리다. 내가 직접 운전해서 다녀왔다.
+    </p>
+    <p>
+      다른 사례. 작년에 소송고지서가 한 통 왔다. 인사가 자기 일이 아니라고 보냈다. 총무가 자기 일이 아니라고 보냈다.
+      대표 책상에 9일 묵은 후 뜯었다. 마감까지 5일 남아 있었다. 그 사이에 답변서 미제출이면 청구원인 사실로 인정될 위험이 있었다.
+      변호사한테 급하게 의뢰했다. <strong>비용이 평소의 1.5배였다.</strong>
+    </p>
+    <p>
+      이런 일이 1년에 2~3번씩 일어났다. 그때마다 나는 같은 결론을 내렸다. <em>"사람한테 시키면 안 되겠다."</em>
+      그 결론이 1년에 2~3번씩 반복됐다. 그래도 사람한테 시켜야 했다. <strong>대안이 없었으니까.</strong> 5월 12일까지는.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label g">Chapter 03 · AI에게 어떻게 시켰나</p>
+  <h2 class="sec-title">"PDF 실독·아카이브·<br>회신 초안 생성·마감추적까지"</h2>
+  <div class="prose">
+    <p>
+      5월 8일에 내가 직접 지시했다. 위의 한 줄 그대로다. 그 한 줄을 받아서, 우리는 그날 안에 5단계 파이프라인을 만들었다.
+      <strong>task #1*798 「대외공문 인텔리전스」.</strong>
+      Taskworld 안에 있는 가장 큰 task 하나에, AI가 매일 18:35 에 자동으로 출근해서 처리하는 시스템.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">task #1*798 · 대외공문 인텔리전스</div>
+    <div class="term-body">
+      <div class="you">Phase 0  PG 스키마 (erp.external_docs 48컬럼·8인덱스)</div>
+      <div class="you">Phase 1  PDF 자동 다운로드 + OCR + 본문 추출</div>
+      <div class="you">Phase 2  importance 1~5 자동 분류 (소송고지서 = 5)</div>
+      <div class="you">Phase 3  회신 .docx 자동 생성 (양식 라이브러리 11건)</div>
+      <div class="you">Phase 4  마감 추적 + D-3 / D-5 / D-7 대표 호출</div>
+      <div class="you">Phase 5  Taskworld 자동 코멘트 + 담당자 자동 멘션</div>
+      <br>
+      <div class="cmt">  매일 18:35 자동 실행. dry-run → live 점진 전환.</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      기술적인 설명은 한 줄로 풀어 본다. PG 스키마 — 데이터베이스 안에 공문 한 건당 한 줄로 기록하는 표.
+      48컬럼이면, 한 공문에 대해 48가지 정보를 자동으로 기록한다. 발신처·수신일·마감일·중요도·담당자·회신 여부·관련 첨부 위치 등등.
+      그러면 대표가 <em>"지난 6개월 동안 산재공단에서 온 공문 다 보여줘"</em> 라고 물으면 1초 만에 답이 나온다.
+    </p>
+    <p>
+      핵심은 <strong>importance 자동 분류</strong>다. AI가 PDF 본문을 읽고 <em>"이게 얼마나 중요한가"</em> 를 1부터 5까지 매긴다.
+      소송고지서가 들어오면 자동으로 importance=5. 매년 똑같이 오는 정기 안내 공문은 importance=2. 광고지는 importance=1 으로 자동 폐기.
+      <strong>대표가 "어떤 봉투를 먼저 뜯어야 하나" 고민할 일이 없어졌다.</strong>
+      AI가 먼저 뜯어서 5번부터 정렬해 놓는다.
+    </p>
+  </div>
+  <div class="cards">
+    <div class="card parch"><p class="card-n">Importance 5</p><p class="card-t">소송고지서 / 법원</p><p class="card-d">즉시 대표 1:1 DM. 변호사 자동 호출 트리거. 마감 D-7까지 회신 .docx 필수.</p></div>
+    <div class="card parch"><p class="card-n">Importance 4</p><p class="card-t">노동부 · 산재</p><p class="card-d">고용노동청 출석 요구, 산재 인정·불인정 결정. D-5 마감 추적. 인사 자동 멘션.</p></div>
+    <div class="card parch"><p class="card-n">Importance 3</p><p class="card-t">세무 · 공공기관</p><p class="card-d">세무서·공공기관 공문. 회신 .docx 자동 초안. 재무 또는 영업지원 멘션.</p></div>
+    <div class="card parch"><p class="card-n">Importance 2</p><p class="card-t">정기 안내</p><p class="card-d">온열질환·동절기 안전·정기 점검 결과. 양식 라이브러리에서 매칭, 자동 회신 초안.</p></div>
+    <div class="card parch"><p class="card-n">Importance 1</p><p class="card-t">광고 / 자동 폐기</p><p class="card-d">광고지·홍보지. PG 안에 기록만 하고 알림 안 보냄.</p></div>
+  </div>
+  <div class="prose">
+    <p>
+      5월 8일 첫날, 9건의 공문이 부트스트랩으로 들어갔다. 그 중 1건이 importance=5 — 소송고지서였다.
+      AI가 그걸 자동으로 잡아냈고, 대표 채팅창에 5분 안에 알림이 떴다. <strong>100% 성공.</strong>
+      사람이 9건의 봉투를 뜯고 분류하고 정리하고 회신 초안 만드는 데 5일이 걸렸을 일이었다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label parch">Chapter 04 · AI가 더 잘 하는 점</p>
+  <h2 class="sec-title">정치가 <em>없다</em></h2>
+  <div class="prose">
+    <p>
+      기능 차이로 따지면 그렇게 대단한 일은 아니다. PDF 읽기, 분류, 마감 추적. 사람이 해도 못 할 일은 아니다.
+      <strong>다만 사람이 매번 같은 품질로 매번 같은 시간에 해주지를 않는다.</strong>
+    </p>
+    <p>
+      AI가 더 잘 하는 정확한 지점은 <span class="hp">봉투 정치가 없다는 것</span>이다.
+      AI는 <em>"이거 누가 봐야 하나요"</em> 라는 정치적 판단을 안 한다. 그냥 본다. 본 결과를 task 코멘트에 적는다. 적힌 결과를 보고 사람이 결정한다.
+      AI가 책임 회피를 하지 않으니까, <strong>책임 떠넘기기 게임 자체가 안 돌아간다.</strong>
+      회사 안에 책임 게임이 한 가지 줄어드는 게, 대표 입장에서는 진짜로 큰 변화다.
+    </p>
+    <p>
+      두 번째로, AI는 <strong>같은 양식을 매번 다시 만들지 않는다.</strong>
+      양식 라이브러리 11건이 우리 회사 archive 디렉터리에 정리되어 있다. 새 공문이 들어오면 가장 비슷한 양식을 자동 매칭. 회신 .docx 초안이 자동 생성.
+      사람이 작년 회신 폴더 뒤지러 안 나가도 된다.
+      더 솔직히 말하면 — 작년 회신이 어디 있는지, 작년에 그걸 만든 직원이 지금도 회사에 있는지, 그 사람이 휴가 갔는지, 아무도 모르는 상황이 더 이상 안 일어난다.
+    </p>
+  </div>
+  <div class="insight">
+    <p>
+      사람의 일은<br>
+      봉투 정치 끝낸 뒤에 시작된다.<br>
+      AI가 봉투를 먼저 뜯어서<br>
+      중요도 5번부터 정렬해 놓으면,<br>
+      <strong>사람은 판단만 하면 된다.</strong>
+    </p>
+    <p class="sub">대외공문 인텔리전스 · 2026-05-08</p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label parch">Chapter 05 · 그리고 Taskworld 안에서</p>
+  <h2 class="sec-title">AI가 직원에게<br>"<em>이거 다음 주까지</em>" 라고 코멘트를 단다</h2>
+  <div class="prose">
+    <p>
+      파이프라인의 마지막 단계 — Phase 5 — 가 가장 중요하다. AI가 처리한 공문 결과를 Taskworld task #1*798 안에 자동 코멘트로 등록한다.
+      그 코멘트에는 importance, 마감일, 회신 초안 .docx 첨부, 그리고 담당자 자동 멘션이 다 들어 있다.
+    </p>
+    <p>
+      담당자가 받는다. 답을 안 한다. D-3에 AI가 같은 task에 다시 코멘트를 단다. <em>"@홍*동 마감까지 3일 남았습니다."</em>
+      D-5에 또 코멘트. D-7에 대표 1:1 DM으로 호출. 그 흐름이 자리 잡혀 있다.
+      <strong>누구도 안 받았다고 핑계 못 댄다.</strong> Taskworld 안에 다 기록되어 있으니까.
+    </p>
+    <p>
+      우리가 5년 동안 Taskworld 안에 모든 협업 과정을 디지털로 기록해두지 않았다면, 이 흐름을 만들 수 없었을 거다.
+      5년 전에는 왜 그렇게 끈질기게 Taskworld 안에 모든 걸 기록했는지 나도 정확히 몰랐다. <strong>지금 알겠다.</strong>
+      AI 직원이 들어와서 사람 직원에게 코멘트 달려면, 그 일이 글로 기록된 공간이 필요했던 거다. Taskworld 가 그 공간이다.
+    </p>
+    <p>
+      대표가 욕먹을 일이 또 하나 사라졌다. 책상에 묵은 봉투, 마감 임박한 공문, 변호사한테 1.5배 비용으로 의뢰하는 일. 다 사라졌다.
+      <strong>그게 작은 한국 제조 중소기업 대표가 매일 죽어라 이 일을 하는 이유의 한 조각이다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<div class="stmt">
+  <p class="stmt-k">EP020 · STATEMENT</p>
+  <p class="stmt-t">봉투 정치가 <span style="color:var(--parch)">끝났다</span></p>
+  <p class="stmt-s">
+    누가 뜯을지부터 정치였던 회사 우편물이 —<br>
+    이제는 매일 18:35에 AI가 자동으로 뜯고 분류하고 회신 초안까지 만든다.<br>
+    사람은 판단만 한다. 그 한 가지 변화가, 사장 책상 위의 5년을 끝냈다.
+  </p>
+</div>
+
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 3 · W20-3</p>
+  <h2 class="footer-t">Episode <span style="color:var(--parch)">020</span></h2>
+  <p class="footer-n">이어서 → <a href="ep021.html" style="color:var(--parch);text-decoration:none;border-bottom:1px solid var(--parch);"><strong>EP021 · 메일은 더 이상 내 화면에 들어오지 않는다</strong></a></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(196,149,106,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="ep019.html" style="color:#c4956a;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#c4956a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue2.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR2</a>
+  <a href="ep017.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">17</a>
+  <a href="ep018.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">18</a>
+  <a href="ep019.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">19</a>
+  <a href="ep020.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #c4956a;">20</a>
+  <a href="ep021.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">21</a>
+  <a href="ep022.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">22</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
+  <a href="ep021.html" style="color:#c4956a;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+</body>
+</html>
