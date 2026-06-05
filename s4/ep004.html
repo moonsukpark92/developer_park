@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S4 EP004 · 7일 353건, 진짜 보고는 2건</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#e8a83a; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(232,168,58,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(232,168,58,.06) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#0e0c06 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,58,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,58,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6vw,5.2rem);line-height:1.12;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.r{color:var(--rose);} .label.gr{color:var(--green);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.sec-title em{font-style:normal;color:var(--gold);}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.prose code{font-family:var(--mono);font-size:.86em;color:var(--gold);background:rgba(232,168,58,.08);padding:1px 6px;border-radius:3px;}
+.hg{color:var(--gold);font-weight:500;} .hr{color:var(--rose);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
+.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--gold);background:linear-gradient(90deg,rgba(232,168,58,.06) 0%,transparent 100%);position:relative;}
+.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--gold);opacity:.35;line-height:1;}
+.qbox p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.98rem,1.7vw,1.15rem);line-height:1.85;color:rgba(232,230,225,.92);}
+.qbox p strong{color:var(--text);font-weight:700;font-style:normal;}
+.qbox .who{font-family:var(--mono);font-style:normal;font-size:.6rem;letter-spacing:2px;color:var(--gold);text-transform:uppercase;margin-top:14px;display:block;}
+.bigstat{margin:38px 0;padding:40px 32px;border:1px solid rgba(232,168,58,.25);border-radius:10px;background:linear-gradient(135deg,rgba(40,30,8,.4) 0%,rgba(232,168,58,.04) 100%);text-align:center;}
+.bigstat .big{font-family:var(--serif);font-size:clamp(3rem,9vw,5.5rem);font-weight:900;color:var(--gold);line-height:1;}
+.bigstat .sub{font-family:var(--sans);font-size:.9rem;color:rgba(232,230,225,.6);margin-top:14px;line-height:1.7;}
+.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:36px 0;}
+.metric{background:#0d1117;border:1px solid rgba(232,168,58,.25);border-radius:8px;padding:24px 18px;text-align:center;}
+.metric-num{font-family:var(--serif);font-size:2.4rem;font-weight:800;color:var(--gold);line-height:1;margin-bottom:8px;}
+.metric-label{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;color:rgba(232,230,225,.5);text-transform:uppercase;}
+.term{background:#0e0c06;border:1px solid rgba(232,168,58,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(232,168,58,.04);border-bottom:1px solid rgba(232,168,58,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--gold);}
+.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:#7cc5ff;} .dim{color:rgba(232,168,58,.6);} .warn{color:var(--rose);}
+.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(40,30,8,.4) 0%,rgba(232,168,58,.05) 100%);border:1px solid rgba(232,168,58,.2);text-align:center;}
+.insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.2rem);line-height:1.8;color:var(--text);margin:0;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-top:14px;}
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--gold);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+  <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S4</a>
+</div>
+
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 4 · Episode 004 · 6/5</p>
+  <h1 class="hero-title">
+    7일에 353건,<br>
+    진짜 보고는<br>
+    <span style="color:var(--gold)">2건</span>이었다
+  </h1>
+  <p class="hero-desc">
+    내가 만든 AI가, 내 업무를 방해하기 시작했다.<br>
+    관리자 채팅방에 일주일 동안 봇이 353건을 보냈는데<br>
+    그중 진짜 업무 보고는 단 2건, 0.6%였다.<br>
+    나머지 99%는 "이상 없습니다"의 변주였다.<br>
+    AI에게 "이상 없으면 말하지 마"를 가르친 이야기.
+  </p>
+  <div class="hero-tags">
+    <span class="tag r">7일 353건 중 2건</span>
+    <span class="tag">상태핑 747건</span>
+    <span class="tag g">report-by-exception</span>
+    <span class="tag gr">366 → 6건 (98%↓)</span>
+    <span class="tag">절제</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label g">Chapter 01 · 사람이 싫어하는 일</p>
+  <h2 class="sec-title">너무 많은 보고는,<br><em>보고가 아니다</em></h2>
+  <div class="prose">
+    <p>
+      보고를 안 받으면 불안하다. 그래서 사장들은 보고를 많이 받으려 한다. 일일 보고, 주간 보고, 실시간 알림.
+      그런데 보고가 너무 많아지면 정반대 일이 벌어진다. <strong>다 읽을 수 없게 되고, 안 읽게 되고, 결국 중요한 걸 놓친다.</strong>
+      매일 백 통씩 오는 알림 속에서, 진짜 급한 한 통은 묻힌다.
+    </p>
+    <p>
+      사람도 똑같다. 매일 <em>"별일 없습니다"</em> 를 백 번 듣다 보면, 백한 번째 <em>"문제 생겼습니다"</em> 를 흘려듣는다.
+      양치기 소년 이야기다. 거짓말이 아니어도, 너무 자주 울리는 경보는 경보의 기능을 잃는다.
+      <span class="hg">소음은 신호를 죽인다.</span>
+    </p>
+    <p>
+      문제는 이번엔 그 소음을 내가 만든 AI가 내고 있었다는 거다. AI 직원을 여덟 마리 만들고, 잘 돌아가는지 보려고
+      상태 알림을 다 켜놨더니, <strong>여덟 마리가 쉴 새 없이 "저 잘 돌고 있어요"를 보고하기 시작했다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label g">Chapter 02 · 안 굴러갔던 일</p>
+  <h2 class="sec-title">99%가 <em>"이상 없음"</em>의<br>변주였다</h2>
+  <div class="prose">
+    <p>
+      6월 5일, 도저히 일에 집중이 안 돼서 실제로 세어 봤다. 관리자 채팅방에 일주일 동안 봇들이 보낸 메시지가
+      <strong>353건</strong>. 그중에서 사장이 실제로 알아야 할 진짜 업무 보고는 <strong>딱 2건</strong>이었다.
+    </p>
+  </div>
+  <div class="bigstat">
+    <div class="big">0.6%</div>
+    <div class="sub">7일간 봇이 보낸 353건 중<br>실질 업무 보고는 단 2건</div>
+  </div>
+  <div class="prose">
+    <p>
+      나머지 351건은 뭐였나. 절반이 넘는 <strong>747건</strong>(누적)이 "상태핑" 이었다 — 봇이 <em>"저 살아 있어요", "검사 완료, 이상 없음", "신규 건 0건"</em>
+      을 반복해서 보내는 거다. 거기에 에러 알림, 똑같은 KPI 숫자 도배가 더해졌다. 같은 장애가 문구만 살짝 바꿔서 하루에도 몇 번씩 올라왔다.
+    </p>
+    <p>
+      왜 이렇게 됐는지 뜯어보니 네 가지였다. (1) 관리자방 정책이 "상태핑"을 허용하고 있었다.
+      (2) 몇몇 감시 도구가 발송 검문소(SendGuard)를 우회해서 텔레그램으로 직접 메시지를 쐈다.
+      (3) "이상 없음"을 무조건 보고하게 돼 있었다. (4) 같은 KPI 숫자를 반복해서 인라인으로 도배했다.
+      <span class="hg">하나하나는 다 "좋은 의도"였다.</span> 다 합치니 사장 업무를 마비시키는 소음이 됐다.
+    </p>
+    <p>
+      이게 아이러니다. 시즌 3에서 나는 "AI가 24시간 회사를 감시한다"는 걸 자랑했다.
+      그 감시가 잘 돌아가니까, 감시 보고가 회사를 덮어버린 거다. <strong>잘 돌아가는 게 문제가 됐다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label g">Chapter 03 · AI에게 어떻게 시켰나</p>
+  <h2 class="sec-title">"이상 없으면,<br><em>말하지 마</em>"</h2>
+  <div class="prose">
+    <p>
+      그날 내 지시는 짧았다.
+    </p>
+  </div>
+  <div class="qbox">
+    <p>
+      텔레그램 보고 폭주로<br>
+      <strong>업무에 집중할 수가 없다.</strong><br>
+      해결하라.
+      <span class="who">— 사장님 지시 · 2026-06-05</span>
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      이걸 다섯 가지 영구 규칙으로 박았다. 핵심은 하나다 — <strong>좋은 소식은 말하지 않는다.</strong>
+    </p>
+    <p>
+      <strong>하나 — "이상 없음"은 보내지 않는다(report-by-exception).</strong> "전부 정상, 신규 0건, 감시 완료" 같은,
+      <em>아무 일도 안 일어났다는 보고</em>는 발송 자체를 막았다. 문제가 있을 때만 말한다. 침묵이 곧 "정상"이라는 신호가 된다.
+    </p>
+    <p>
+      <strong>둘 — 모든 보고는 검문소를 거친다.</strong> 텔레그램으로 직접 쏘는 우회로를 다 막고,
+      반드시 발송 검문소(<code>SendGuard</code>)를 통과하게 했다. 여기서 중복·소음·정책 위반이 걸러진다.
+    </p>
+    <p>
+      <strong>셋 — 보낼 곳을 한 곳에서 정한다.</strong> 보고 종류에 따라 자동으로 행선지가 갈린다 —
+      시스템 잡음은 에러 전용 방으로, 진짜 급한 건만 사장 1:1로, 부서 일은 부서 방으로.
+      <span class="hg">관리자 채팅방에는 사장이 꼭 봐야 할 것만 남긴다.</span>
+    </p>
+    <p>
+      <strong>넷 — 같은 실패는 한 시간에 한 번만.</strong> 같은 장애가 문구를 바꿔 와도, 한 묶음으로 인식해서 한 시간에 한 번만 알린다.
+      <strong>다섯 — 긴 보고서·반복 KPI는 텔레그램이 아니라 웹 대시보드로.</strong> 텔레그램엔 핵심 다섯 줄과 링크만.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">report-by-exception · 2026-06-05</div>
+    <div class="term-body">
+      <div class="cmt"># 예전 — 좋은 소식까지 다 보냄</div>
+      <div class="dim">[봇] 헬스체크 완료, 이상 없음 ✔</div>
+      <div class="dim">[봇] 증분 감시 완료, 신규 0건 ✔</div>
+      <div class="dim">[봇] KPI: 출하 0 / 불량 0 / ... (매시간 반복)</div>
+      <div class="warn">→ 7일 353건 (사장 업무 마비)</div>
+      <br>
+      <div class="cmt"># 지금 — 문제 있을 때만 말함</div>
+      <div class="ok">(침묵 = 정상)</div>
+      <div class="you">[봇] ⚠ 출하 적재 격차 감지 — 확인 필요</div>
+      <div class="ok">→ 관리자방 7일 6건 (98% 감축)</div>
+    </div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label g">Chapter 04 · 결과</p>
+  <h2 class="sec-title">366건이<br><em>6건</em>이 됐다</h2>
+  <div class="prose">
+    <p>
+      바꾸고 나서 다시 셌다. 관리자 채팅방 보고가 <strong>366건에서 6건으로</strong> 줄었다. 98% 감소다.
+      그 6건은 전부 사장이 실제로 봐야 할 것들이었다. 침묵이 길어지면, 그건 회사가 잘 돌아간다는 뜻이다.
+      무슨 일이 생기면, 그제야 알림이 온다. <span class="hg">알림이 오면, 이제는 진짜 봐야 할 것이다.</span>
+    </p>
+  </div>
+  <div class="metric-row">
+    <div class="metric"><div class="metric-num">366</div><div class="metric-label">이전 (7일)</div></div>
+    <div class="metric"><div class="metric-num">6</div><div class="metric-label">이후 (7일)</div></div>
+    <div class="metric"><div class="metric-num">98%</div><div class="metric-label">소음 감축</div></div>
+    <div class="metric"><div class="metric-num">8</div><div class="metric-label">회귀 잠금 테스트</div></div>
+  </div>
+  <div class="prose">
+    <p>
+      그리고 이걸 테스트 8개로 잠갔다. 누가 나중에 또 "이상 없음" 보고를 켜려고 하면 다음 배포가 막힌다.
+      이게 이 회사가 일하는 방식이 됐다 — 한 번 고친 건, 다시 깨지지 않게 자물쇠를 채운다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label gr">Chapter 05 · AI가 더 잘 하는 점</p>
+  <h2 class="sec-title">AI는 <em>침묵</em>을<br>지킬 수 있다</h2>
+  <div class="prose">
+    <p>
+      사람 직원에게 "별일 없으면 보고하지 마세요" 라고 하면, 잘 안 된다. 불안해서 자꾸 "별일 없습니다"를 보고한다.
+      안 하면 또 <em>"왜 보고 안 했어요?"</em> 소리를 들을까 봐. 그래서 사람의 보고는 점점 늘어난다. 줄이기가 어렵다.
+    </p>
+    <p>
+      <strong>AI는 침묵을 지킬 수 있다.</strong> "이상 없으면 말하지 마"라고 규칙을 박으면, 정말로 안 한다. 불안해하지 않는다.
+      눈치 보지 않는다. 문제가 생긴 순간에만 정확히 말한다. <span class="hgr">그래서 AI의 침묵은 신뢰할 수 있다.</span>
+      봇이 조용하다 = 회사가 정상이다. 이 등식이 성립하는 회사가 됐다.
+    </p>
+    <p>
+      재미있는 건, 앞 편(EP003)에서는 AI가 사실을 더 잘 흐르게 만들었고, 이 편에서는 AI가 더 조용해졌다는 거다.
+      모순 같지만 같은 이야기다. <strong>중요한 사실은 빠짐없이 흐르게 하고, 안 중요한 소음은 끈다.</strong>
+      사람은 이 둘을 동시에 못 한다 — 부지런하면 시끄럽고, 조용하면 놓친다.
+      AI는 규칙만 잘 박으면 둘 다 한다. 작은 회사 대표가 매일 죽어라 이 일을 하는 이유의 한 조각이 또 채워졌다 —
+      소음에 묻혀 진짜를 놓치지 않는 회사를 만들기 위해서.
+    </p>
+  </div>
+  <div class="insight">
+    <p>
+      사람은 불안해서 자꾸 보고하고,<br>
+      AI는 규칙대로 침묵을 지킨다.<br><br>
+      <strong>봇이 조용하면, 회사가 정상이다.</strong>
+    </p>
+    <p class="sub">report-by-exception · SendGuard · 2026-06-05</p>
+  </div>
+  <div class="prose">
+    <p>
+      소음을 끄고 나니, 정작 들어야 할 소리가 또렷해졌다. 그런데 그 소리 중에는, <strong>사장이 한 번도 들어본 적 없는 소리</strong>가 있었다.
+      직원들의 영업 통화다. 다음 편은 그 이야기다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<div class="stmt">
+  <p class="stmt-k">EP004 · STATEMENT</p>
+  <p class="stmt-t">좋은 소식은<br><span style="color:var(--gold)">말하지 않는다</span></p>
+  <p class="stmt-s">
+    7일 353건 중 진짜는 2건. 잘 돌아가는 감시가 회사를 덮었다.<br>
+    "이상 없으면 말하지 마"를 가르치니 366건이 6건이 됐다.<br>
+    봇의 침묵은 신뢰할 수 있다 — 조용하면, 정상이다.
+  </p>
+</div>
+
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · EP004</p>
+  <h2 class="footer-t">Episode <span style="color:var(--gold)">004</span></h2>
+  <p class="footer-n">이어서 → <a href="ep005.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);"><strong>EP005 · 사장한테 안 한 통화를 듣는다</strong></a></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="ep003.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">1</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">2</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">3</a>
+  <a href="ep004.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">4</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">5</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">6</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
+  <a href="ep005.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+</body>
+</html>

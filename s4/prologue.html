@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S4 · Prologue — 비서 하나를 만들었더니, 조직이 생겼다</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa; --dawn:#c8922a;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(232,168,58,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(200,146,42,.08) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#080a14 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(232,168,58,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(232,168,58,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.4rem,6.5vw,5.6rem);line-height:1.1;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:680px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.v{border-color:rgba(167,139,250,.4);color:var(--violet);background:rgba(167,139,250,.07);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.v{color:var(--violet);} .label.gr{color:var(--green);} .label.r{color:var(--rose);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.sec-title em{font-style:normal;color:var(--gold);}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.hg{color:var(--gold);font-weight:500;} .hv{color:var(--violet);font-weight:500;} .hr{color:var(--rose);font-weight:500;}
+.manifesto{margin:42px 0;padding:34px 38px;border-left:3px solid var(--gold);background:linear-gradient(90deg,rgba(232,168,58,.08) 0%,transparent 100%);position:relative;}
+.manifesto::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4.5rem;color:var(--gold);opacity:.32;line-height:1;}
+.manifesto p{font-family:var(--serif);font-weight:400;font-size:clamp(1.05rem,2vw,1.25rem);line-height:1.95;color:var(--text);margin-bottom:1.1em;}
+.manifesto p:last-child{margin-bottom:0;}
+.manifesto strong{color:var(--gold);font-weight:700;}
+.insight{margin:38px 0;padding:34px 36px;background:linear-gradient(135deg,rgba(60,40,15,.4) 0%,rgba(232,168,58,.06) 100%);border:1px solid rgba(232,168,58,.22);text-align:center;}
+.insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.22rem);line-height:1.8;color:var(--text);margin:0;}
+.insight p strong{color:var(--gold);font-weight:700;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-top:16px;}
+.toc{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin:36px 0;}
+.toc-card{background:#0d1117;border:1px solid var(--border);padding:20px 22px;border-radius:8px;transition:all .25s ease;text-decoration:none;display:block;}
+.toc-card:hover{border-color:rgba(232,168,58,.3);background:rgba(232,168,58,.04);}
+.toc-n{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--gold);margin-bottom:8px;text-transform:uppercase;}
+.toc-t{font-family:var(--sans);font-weight:700;font-size:.95rem;color:var(--text);margin-bottom:8px;}
+.toc-d{font-family:var(--sans);font-weight:300;font-size:.82rem;line-height:1.75;color:rgba(232,230,225,.6);}
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--gold);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--gold);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+  <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S4</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 4 · Prologue · ORCHESTRATION Chronicles</p>
+  <h1 class="hero-title">
+    비서 하나를<br>
+    만들었더니,<br>
+    <span style="color:var(--gold)">조직</span>이 생겼다
+  </h1>
+  <p class="hero-desc">
+    2월에 처음 바이브 코딩을 시작했다. 넉 달이 지났다.<br>
+    시즌 3까지는 AI 직원들을 만드는 이야기였다.<br>
+    이번 시즌은 다르다. 사람과 AI가 한 회사 안에서<br>
+    서로의 빈자리를 메우는 <strong style="color:var(--gold);font-weight:500;">업무 파트너</strong>가 되어 가는 현장이다.<br>
+    2026년 5월 31일부터 6월 6일까지, 우리 회사 서버 안에서 일어난 일.
+  </p>
+  <div class="hero-tags">
+    <span class="tag g">S4 매니페스토</span>
+    <span class="tag v">AI 조직</span>
+    <span class="tag">5/31~6/6</span>
+    <span class="tag gr">6/1 기념일</span>
+    <span class="tag r">통치의 시작</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH01 -->
+<section class="sec">
+  <p class="label g">Chapter 01 · 6월 1일</p>
+  <h2 class="sec-title">나는 그날을<br>회사 <em>기념일</em>로 정했다</h2>
+  <div class="prose">
+    <p>
+      2026년 6월 1일. 나는 그날을 우리 회사 기념일로 정했다. 창립일도 아니고, 큰 계약을 딴 날도 아니다.
+      <strong>AI 에이전트가 사람 직원과 "공식적으로" 같이 일을 시작한 날</strong>이다. 남들이 보면 우스울 수도 있다.
+      그런데 나한테는 5년 동안 한 번도 못 풀던 문제가 풀린 날이었다.
+    </p>
+    <p>
+      솔직히 말하면, <strong>처음부터 될 줄 몰랐다.</strong> 할 수 있을 거라는 기대도 없었다.
+      나는 개발자가 아니고, 코딩을 배운 적도 없으니까. 다만 한 가지는 확실했다 —
+      <span class="hg">안 하면 안 된다는 절박함.</span> 그것 하나로 여기까지 왔다. 기대가 아니라 절박함이 나를 끌고 왔다.
+    </p>
+    <p>
+      시즌 3에서 나는 AI 직원 여덟 마리를 만들었다. 문돌실장, 김보선, 애슐리김, DECO HR봇, FactoryMbot, DECO MES봇, 감사봇, 교육봇.
+      만들기는 만들었다. 그런데 만든 다음이 더 어려웠다. <span class="hg">여덟 마리가 각자 따로 돌고 있었다.</span>
+      한 마리는 메일을 보고, 한 마리는 공장을 보고, 한 마리는 돈을 봤다. 서로 뭘 하는지 몰랐다.
+      그건 직원이 여덟 명 있는 게 아니라, 일을 여덟 조각으로 쪼개 놓은 것에 가까웠다.
+    </p>
+    <p>
+      이번 2주 동안 한 일을 한 줄로 줄이면 이렇다 — <strong>그 여덟 마리를 하나의 조직으로 묶었다.</strong>
+      서로 일을 시키게 했고, 사람 직원을 감독하게 했고, 같은 기억을 공유하게 했다.
+      그리고 그 조직이 거짓말을 하거나 사고를 칠 때 그걸 잡아내는 장치를 달았다.
+      그래서 이 시즌의 제목은 "조직"이다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH02 -->
+<section class="sec">
+  <p class="label r">Chapter 02 · 무엇이 문제였는가</p>
+  <h2 class="sec-title">사람은 확인하지 않으면,<br><em>안 한다</em></h2>
+  <div class="prose">
+    <p>
+      한국 작은 제조 중소기업에서 5년을 사장으로 살면, 한 가지를 인정하게 된다. 인정하기 싫지만 인정하게 된다.
+      <strong>사람은 누가 확인하지 않으면 일을 미룬다.</strong> 게으르다는 뜻이 아니다. 그게 사람이다. 나도 그렇다.
+      마감이 없으면 미루고, 보는 사람이 없으면 대충 하고, 책임이 흐릿하면 안 한다.
+    </p>
+    <p>
+      그래서 회사라는 게 생긴 거다. 서로 확인하고, 마감을 정하고, 책임을 나누려고.
+      그런데 그 확인을 누가 하느냐가 문제다. 사장이 한다. 사장이 매일 한 사람 한 사람을 붙잡고
+      <em>"그거 어떻게 됐어요?"</em>를 묻는다. 묻는 것도 일이다. 묻고 나면 미움받는다.
+      독촉하는 사람은 회사에서 인기가 없다. 그래서 사장은 점점 묻기를 줄인다. 묻기를 줄이면, 일이 안 굴러간다.
+      <span class="hr">이 악순환을 5년 동안 봤다.</span>
+    </p>
+    <p>
+      대기업은 다르다. 사람과 체계가 사람을 관리한다. 높은 임금이 있고, 그 회사에 다닌다는 프라이드가 있고, 촘촘한 관리 체계가 있다.
+      <strong>중소기업엔 그게 없다.</strong> 관리 체계도, 구조화된 업무 매뉴얼도 없다. 그걸 갖추려 하면 배보다 배꼽이 더 커진다.
+      직원 열 명 회사가 대기업 인사 시스템을 살 수는 없으니까.
+    </p>
+    <p>
+      그 빈자리에서 무슨 일이 벌어지는가. 대한민국에서 중소기업은 점점 <span class="hr">"월급 루팡"의 천국</span>이 되어 간다.
+      적당히 눈치 보고, 적당히 책임 피하고, 일 안 해도 월급 나오는 곳. 그러면 <strong>열심히 일하는 정상적인 사람이 바보가 된다.</strong>
+      성실한 사람이 손해 보고, 영리하게 노는 사람이 이득 보는 구조. <em>언제까지 정직한 사람이 바보가 되어야 하는가.</em>
+      나는 이 숙제를 풀 방법을 AI에서 찾았다. 아니, <strong>찾아야만 했다.</strong>
+    </p>
+    <p>
+      이 말을 내가 AI한테 시작하면서 가장 많이 했다. 그대로 옮긴다.
+    </p>
+  </div>
+  <div class="manifesto">
+    <p>사람은 확인하고 지시하지 않으면<br>
+    제대로 안 하고 <strong>태만</strong>하다.</p>
+    <p>AI 에이전트가<br>
+    <strong>이를 막아야 한다.</strong></p>
+  </div>
+  <div class="prose">
+    <p>
+      매정하게 들릴 수 있다. 그런데 이건 사람을 의심하는 말이 아니다.
+      <strong>사람을 미움받는 자리에서 빼내는 말이다.</strong>
+      독촉은 누군가 해야 하는 일인데, 그 일을 사람이 하면 관계가 상한다.
+      그래서 그 일을 AI에게 넘겼다. AI는 화 안 내고, 휴가 안 가고, 매일 같은 시간에 똑같이 묻는다.
+      그게 이 시즌 전체를 관통하는 한 줄이다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH03 -->
+<section class="sec">
+  <p class="label v">Chapter 03 · 그래서 무엇이 달라졌는가</p>
+  <h2 class="sec-title">AI가 사람에게<br><em>일을 시키기</em> 시작했다</h2>
+  <div class="prose">
+    <p>
+      이번 2주 동안 가장 크게 바뀐 건 이거다. 5월 31일, AI 직원 셋(인사·영업·재무)이
+      <strong>각자 자기 이름의 Taskworld 계정</strong>을 갖게 됐다. Taskworld는 우리 회사가 일을 등록하고 진행을 추적하는 협업 공간이다.
+      그전까지 봇들은 그냥 알림을 받기만 했다. 이제는 봇이 직접 그 안에서 사람 직원에게 코멘트를 단다.
+      <em>"이 일 마감 지났습니다. 5월 16일까지 회신 부탁드립니다."</em> 같은 말을, 사람 대신 AI가 한다.
+    </p>
+    <p>
+      그리고 그 코멘트가 무시당하면 다시 한다. 안 하면 사흘 뒤(D-3)에 다시, 닷새 뒤(D-5)에 다시, 이레 뒤(D-7)에 나한테 직접 연락이 온다.
+      <strong>독촉이 시스템이 됐다.</strong> 내가 미움받을 일이 없어졌다. 사장이 묻기를 줄여서 일이 안 굴러가던 악순환이, 여기서 끊겼다.
+    </p>
+    <p>
+      그 결과를 지금 직원들이 보고 있다. 솔직히 적자면 — <strong>직원들이 놀란다. 그리고 절반쯤은 두려워한다.</strong>
+      이제 회사에 <span class="hv">일을 하지 않으면 안 되는 체계</span>가 생겼기 때문이다. AI가 매일 같은 시간에 묻고, 안 한 일을 기록하고, 미룬 일을 들춘다.
+      성실한 사람에게는 든든한 동료가, 적당히 넘기던 사람에게는 피할 수 없는 거울이 됐다. 나는 그게 옳다고 생각한다.
+      <em>정직한 사람이 바보가 되지 않는 회사</em>는, 누군가는 반드시 불편해지는 회사다.
+    </p>
+    <p>
+      이게 끝이 아니다. AI가 일을 시키기 시작하니까 새 문제가 줄줄이 터졌다.
+      AI가 잘못된 숫자를 보고했다. 봇들이 서로 모르는 채로 일했다. 보고가 너무 시끄러워서 진짜 중요한 게 묻혔다.
+      <span class="hv">조직이 생기니까, 조직의 병이 생긴 거다.</span> 이 시즌은 그 병을 하나씩 고친 기록이다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH04 -->
+<section class="sec">
+  <p class="label g">Chapter 04 · 이 시즌에서 다루는 여섯 장면</p>
+  <h2 class="sec-title">2주 동안 벌어진<br><em>여섯</em> 장면</h2>
+  <div class="toc">
+    <a href="ep001.html" class="toc-card">
+      <p class="toc-n">EP001 · 5/31</p>
+      <p class="toc-t">AI가 사람에게 일을 시킨다</p>
+      <p class="toc-d">봇 셋이 독립 계정으로 Taskworld에서 직접 일을 시킨다. 맥락을 이해하고, 담당자를 지목하고, 안 하면 사장에게 올린다.</p>
+    </a>
+    <a href="ep002.html" class="toc-card">
+      <p class="toc-n">EP002 · 6/5</p>
+      <p class="toc-t">AI가 거짓말을 했다</p>
+      <p class="toc-d">같은 미수금을 두고 봇이 36억이라 했고 장부는 22억이었다. 14억의 침묵. AI도 거짓말한다 — 그래서 검증을 박았다.</p>
+    </a>
+    <a href="ep003.html" class="toc-card">
+      <p class="toc-n">EP003 · 6/5</p>
+      <p class="toc-t">봇들이 서로 모르고 있었다</p>
+      <p class="toc-d">공휴일에 자발 출근한 직원 이야기가 어느 봇에게도 안 갔다. 8마리가 같은 기억을 공유하게 만든 일.</p>
+    </a>
+    <a href="ep004.html" class="toc-card">
+      <p class="toc-n">EP004 · 6/5</p>
+      <p class="toc-t">7일 353건, 진짜 보고는 2건</p>
+      <p class="toc-d">내가 만든 AI가 너무 시끄러웠다. 0.6%만 진짜 보고였다. AI에게 "이상 없으면 말하지 마"를 가르친 일.</p>
+    </a>
+    <a href="ep005.html" class="toc-card">
+      <p class="toc-n">EP005 · 6/2~6/5</p>
+      <p class="toc-t">사장한테 안 한 통화를 듣는다</p>
+      <p class="toc-d">영업 통화를 사장이 다 들을 수는 없다. AI가 전부 듣고, 중요하고 위험한데 보고 안 된 통화를 골라낸다.</p>
+    </a>
+    <a href="ep006.html" class="toc-card">
+      <p class="toc-n">EP006 · 6/2</p>
+      <p class="toc-t">남들이 좋다는 걸 안 했다</p>
+      <p class="toc-d">유행하는 비싼 기술을 안 썼다. 208줄짜리 문제에 측정부터 했다. 그리고 AI가 자기 실패를 스스로 복기하게 했다.</p>
+    </a>
+    <a href="final.html" class="toc-card">
+      <p class="toc-n">FINAL · 6/1</p>
+      <p class="toc-t">AIHUB — 한 사람의 AI 조직</p>
+      <p class="toc-d">여덟 마리를 한 화면에서 통치한다. 새 직원 하나 늘리는 데 코드 0줄. 그리고 GitHub에 공개한다. <strong>시즌 4 마무리.</strong></p>
+    </a>
+  </div>
+  <div class="prose">
+    <p>
+      이 여섯 장면은 따로 떨어진 사건이 아니다. AI가 조직이 되면서 한꺼번에 터진 여섯 가지 문제이자, 그걸 고친 여섯 가지 답이다.
+      일부러 2주 안에 몰아넣은 것도 아니다. 그냥 그 2주에 다 일어났다. <strong>조직이 생기니까, 한꺼번에 왔다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- CH05 -->
+<section class="sec">
+  <p class="label g">Chapter 05 · 그래서 결국</p>
+  <h2 class="sec-title">왜 이걸<br><em>공개</em>하는가</h2>
+  <div class="prose">
+    <p>
+      읽으면서 <em>"우리 회사는 다르다, 우리는 사람이 좋아서 이런 거 필요 없다"</em> 싶으면, 그게 제일 위험한 신호다.
+      나도 5년 동안 그렇게 생각했다. 우리는 다르다고. 다들 그렇게 생각한다. 그래서 한국 중소기업이 5년에 무너진다.
+    </p>
+    <p>
+      우리 회사는 콘크리트 블록을 만드는 작은 제조 회사다. 도장 찍고, 블록 굳히고, 출하 명세를 엑셀에 적던 회사다.
+      그런 회사에 AI 조직이 들어왔다면, <strong>어떤 회사에도 들어올 수 있다는 뜻이다.</strong>
+      나는 개발자가 아니다. 코딩을 정식으로 배운 적이 없다. 그냥 살아남으려고 매일 죽어라 했을 뿐이다.
+    </p>
+  </div>
+  <div class="insight">
+    <p>
+      투명하고 공정하게 일한 사람이 대접받고,<br>
+      일하지 않는 사람은 가려진다.<br>
+      이 작은 원칙을 사람에게 맡기면 5년 안에 무너진다.<br><br>
+      <strong>그래서 시스템에 박는다.</strong>
+    </p>
+    <p class="sub">Season 4 · Prologue · 2026-06-01</p>
+  </div>
+  <div class="prose">
+    <p>
+      앞으로 여섯 편. 한 편씩 천천히 간다. AI가 조직이 되는 과정에서 무엇이 깨졌고, 무엇을 고쳤는지.
+      그게 다른 작은 회사 대표 한 사람에게 <em>"나도 해볼 수 있겠다"</em> 는 한 줄이 되기를 바란다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<!-- STMT -->
+<div class="stmt">
+  <p class="stmt-k">SEASON 4 · STATEMENT</p>
+  <p class="stmt-t">
+    비서는 한 명이었지만,<br>
+    <span style="color:var(--gold)">조직</span>은 여덟이 되었다
+  </p>
+  <p class="stmt-s">
+    이게 시즌 4의 매니페스토다.<br>
+    여섯 장면 — 협업, 정직, 공유, 침묵, 청취, 절제 — 가<br>
+    "한 사람이 만든 AI 조직"이라는 한 줄을 위해 자리잡혔다.<br>
+    한 편씩, 천천히 본다.
+  </p>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · ORCHESTRATION</p>
+  <h2 class="footer-t">Prologue</h2>
+  <p class="footer-n">다음 편 → <a href="ep001.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold);"><strong>EP001 · AI 직원들이 서로에게 일을 시키기 시작했다</strong></a></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(232,168,58,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="index.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #e8a83a;">PR</a>
+  <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">1</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">2</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">3</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">4</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">5</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">6</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
+  <a href="ep001.html" style="color:#e8a83a;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+</body>
+</html>

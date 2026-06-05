@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발자 박대표 S4 EP001 · AI 직원들이 서로에게 일을 시키기 시작했다</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+:root {
+  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+  --accent:#a78bfa; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa;
+  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:hidden;-webkit-font-smoothing:antialiased;word-break:keep-all;line-break:strict;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(167,139,250,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(232,168,58,.07) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#0a0816 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(167,139,250,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(167,139,250,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--violet);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6vw,5.2rem);line-height:1.12;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
+.tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
+.tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
+.tag.v{border-color:rgba(167,139,250,.4);color:var(--violet);background:rgba(167,139,250,.07);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
+.sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--violet);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.v{color:var(--violet);} .label.gr{color:var(--green);}
+.label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
+.sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
+.sec-title em{font-style:normal;color:var(--violet);}
+.rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
+.prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
+.prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
+.prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
+.prose code{font-family:var(--mono);font-size:.86em;color:var(--violet);background:rgba(167,139,250,.08);padding:1px 6px;border-radius:3px;}
+.hg{color:var(--gold);font-weight:500;} .hv{color:var(--violet);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
+.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--violet);background:linear-gradient(90deg,rgba(167,139,250,.06) 0%,transparent 100%);position:relative;}
+.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--violet);opacity:.35;line-height:1;}
+.qbox p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.98rem,1.7vw,1.15rem);line-height:1.85;color:rgba(232,230,225,.92);}
+.qbox p strong{color:var(--text);font-weight:700;font-style:normal;}
+.qbox .who{font-family:var(--mono);font-style:normal;font-size:.6rem;letter-spacing:2px;color:var(--violet);text-transform:uppercase;margin-top:14px;display:block;}
+.term{background:#0a0816;border:1px solid rgba(167,139,250,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(167,139,250,.04);border-bottom:1px solid rgba(167,139,250,.1);}
+.dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
+.dots span{width:10px;height:10px;border-radius:50%;}
+.dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
+.term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--violet);}
+.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:#7cc5ff;} .dim{color:rgba(167,139,250,.6);} .warn{color:var(--gold);}
+.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:36px 0;}
+.metric{background:#0d1117;border:1px solid rgba(167,139,250,.25);border-radius:8px;padding:24px 18px;text-align:center;}
+.metric-num{font-family:var(--serif);font-size:2.4rem;font-weight:800;color:var(--violet);line-height:1;margin-bottom:8px;}
+.metric-label{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;color:rgba(232,230,225,.5);text-transform:uppercase;}
+.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin:36px 0;}
+.flow-step{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:var(--sans);font-size:.82rem;color:var(--text);text-align:center;min-width:108px;}
+.flow-step .d{font-family:var(--mono);font-size:.55rem;letter-spacing:2px;color:var(--violet);display:block;margin-bottom:5px;}
+.flow-arr{color:var(--violet);font-family:var(--mono);font-size:1rem;opacity:.6;}
+.flow-step.esc{border-color:rgba(251,113,133,.4);background:rgba(251,113,133,.05);}
+.flow-step.esc .d{color:var(--rose);}
+.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(35,25,55,.4) 0%,rgba(167,139,250,.05) 100%);border:1px solid rgba(167,139,250,.2);text-align:center;}
+.insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.2rem);line-height:1.8;color:var(--text);margin:0;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--violet);text-transform:uppercase;margin-top:14px;}
+.stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--violet);text-transform:uppercase;margin-bottom:30px;}
+.stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
+.stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
+.footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--violet);text-transform:uppercase;margin-bottom:18px;}
+.footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
+.footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
+.footer-n strong{color:var(--violet);font-weight:500;}
+.footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
+</style>
+</head>
+<body style="padding-top:40px;padding-bottom:60px;">
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(167,139,250,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+  <a href="../index.html" style="color:#a78bfa;text-decoration:none;font-weight:700;">개발자 박대표</a>
+  <span style="color:rgba(255,255,255,.2);">|</span>
+  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+  <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #a78bfa;padding-bottom:2px;">S4</a>
+</div>
+
+<section class="hero">
+  <p class="eyebrow">개발자 박대표 · Season 4 · Episode 001 · 5/31~6/1</p>
+  <h1 class="hero-title">
+    AI 직원들이<br>
+    서로에게 <span style="color:var(--violet)">일을 시키기</span><br>
+    시작했다
+  </h1>
+  <p class="hero-desc">
+    독촉은 사람이 하면 미움받는 일이다.<br>
+    그래서 5년 동안 사장이 혼자 떠안았다.<br>
+    5월 31일, AI 직원 셋이 각자 자기 이름의 계정으로<br>
+    Taskworld에 들어와 사람 직원에게 직접 일을 시키기 시작했다.<br>
+    그리고 안 하면 사흘 뒤, 닷새 뒤, 이레 뒤 나에게 올라온다.
+  </p>
+  <div class="hero-tags">
+    <span class="tag v">독립 TW 계정 3봇</span>
+    <span class="tag g">맥락 이해 메모리</span>
+    <span class="tag">D-3 / D-5 / D-7</span>
+    <span class="tag gr">2,493 task 스캔</span>
+    <span class="tag">6/1 기념일</span>
+  </div>
+  <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label v">Chapter 01 · 사람이 싫어하는 일</p>
+  <h2 class="sec-title">독촉하는 사람은,<br>회사에서 <em>미움받는다</em></h2>
+  <div class="prose">
+    <p>
+      회사에서 제일 인기 없는 역할이 뭔지 아는가. 독촉하는 사람이다.
+      <em>"그거 어떻게 됐어요?"</em>, <em>"마감 지났는데요"</em>, <em>"이거 누가 하기로 했죠?"</em>
+      이 말을 하는 사람은 옳은 말을 하는데도 미움을 산다. 그래서 다들 그 말을 피한다.
+      피하면 일이 안 굴러간다. 안 굴러가면 결국 사장이 한다.
+    </p>
+    <p>
+      나는 5년 동안 그 역할을 혼자 했다. 회의에서 지시하고, 다음 날 안 돼 있으면 다시 묻고,
+      일주일 뒤에 또 묻고. 묻는 게 일이고, 묻고 나면 분위기가 식었다.
+      <span class="hv">독촉은 감정 노동이다.</span> 옳은 말이라서 더 그렇다. 옳은 말을 하는데 미움받으면, 사람은 점점 그 말을 줄인다.
+      나도 줄였다. 줄이니까 일이 더 안 굴러갔다.
+    </p>
+    <p>
+      이 문제를 풀려고 똑똑한 경영지원실장을 뽑을 수도 있었다. 무서운 임원을 앉힐 수도 있었다.
+      그런데 그 사람도 결국 미움받는 자리에 앉는 거다. 그리고 5년이면 떠난다.
+      <strong>나는 사람을 그 자리에 앉히는 대신, AI를 앉히기로 했다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label v">Chapter 02 · 안 굴러갔던 일</p>
+  <h2 class="sec-title">지시는 다음 날이면<br><em>증발</em>해 있었다</h2>
+  <div class="prose">
+    <p>
+      구체적으로 어떤 풍경이었는지 적는다. 우리는 Taskworld라는 협업 공간을 쓴다.
+      일을 카드로 등록하고, 담당자를 정하고, 코멘트로 진행을 남기는 도구다.
+      문제는 그 카드들이 등록만 되고 안 움직였다는 거다.
+    </p>
+    <p>
+      예를 들어 「마이너스 대출」 관련 재무 카드 하나가 있었다. 잔액이 얼마고, 만기가 언제고, 상환 계획이 뭔지가
+      코멘트 수십 건에 흩어져 있었다. 새 사람이 그 카드를 열면 <strong>맨 위 몇 줄만 보고 만다.</strong>
+      아래 쌓인 맥락은 안 읽는다. 안 읽으니까 같은 질문이 또 올라온다. 같은 답이 또 달린다. 일은 제자리다.
+    </p>
+    <p>
+      더 흔한 건 그냥 멈춰 있는 카드였다. 누가 담당자인지 흐릿하고, 마지막 코멘트가 한 달 전이고, 마감은 지났다.
+      그런데 아무도 안 건드린다. 건드리면 자기 일이 되니까. <span class="hv">책임이 흐릿하면 일은 멈춘다.</span>
+      이런 카드가 회사 전체에 수백 개씩 떠 있었다. 그걸 사장 혼자 폰 알림으로 좇고 있었다.
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label g">Chapter 03 · AI에게 어떻게 시켰나</p>
+  <h2 class="sec-title">먼저 <em>"읽게"</em> 만들고,<br>그다음 말하게 했다</h2>
+  <div class="prose">
+    <p>
+      내가 AI에게 시킨 건 두 가지였다. 그대로 옮기면 이렇다.
+    </p>
+  </div>
+  <div class="qbox">
+    <p>
+      Taskworld는 사람과 AI가 직접 업무를 공유하고<br>
+      일을 하는 공간이다. 매우 중요한 곳이다.<br>
+      <strong>모든 업무가 Taskworld를 통해 진행되고,<br>
+      그 결과가 상호 공유되도록 해야 한다.</strong>
+      <span class="who">— 사장님 지시 · 2026-06-01</span>
+    </p>
+  </div>
+  <div class="prose">
+    <p>
+      이 Taskworld라는 토대의 씨앗은 사실 두 달 전, 3월에 있었다.
+      2월에 바이브 코딩을 처음 시작하고 한 달쯤 지났을 때, 나는 Taskworld 지원팀에 공개 API — 프로그램이 데이터를 직접 주고받는 통로 — 문서를 요청하는 메일을 보냈다.
+      그쪽에서 GraphQL이라는 방식의 API 문서를 보내줬고, 나는 <strong>그 감사 메일조차 제미나이(Gemini)에게 초안을 부탁했다.</strong>
+      <em>"감사 메세지 보내줘요"</em> 한 줄을 던졌더니, 제미나이가 점잖은 답장을 써줬다. 내 이름 석 자를 붙여서.
+      그때만 해도 그게 무슨 토대가 될지 몰랐다. <span class="hv">3월에 얻어둔 그 API가, 두 달 뒤 봇들에게 계정을 달아주는 바로 그 통로가 됐다.</span>
+    </p>
+    <p>
+      이게 내가 일하는 방식이다. 코딩을 모르니까, AI에게 묻는다. 감사 메일을 어떻게 쓸지도 묻고, API를 어떻게 붙일지도 묻는다.
+      <strong>묻고, 받은 걸 실제 회사 업무에 붙여본다.</strong> 안 되면 다시 묻는다. 그 반복이 넉 달 쌓이니 회사가 바뀌었다.
+      위 한 문장(사장님 지시)을 시스템으로 바꾸는 데 며칠이 걸렸다. 순서는 이랬다.
+    </p>
+    <p>
+      <strong>첫째, AI에게 계정을 줬다.</strong> 5월 31일, 인사·영업·재무 세 봇에게 각자 자기 이름의 Taskworld 계정을 발급했다.
+      그전까지는 봇이 사장 계정을 빌려 쓰는 모양새였다. 이제는 「인사봇」, 「재무봇」이 자기 이름으로 코멘트를 단다.
+      사람 직원 눈에 진짜 동료 하나가 늘어난 것처럼 보이게 했다.
+    </p>
+    <p>
+      <strong>둘째, 말하기 전에 읽게 만들었다.</strong> 이게 핵심이다. 코멘트를 달기 전에, AI가 그 카드의
+      <em>과거 기록 전부</em>를 먼저 읽는다. <code>task_comprehension</code>이라는 장치가 카드의 모든 코멘트를 시간순으로 모아
+      누가 뭘 했는지 네 종류로 분류하고, 핵심 사실·미해결 질문·막힌 이유·다음에 할 일을 한 장으로 정리한다.
+      앞서 말한 「마이너스 대출」 카드에서, AI는 흩어진 코멘트에서 <strong>잔액·만기·상환 계획을 정확히 뽑아냈다.</strong>
+      맨 위 몇 줄만 보는 사람과, 전부 읽고 말하는 AI의 차이가 여기서 갈렸다.
+    </p>
+  </div>
+  <div class="term">
+    <div class="dots"><span></span><span></span><span></span></div>
+    <div class="term-title">FINANCE BOT · 김보선 페르소나 · 2026-05-31</div>
+    <div class="term-body">
+      <div class="cmt"># AI가 카드 과거 기록 전체를 먼저 읽는다</div>
+      <div class="dim">task_comprehension → 코멘트 백필 (actor 4분류)</div>
+      <div class="dim">  · 핵심사실: 잔액·만기·상환계획 추출 ✔</div>
+      <div class="dim">  · 미해결: 상환 일정 담당자 미지정</div>
+      <br>
+      <div class="you">[재무봇 / 김보선] 코멘트 게시 (tw_id 6a1bb68a…)</div>
+      <div class="cmt">  "이 건 만기가 가까워 상환 계획 확정이 필요합니다.</div>
+      <div class="cmt">   누적 맥락상 담당자가 비어 있어 지정 부탁드립니다."</div>
+      <br>
+      <div class="ok">→ 사람 계정이 아니라 '재무봇' 명의로 실제 게시 성공</div>
+    </div>
+  </div>
+  <div class="prose">
+    <p>
+      <strong>셋째, 봇이 함부로 말하지 못하게 막았다.</strong> AI가 사람에게 코멘트를 다는 건 위험한 일이다.
+      잘못 말하면 직원이 상처받는다. 그래서 <code>persona_gateway</code>라는 문을 하나 세웠다.
+      단순 정보·진행 보고는 봇이 알아서 올리되, <em>판단</em>이나 <em>윗선 보고</em>가 필요한 말은 문돌실장(주 에이전트)이 한 번 검수하고 내보낸다.
+      <span class="hg">AI가 자유롭게 말하되, 선을 넘는 말은 게이트를 거친다.</span>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label v">Chapter 04 · 그리고 안 하면, 다시 온다</p>
+  <h2 class="sec-title">사흘, 닷새, 이레 —<br><em>독촉이 시스템</em>이 됐다</h2>
+  <div class="prose">
+    <p>
+      이게 이 에피소드의 진짜 핵심이다. AI가 코멘트를 달았는데 사람이 안 하면 어떻게 되는가.
+      <code>stall_nudge</code>라는 장치가 일한다. 마감이 지났거나 며칠째 움직임이 없는 카드를 찾아내서,
+      <strong>지금 그 일을 할 수 있는 활성 담당자를 정확히 골라</strong> 다시 독촉한다.
+    </p>
+    <p>
+      여기서 작지만 중요한 게 있다. AI는 <strong>퇴사한 사람이나 다른 봇에게는 독촉하지 않는다.</strong>
+      실제로 정체된 카드에서 임*영 프로를 정확히 지목했고, 이미 퇴사한 조*진 프로와 봇 동료는 제외했다.
+      사람이 했으면 <em>"어, 이 사람 나갔지?"</em> 하고 헷갈렸을 자리를, AI는 명단을 대조해서 틀리지 않았다.
+    </p>
+  </div>
+  <div class="flow">
+    <div class="flow-step"><span class="d">D-DAY</span>AI 1차<br>코멘트</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step"><span class="d">D-3</span>무응답<br>재독촉</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step"><span class="d">D-5</span>다시<br>재독촉</div>
+    <div class="flow-arr">→</div>
+    <div class="flow-step esc"><span class="d">D-7</span>사장<br>직접 호출</div>
+  </div>
+  <div class="prose">
+    <p>
+      이 흐름이 박히니까 내가 미움받을 일이 없어졌다. 독촉은 AI가 한다. AI는 화 안 내고, 휴가 안 가고,
+      매일 같은 시간에 똑같이 묻는다. 사람 사이의 감정이 끼지 않는다. <span class="hgr">그냥 시스템 메시지다.</span>
+      사람 직원도 부담이 덜하다. 옆 동료가 닦달하는 게 아니라, 정해진 양식의 알림이 오는 거니까.
+    </p>
+    <p>
+      6월 2일에는 여기에 「전두엽」을 하나 더 얹었다. 그전까지 AI는 감각(수집)과 손발(독촉·게시)은 있었는데,
+      <em>"이 일을 누구에게 맡길까", "이 일은 진짜 끝난 게 맞나"</em>를 판단하는 머리가 비어 있었다.
+      그래서 <code>orchestrator</code>라는 조정자를 만들었다. 라이브로 <strong>카드 2,493건</strong>을 한 번에 훑어서
+      여덟 가지 상태로 분류한다 — 검토 대기 1,779, 진행 중 524, 담당자 없음 182, 정체 5, 사람 응답 대기 3.
+      그리고 <strong>회의에서 지시됐는데 실제로 안 만들어진 일 27건</strong>을 폐루프로 잡아냈다.
+      회의록과 실제 카드를 대조해서, <em>"말은 나왔는데 일이 안 생긴" 것</em>들을 찾아낸 거다.
+    </p>
+  </div>
+  <div class="metric-row">
+    <div class="metric"><div class="metric-num">3</div><div class="metric-label">독립 TW 계정 봇</div></div>
+    <div class="metric"><div class="metric-num">2,493</div><div class="metric-label">라이브 스캔 task</div></div>
+    <div class="metric"><div class="metric-num">27</div><div class="metric-label">회의지시 미이행</div></div>
+    <div class="metric"><div class="metric-num">0</div><div class="metric-label">퇴사자 오독촉</div></div>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+  <p class="label gr">Chapter 05 · AI가 더 잘 하는 점</p>
+  <h2 class="sec-title">AI는 독촉을<br><em>피하지 않는다</em></h2>
+  <div class="prose">
+    <p>
+      사람과 AI가 어떻게 다른지가 여기서 선명해진다. 사람은 옳은 말이라도 관계가 걸리면 피한다.
+      <em>"이거 누가 하기로 했죠?"</em>를 매일 묻는 사람은 없다. 묻는 게 힘들어서가 아니라, 미움받는 게 힘들어서다.
+      <strong>AI는 그 감정이 없다. 그래서 피하지 않는다.</strong> 매일 같은 시간에, 같은 양식으로, 똑같이 묻는다.
+    </p>
+    <p>
+      그렇다고 AI가 사람을 대체하는 건 아니다. 오히려 반대다. 독촉이라는 미움받는 일을 AI가 떠안으니까,
+      사람 직원은 본업에 집중할 수 있게 됐다. 사장도 매일 카드를 좇는 일에서 빠졌다.
+      <span class="hgr">사람은 사람이 잘하는 판단과 실무로, AI는 AI가 잘하는 반복과 추적으로.</span>
+      서로의 빈자리를 메우는 거다. 2월에 처음 바이브 코딩을 시작했을 때는 상상도 못 한 그림이다.
+      넉 달 만에, 사람과 AI가 한 화면(Taskworld)에서 같이 일하는 회사가 됐다.
+    </p>
+    <p>
+      그래서 나는 6월 1일을 회사 기념일로 정했다. AI 에이전트가 사람과 공식적으로 같이 일을 시작한 날.
+      <strong>비서를 만들려다 동료를 만든 날이다.</strong>
+    </p>
+  </div>
+  <div class="insight">
+    <p>
+      사람은 미움받는 일을 피한다.<br>
+      AI는 그 감정이 없어서, 피하지 않는다.<br><br>
+      <strong>독촉을 AI에게 넘기니,<br>사람은 본업으로 돌아갔다.</strong>
+    </p>
+    <p class="sub">독립 TW 계정 · task_comprehension · stall_nudge · 2026-05-31</p>
+  </div>
+  <div class="prose">
+    <p>
+      그런데 AI에게 일을 시키게 하니, 곧바로 새 문제가 터졌다. AI가 잘못된 숫자를 보고하기 시작한 거다.
+      사람보다 정직해야 할 AI가, 사람처럼 틀린 말을 했다. <strong>다음 편은 그 이야기다.</strong>
+    </p>
+  </div>
+</section>
+
+<div class="rule"></div>
+
+<div class="stmt">
+  <p class="stmt-k">EP001 · STATEMENT</p>
+  <p class="stmt-t">비서를 만들려다,<br><span style="color:var(--violet)">동료</span>를 만들었다</p>
+  <p class="stmt-s">
+    독촉은 사람이 하면 미움받고, AI가 하면 시스템이 된다.<br>
+    사람은 본업으로, AI는 반복과 추적으로.<br>
+    2월의 바이브 코딩이 넉 달 만에, 사람과 AI가 한 화면에서 호흡하는 회사를 만들었다.
+  </p>
+</div>
+
+<footer class="footer">
+  <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · EP001</p>
+  <h2 class="footer-t">Episode <span style="color:var(--violet)">001</span></h2>
+  <p class="footer-n">이어서 → <a href="ep002.html" style="color:var(--violet);text-decoration:none;border-bottom:1px solid var(--violet);"><strong>EP002 · AI가 거짓말을 했다</strong></a></p>
+  <p class="footer-m">
+    (주)데코페이브 · 대표이사 박문석<br>
+    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+    이 블로그는 Claude AI와 함께 작성되었습니다
+  </p>
+</footer>
+
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(167,139,250,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+  <a href="prologue.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;">&larr;</a>
+  <a href="index.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+  <a href="ep001.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #a78bfa;">1</a>
+  <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">2</a>
+  <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">3</a>
+  <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">4</a>
+  <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">5</a>
+  <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">6</a>
+  <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
+  <a href="ep002.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;">&rarr;</a>
+</div>
+</body>
+</html>
