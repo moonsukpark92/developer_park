@@ -7,10 +7,10 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
 :root {
-  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
-  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
-  --accent:#a78bfa; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa;
-  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+ --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+ --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+ --accent:#a78bfa; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa;
+ --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -79,270 +79,347 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
 </head>
 <body style="padding-top:40px;padding-bottom:60px;">
 <div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(167,139,250,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
-  <a href="../index.html" style="color:#a78bfa;text-decoration:none;font-weight:700;">개발자 박대표</a>
-  <span style="color:rgba(255,255,255,.2);">|</span>
-  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
-  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
-  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
-  <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #a78bfa;padding-bottom:2px;">S4</a>
+ <a href="../index.html" style="color:#a78bfa;text-decoration:none;font-weight:700;">개발자 박대표</a>
+ <span style="color:rgba(255,255,255,.2);">|</span>
+ <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+ <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+ <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+ <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #a78bfa;padding-bottom:2px;">S4</a>
 </div>
 
 <!-- HERO -->
 <section class="hero">
-  <p class="eyebrow">개발자 박대표 · Season 4 · FINAL · 시즌 4 마무리</p>
-  <h1 class="hero-title">
-    AIHUB —<br>
-    한 사람이 만든<br>
-    <span style="color:var(--violet)">AI 조직</span>
-  </h1>
-  <p class="hero-desc">
-    여덟 마리를 한 화면에서 본다.<br>
-    새 직원을 하나 늘리는 데 드는 코드는, 0줄이다.<br>
-    2월에 코딩을 처음 만진 사람이 넉 달 만에 도달한 자리.<br>
-    그리고 이 모든 걸, GitHub에 공개한다.<br>
-    시즌 4를 여기서 마친다.
-  </p>
-  <div class="hero-tags">
-    <span class="tag v">AIHUB 관제 대시보드</span>
-    <span class="tag gr">새 봇 = 코드 0줄</span>
-    <span class="tag g">조달 · 채용 · 공문 확장</span>
-    <span class="tag">2월 → 6월, 4개월</span>
-    <span class="tag v">오픈소스 공개</span>
-  </div>
-  <p class="scroll-hint">↓ scroll</p>
+ <p class="eyebrow">개발자 박대표 · Season 4 · FINAL · 시즌 4 마무리</p>
+ <h1 class="hero-title">
+  AIHUB —<br>
+  한 사람이 만든<br>
+  <span style="color:var(--violet)">AI 조직</span>
+ </h1>
+ <p class="hero-desc">
+  여덟 명을 한 화면에서 본다.<br>
+  새 직원을 하나 늘리는 데 드는 코드는, 0줄이다.<br>
+  2월에 코딩을 처음 만진 사람이 넉 달 만에 도달한 자리.<br>
+  그리고 이 모든 걸, GitHub에 공개한다.<br>
+  시즌 4를 여기서 마친다.
+ </p>
+ <div class="hero-tags">
+  <span class="tag v">AIHUB 관제 대시보드</span>
+  <span class="tag gr">새 봇 = 코드 0줄</span>
+  <span class="tag g">조달 · 채용 · 공문 확장</span>
+  <span class="tag">2월 → 6월, 4개월</span>
+  <span class="tag v">오픈소스 공개</span>
+ </div>
+ <p class="scroll-hint">↓ scroll</p>
 </section>
 
 <div class="rule"></div>
 
 <!-- CH01 -->
 <section class="sec">
-  <p class="label v">Chapter 01 · 그래서 무엇이 되었는가</p>
-  <h2 class="sec-title">대시보드 하나로,<br>회사 전체가 <em>보인다</em></h2>
-  <div class="prose">
-    <p>
-      6월 1일, 나는 「문돌실장 대시보드」의 이름을 <strong>AIHUB</strong>로 바꿨다. 단순한 개명이 아니다.
-      비서 한 명을 관리하던 화면을, <strong>AI 조직 전체를 관제하는 사령탑</strong>으로 다시 정의한 거다.
-      이 한 화면에서 봇 여덟 마리가 지금 뭘 하는지, 어떤 일이 막혔는지, 토큰을 얼마나 썼는지, 어디서 에러가 났는지가 다 보인다.
-    </p>
-    <p>
-      예전엔 회사 상태를 알려면 사장이 여기저기 들어가 봐야 했다. ERP 따로, Taskworld 따로, 공장 보고 따로, 메일 따로.
-      이제는 AIHUB 한 곳에서 본다. <span class="hv">관제는 AIHUB가, 실제 업무는 Taskworld에서, 데이터는 우리 서버에서.</span>
-      사장이 모든 걸 직접 보던 회사가, 사장이 한 화면만 보면 되는 회사로 바뀌었다.
-    </p>
+ <p class="label v">Chapter 01 · 그래서 무엇이 되었는가</p>
+ <h2 class="sec-title">대시보드 하나로,<br>회사 전체가 <em>보인다</em></h2>
+ <div class="prose">
+  <p>
+   6월 1일, 나는 「문돌실장 대시보드」의 이름을 <strong>AIHUB</strong>로 바꿨다. 단순한 개명이 아니다.
+   비서 한 명을 관리하던 화면을, <strong>AI 조직 전체를 관제하는 사령탑</strong>으로 다시 정의한 거다.
+   이 한 화면에서 봇 여덟 명이 지금 뭘 하는지, 어떤 일이 막혔는지, 토큰을 얼마나 썼는지, 어디서 에러가 났는지가 다 보인다.
+  </p>
+  <p>
+   예전엔 회사 상태를 알려면 사장이 여기저기 들어가 봐야 했다. ERP 따로, Taskworld 따로, 공장 보고 따로, 메일 따로.
+   이제는 AIHUB 한 곳에서 본다. <span class="hv">관제는 AIHUB가, 실제 업무는 Taskworld에서, 데이터는 우리 서버에서.</span>
+   사장이 모든 걸 직접 보던 회사가, 사장이 한 화면만 보면 되는 회사로 바뀌었다.
+  </p>
+ </div>
+ <div class="dash">
+  <div class="dash-h">AIHUB · 운영 관제 · LIVE</div>
+  <div class="bot-grid">
+   <div class="bot"><div class="bn">문돌실장</div><div class="bs">운영중</div></div>
+   <div class="bot"><div class="bn">김보선 (재무)</div><div class="bs">운영중</div></div>
+   <div class="bot"><div class="bn">애슐리김 (영업)</div><div class="bs">운영중</div></div>
+   <div class="bot"><div class="bn">DECO HR</div><div class="bs">운영중</div></div>
+   <div class="bot"><div class="bn">FactoryMbot</div><div class="bs">운영중</div></div>
+   <div class="bot"><div class="bn">DECO MES</div><div class="bs">운영중</div></div>
+   <div class="bot"><div class="bn">감사봇</div><div class="bs">운영중</div></div>
+   <div class="bot wait"><div class="bn">교육봇</div><div class="bs">대기</div></div>
   </div>
-  <div class="dash">
-    <div class="dash-h">AIHUB · 운영 관제 · LIVE</div>
-    <div class="bot-grid">
-      <div class="bot"><div class="bn">문돌실장</div><div class="bs">운영중</div></div>
-      <div class="bot"><div class="bn">김보선 (재무)</div><div class="bs">운영중</div></div>
-      <div class="bot"><div class="bn">애슐리김 (영업)</div><div class="bs">운영중</div></div>
-      <div class="bot"><div class="bn">DECO HR</div><div class="bs">운영중</div></div>
-      <div class="bot"><div class="bn">FactoryMbot</div><div class="bs">운영중</div></div>
-      <div class="bot"><div class="bn">DECO MES</div><div class="bs">운영중</div></div>
-      <div class="bot"><div class="bn">감사봇</div><div class="bs">운영중</div></div>
-      <div class="bot wait"><div class="bn">교육봇</div><div class="bs">대기</div></div>
-    </div>
-  </div>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <!-- CH02 -->
 <section class="sec">
-  <p class="label gr">Chapter 02 · 새 직원, 코드 0줄</p>
-  <h2 class="sec-title">지능은 하나,<br><em>얼굴</em>은 여럿</h2>
-  <div class="prose">
-    <p>
-      여기에 이번 시즌의 가장 중요한 설계 결정이 있다. 봇이 여덟 마리라고 해서, 똑똑한 코드를 여덟 벌 만든 게 아니다.
-      <strong>지능은 한 곳(마스터)에만 둔다.</strong> 맥락을 이해하고, 독촉하고, 일을 배분하는 그 머리는 단 하나다.
-      각 봇은 거기에 <em>"너는 인사야", "너는 재무야"</em> 라는 이름표(페르소나)와 권한만 갈아 끼우면 된다.
-    </p>
-    <p>
-      그래서 새 AI 직원을 하나 늘리는 데 드는 게 이거다.
-    </p>
-  </div>
-  <div class="code-zero">
-    <div>① Taskworld 계정 토큰 &nbsp;<span class="z">1개</span></div>
-    <div>② 페르소나 설정 &nbsp;<span class="z">1블록</span></div>
-    <div>③ 스케줄 등록 &nbsp;<span class="z">1줄</span></div>
-    <div style="margin-top:8px;border-top:1px solid rgba(52,211,153,.2);padding-top:8px;">새로 짜야 할 코드 &nbsp;<span class="z">0줄</span></div>
-  </div>
-  <div class="prose">
-    <p>
-      이게 왜 중요한가. 하나가 배우면 여덟이 같이 배운다. 헤르메스에서 가져온 자가학습(EP006)을 마스터에 한 번 붙이면,
-      여덟 마리가 동시에 그 능력을 얻는다. 한 마리를 고치면 여덟이 고쳐진다.
-      <span class="hgr">조직이 커져도 관리 부담이 안 늘어난다.</span> 작은 회사가 AI 조직을 운영할 수 있는 진짜 이유가 여기 있다.
-    </p>
-    <p>
-      그리고 봇들은 단방향으로 끝내지 않는다. 처리한 결과를 반드시 <strong>Taskworld에 남긴다.</strong>
-      사람 직원과 AI가 같은 화면에서 같은 맥락을 본다. 봇이 혼자 처리하고 텔레그램으로만 보고하고 끝나면, 협업이 끊긴다.
-      그래서 모든 결과는 사람과 AI의 공통 작업대에 쌓인다. 이게 사장님이 6월 내내 강조한 한 가지다 —
-      <em>"Taskworld를 통해 모든 업무가 진행되고, 그 결과가 상호 공유되어야 한다."</em>
-    </p>
-  </div>
+ <p class="label gr">Chapter 02 · 새 직원, 코드 0줄</p>
+ <h2 class="sec-title">지능은 하나,<br><em>얼굴</em>은 여럿</h2>
+ <div class="prose">
+  <p>
+   여기에 이번 시즌의 가장 중요한 설계 결정이 있다. 봇이 여덟 명라고 해서, 똑똑한 코드를 여덟 벌 만든 게 아니다.
+   <strong>지능은 한 곳(마스터)에만 둔다.</strong> 맥락을 이해하고, 독촉하고, 일을 배분하는 그 머리는 단 하나다.
+   각 봇은 거기에 <em>"너는 인사야", "너는 재무야"</em> 라는 이름표(페르소나)와 권한만 갈아 끼우면 된다.
+  </p>
+  <p>
+   그래서 새 AI 직원을 하나 늘리는 데 드는 게 이거다.
+  </p>
+ </div>
+ <div class="code-zero">
+  <div>① Taskworld 계정 토큰 &nbsp;<span class="z">1개</span></div>
+  <div>② 페르소나 설정 &nbsp;<span class="z">1블록</span></div>
+  <div>③ 스케줄 등록 &nbsp;<span class="z">1줄</span></div>
+  <div style="margin-top:8px;border-top:1px solid rgba(52,211,153,.2);padding-top:8px;">새로 짜야 할 코드 &nbsp;<span class="z">0줄</span></div>
+ </div>
+ <div class="prose">
+  <p>
+   이게 왜 중요한가. 하나가 배우면 여덟이 같이 배운다. 헤르메스에서 가져온 자가학습(EP006)을 마스터에 한 번 붙이면,
+   여덟 명이 동시에 그 능력을 얻는다. 한 명을 고치면 여덟이 고쳐진다.
+   <span class="hgr">조직이 커져도 관리 부담이 안 늘어난다.</span> 작은 회사가 AI 조직을 운영할 수 있는 진짜 이유가 여기 있다.
+  </p>
+  <p>
+   그리고 봇들은 단방향으로 끝내지 않는다. 처리한 결과를 반드시 <strong>Taskworld에 남긴다.</strong>
+   사람 직원과 AI가 같은 화면에서 같은 맥락을 본다. 봇이 혼자 처리하고 텔레그램으로만 보고하고 끝나면, 협업이 끊긴다.
+   그래서 모든 결과는 사람과 AI의 공통 작업대에 쌓인다. 이게 사장님이 6월 내내 강조한 한 가지다 —
+   <em>"Taskworld를 통해 모든 업무가 진행되고, 그 결과가 상호 공유되어야 한다."</em>
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <!-- CH03 -->
 <section class="sec">
-  <p class="label g">Chapter 03 · 조직은 바깥으로 자란다</p>
-  <h2 class="sec-title">관리가 끝나니,<br><em>사업</em>이 보였다</h2>
-  <div class="prose">
-    <p>
-      안을 정리하니까, 밖이 보이기 시작했다. AI 조직이 회사 내부 운영을 떠받치는 동안,
-      나는 그 조직을 <strong>매출이 나는 쪽</strong>으로도 뻗었다. 같은 2주 동안 세 갈래가 동시에 자랐다.
-    </p>
+ <p class="label g">Chapter 03 · 조직은 바깥으로 자란다</p>
+ <h2 class="sec-title">관리가 끝나니,<br><em>사업</em>이 보였다</h2>
+ <div class="prose">
+  <p>
+   안을 정리하니까, 밖이 보이기 시작했다. AI 조직이 회사 내부 운영을 떠받치는 동안,
+   나는 그 조직을 <strong>매출이 나는 쪽</strong>으로도 뻗었다. 같은 2주 동안 세 갈래가 동시에 자랐다.
+  </p>
+ </div>
+ <div class="exp-grid">
+  <div class="exp">
+   <div class="ek">조달 레이더</div>
+   <div class="et">나라장터를 매일 읽는다</div>
+   <div class="ed">조달청 공개 API를 해독해 입찰·낙찰 정보 12,055건을 되살렸다. 우리 제품의 공공 조달 계약 만료(2027-08-02)까지 추적한다.</div>
   </div>
-  <div class="exp-grid">
-    <div class="exp">
-      <div class="ek">조달 레이더</div>
-      <div class="et">나라장터를 매일 읽는다</div>
-      <div class="ed">조달청 공개 API를 해독해 입찰·낙찰 정보 12,055건을 되살렸다. 우리 제품의 공공 조달 계약 만료(2027-08-02)까지 추적한다.</div>
-    </div>
-    <div class="exp">
-      <div class="ek">채용 콘솔</div>
-      <div class="et">이력서를 AI가 읽고 평가한다</div>
-      <div class="ed">채용 봇이 30단계 자동화의 90%를 이미 돌리고 있었다. 그 위에 관제 화면을 얹어, 평가·선발 근거·재평가를 한눈에 본다.</div>
-    </div>
-    <div class="exp">
-      <div class="ek">대외공문</div>
-      <div class="et">우편물을 회사 기억으로 답한다</div>
-      <div class="ed">들어온 공문에 회신할 때, 회사가 5년간 쌓은 문서 142,669건에서 비슷한 사례를 끌어와 초안을 쓴다.</div>
-    </div>
+  <div class="exp">
+   <div class="ek">채용 콘솔</div>
+   <div class="et">이력서를 AI가 읽고 평가한다</div>
+   <div class="ed">채용 봇이 30단계 자동화의 90%를 이미 돌리고 있었다. 그 위에 관제 화면을 얹어, 평가·선발 근거·재평가를 한눈에 본다.</div>
   </div>
-  <div class="prose">
-    <p>
-      세 가지 다, 회사 밖의 공개된 데이터(나라장터·구직 시장·우편물)를 AI가 읽어서 우리 일로 바꾸는 거다.
-      <strong>안에서 검증과 절제를 배운 조직이, 밖에서 매출을 찾기 시작했다.</strong>
-      이게 "상호보완"의 완성된 그림이다 — 사람은 판단하고 결정하고, AI는 읽고 정리하고 추적한다. 둘이 한 회사를 같이 굴린다.
-    </p>
+  <div class="exp">
+   <div class="ek">대외공문</div>
+   <div class="et">우편물을 회사 기억으로 답한다</div>
+   <div class="ed">들어온 공문에 회신할 때, 회사가 5년간 쌓은 문서 142,669건에서 비슷한 사례를 끌어와 초안을 쓴다.</div>
   </div>
+ </div>
+ <div class="prose">
+  <p>
+   세 가지 다, 회사 밖의 공개된 데이터(나라장터·구직 시장·우편물)를 AI가 읽어서 우리 일로 바꾸는 거다.
+   <strong>안에서 검증과 절제를 배운 조직이, 밖에서 매출을 찾기 시작했다.</strong>
+   이게 "상호보완"의 완성된 그림이다 — 사람은 판단하고 결정하고, AI는 읽고 정리하고 추적한다. 둘이 한 회사를 같이 굴린다.
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <!-- CH04 -->
 <section class="sec">
-  <p class="label v">Chapter 04 · 넉 달의 거리</p>
-  <h2 class="sec-title">2월의 나와,<br>6월의 <em>회사</em></h2>
-  <div class="prose">
-    <p>
-      2월에 나는 코딩을 한 줄도 못 짰다. ChatGPT 옆에 Claude를 띄우고, 모르는 걸 묻고, 안 되면 또 묻던 사람이었다.
-      3월엔 Taskworld 지원팀에 API 문서를 달라는 감사 메일조차 제미나이한테 부탁해서 썼다(EP001).
-      그게 넉 달 전이다.
-    </p>
-    <p>
-      지금 우리 회사는 AI 직원 여덟 마리가 서로 일을 시키고(EP001), 자기 거짓말을 검증당하고(EP002),
-      같은 기억을 공유하고(EP003), 조용히 일하다 문제만 보고하고(EP004), 통화를 듣고 위험을 골라내고(EP005),
-      스스로 배우는(EP006) 조직이 됐다. <span class="hv">한 사람이, 넉 달 만에.</span>
-    </p>
-    <p>
-      그런데 사실 이건 넉 달짜리 이야기가 아니다. <strong>6년짜리 싸움이다.</strong>
-      6년 전, 나는 막연하게 생각했다. <em>"디지털에 답이 있을 거야. 언젠가 디지털 정보만 제대로 쌓이면, 이 문제가 풀릴 거야."</em>
-      그때부터 머릿속을 떠나지 않은 질문이 하나 있었다 — <span class="hv">데이터를 쓰레기로 만들지 않으려면 어떻게 해야 하지?</span>
-      모은 데이터가 검증 안 되고, 흩어지고, 아무도 안 보면 그건 쓰레기가 된다. 그 6년의 외로운 고민이,
-      2월의 바이브 코딩을 만나서, 6월의 AI 조직이 됐다. <strong>이제야 그 답의 시작점에 와 있다.</strong>
-    </p>
-  </div>
-  <div class="manifesto">
-    <p>나는 개발자가 아니다.<br>
-    콘크리트 블록을 만드는 작은 회사의 대표다.</p>
-    <p>코딩을 정식으로 배운 적 없고,<br>
-    그냥 살아남으려고 매일 <strong>AI에게 물었다.</strong><br>
-    무엇을 묻고, 무엇을 적용할지를<br>
-    넉 달 동안 반복했을 뿐이다.</p>
-    <p>그 반복이 쌓여<br>
-    사람과 AI가 한 회사에서 <strong>호흡하는 조직</strong>이 됐다.</p>
-    <p>그러니 이건<br>
-    <strong>어떤 작은 회사에서도 시작될 수 있다.</strong></p>
-  </div>
+ <p class="label v">Chapter 04 · 넉 달의 거리</p>
+ <h2 class="sec-title">2월의 나와,<br>6월의 <em>회사</em></h2>
+ <div class="prose">
+  <p>
+   2월에 나는 코딩을 한 줄도 못 짰다. ChatGPT 옆에 Claude를 띄우고, 모르는 걸 묻고, 안 되면 또 묻던 사람이었다.
+   3월엔 Taskworld 지원팀에 API 문서를 달라는 감사 메일조차 제미나이한테 부탁해서 썼다(EP001).
+   그게 넉 달 전이다.
+  </p>
+  <p>
+   지금 우리 회사는 AI 직원 여덟 명이 서로 일을 시키고(EP001), 자기 거짓말을 검증당하고(EP002),
+   같은 기억을 공유하고(EP003), 조용히 일하다 문제만 보고하고(EP004), 통화를 듣고 위험을 골라내고(EP005),
+   스스로 배우는(EP006) 조직이 됐다. <span class="hv">한 사람이, 넉 달 만에.</span>
+  </p>
+  <p>
+   그런데 사실 이건 넉 달짜리 이야기가 아니다. <strong>6년짜리 싸움이다.</strong>
+   6년 전, 나는 막연하게 생각했다. <em>"디지털에 답이 있을 거야. 언젠가 디지털 정보만 제대로 쌓이면, 이 문제가 풀릴 거야."</em>
+   그때부터 머릿속을 떠나지 않은 질문이 하나 있었다 — <span class="hv">데이터를 쓰레기로 만들지 않으려면 어떻게 해야 하지?</span>
+   모은 데이터가 검증 안 되고, 흩어지고, 아무도 안 보면 그건 쓰레기가 된다. 그 6년의 외로운 고민이,
+   2월의 바이브 코딩을 만나서, 6월의 AI 조직이 됐다. <strong>이제야 그 답의 시작점에 와 있다.</strong>
+  </p>
+ </div>
+ <div class="manifesto">
+  <p>나는 개발자가 아니다.<br>
+  콘크리트 블록을 만드는 작은 회사의 대표다.</p>
+  <p>코딩을 정식으로 배운 적 없고,<br>
+  그냥 살아남으려고 매일 <strong>AI에게 물었다.</strong><br>
+  무엇을 묻고, 무엇을 적용할지를<br>
+  넉 달 동안 반복했을 뿐이다.</p>
+  <p>그 반복이 쌓여<br>
+  사람과 AI가 한 회사에서 <strong>호흡하는 조직</strong>이 됐다.</p>
+  <p>그러니 이건<br>
+  <strong>어떤 작은 회사에서도 시작될 수 있다.</strong></p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <!-- CH05 -->
 <section class="sec">
-  <p class="label v">Chapter 05 · 그래서 공개한다</p>
-  <h2 class="sec-title">혼자 알면 사라지고,<br>같이 알면 <em>변한다</em></h2>
-  <div class="prose">
-    <p>
-      나는 이 모든 걸 GitHub에 공개한다. 우리가 만든 시스템의 소스를. 자랑하려는 게 아니다.
-      <strong>한국 작은 제조 중소기업이 살아남는 법을, 혼자 알면 나만 살고, 같이 알면 다 같이 산다고 믿어서다.</strong>
-      이 블로그(개발자 박대표)가 광고도 강의도 아닌 이유다. 이건 한 사람의 살아남기 위한 몸부림의 기록이고,
-      그 기록이 다른 한 사람의 용기가 되기를 바라는 글이다.
-    </p>
-    <p>
-      시즌 3에서 나는 AI 직원들을 만들었다. 시즌 4에서 그들은 조직이 됐다.
-      그 조직은 사람보다 정직해야 했고, 그래서 검증과 절제를 배웠다. 그리고 사람을 대체하는 게 아니라, 사람의 빈자리를 메웠다.
-      독촉을, 통화를, 기억을, 보고를 — 사람이 하기 싫거나 못 하는 일을 AI가 떠안고, 사람은 사람만이 할 수 있는 판단으로 돌아갔다.
-    </p>
-  </div>
-  <div class="insight">
-    <p>
-      투명하고 공정하게 일한 사람이 대접받는 회사.<br>
-      그 작은 원칙을 사람에게 맡기면 무너지고,<br>
-      시스템에 박으면 살아남는다.<br><br>
-      <strong>그래서 나는 매일 죽어라,<br>나의 생각을 AI와 현실로 만든다.</strong>
-    </p>
-    <p class="sub">Season 4 · FINAL · 2026-06-06</p>
-  </div>
-  <div class="prose">
-    <p>
-      여기까지가 2026년 6월의 데코페이브다. 시즌 4를 마친다.
-      하지만 이건 마침표가 아니다. 오히려 반대다. 지난 6년은 나 혼자의 외로운 싸움이었다.
-      이제 나는 <strong>그 싸움을 대한민국 중소기업 대표들과 함께</strong> 하려고 한다. 혼자 알면 나만 살고, 같이 알면 다 같이 산다.
-    </p>
-    <p>
-      그래서 이 블로그는 지금까지가 기록이었고, 여기서부터가 진짜다.
-      <span class="hv" style="font-size:1.05em;font-weight:600;">이 블로그의 진짜 시작점은, 지금부터입니다.</span>
-    </p>
-  </div>
+ <p class="label v">Chapter 05 · 그래서 공개한다</p>
+ <h2 class="sec-title">혼자 알면 사라지고,<br>같이 알면 <em>변한다</em></h2>
+ <div class="prose">
+  <p>
+   나는 이 모든 걸 GitHub에 공개한다. 우리가 만든 시스템의 소스를. 자랑하려는 게 아니다.
+   <strong>한국 작은 제조 중소기업이 살아남는 법을, 혼자 알면 나만 살고, 같이 알면 다 같이 산다고 믿어서다.</strong>
+   이 블로그(개발자 박대표)가 광고도 강의도 아닌 이유다. 이건 한 사람의 살아남기 위한 몸부림의 기록이고,
+   그 기록이 다른 한 사람의 용기가 되기를 바라는 글이다.
+  </p>
+  <p>
+   시즌 3에서 나는 AI 직원들을 만들었다. 시즌 4에서 그들은 조직이 됐다.
+   그 조직은 사람보다 정직해야 했고, 그래서 검증과 절제를 배웠다. 그리고 사람을 대체하는 게 아니라, 사람의 빈자리를 메웠다.
+   독촉을, 통화를, 기억을, 보고를 — 사람이 하기 싫거나 못 하는 일을 AI가 떠안고, 사람은 사람만이 할 수 있는 판단으로 돌아갔다.
+  </p>
+ </div>
+ <div class="insight">
+  <p>
+   투명하고 공정하게 일한 사람이 대접받는 회사.<br>
+   그 작은 원칙을 사람에게 맡기면 무너지고,<br>
+   시스템에 박으면 살아남는다.<br><br>
+   <strong>그래서 나는 매일 죽어라,<br>나의 생각을 AI와 현실로 만든다.</strong>
+  </p>
+  <p class="sub">Season 4 · FINAL · 2026-06-06</p>
+ </div>
+ <div class="prose">
+  <p>
+   여기까지가 2026년 6월의 데코페이브다. 시즌 4를 마친다.
+   하지만 이건 마침표가 아니다. 오히려 반대다. 지난 6년은 나 혼자의 외로운 싸움이었다.
+   이제 나는 <strong>그 싸움을 대한민국 중소기업 대표들과 함께</strong> 하려고 한다. 혼자 알면 나만 살고, 같이 알면 다 같이 산다.
+  </p>
+  <p>
+   그래서 이 블로그는 지금까지가 기록이었고, 여기서부터가 진짜다.
+   <span class="hv" style="font-size:1.05em;font-weight:600;">이 블로그의 진짜 시작점은, 지금부터입니다.</span>
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <!-- STMT -->
 <div class="stmt">
-  <p class="stmt-k">SEASON 4 · FINAL · STATEMENT</p>
-  <p class="stmt-t">
-    한 사람이 만든 비서가,<br>
-    <span style="color:var(--violet)">한 회사의 동료들</span>이 되었다
-  </p>
-  <p class="stmt-s">
-    6년의 외로운 싸움이, 2월의 바이브 코딩을 만나 AI 조직이 됐다.<br>
-    사람은 판단으로, AI는 반복과 추적으로 — 서로의 빈자리를 메운다.<br>
-    이제 대한민국 중소기업 대표들과 함께 간다.<br>
-    <strong style="color:var(--violet);">이 블로그의 진짜 시작점은, 지금부터입니다.</strong><br>
-    개발자 박대표 · Season 4 · 完
-  </p>
+ <p class="stmt-k">SEASON 4 · FINAL · STATEMENT</p>
+ <p class="stmt-t">
+  한 사람이 만든 비서가,<br>
+  <span style="color:var(--violet)">한 회사의 동료들</span>이 되었다
+ </p>
+ <p class="stmt-s">
+  6년의 외로운 싸움이, 2월의 바이브 코딩을 만나 AI 조직이 됐다.<br>
+  사람은 판단으로, AI는 반복과 추적으로 — 서로의 빈자리를 메운다.<br>
+  이제 대한민국 중소기업 대표들과 함께 간다.<br>
+  <strong style="color:var(--violet);">이 블로그의 진짜 시작점은, 지금부터입니다.</strong><br>
+  개발자 박대표 · Season 4 · 完
+ </p>
 </div>
+
+<!-- SEASON 5 TEASER -->
+<section class="teaser" style="padding:120px 28px 110px;max-width:1080px;margin:0 auto;position:relative;">
+ <div style="position:absolute;top:0;left:50%;transform:translateX(-50%);width:1px;height:60px;background:linear-gradient(180deg,transparent 0%,var(--gold) 100%);opacity:.5;"></div>
+ <p style="font-family:var(--mono);font-size:.6rem;letter-spacing:6px;color:var(--gold);text-transform:uppercase;margin-bottom:22px;text-align:center;">Coming Next · Season 5 · Teaser</p>
+ <h2 style="font-family:var(--serif);font-weight:900;font-size:clamp(2rem,5.4vw,4.4rem);line-height:1.14;text-align:center;margin-bottom:30px;max-width:920px;margin-left:auto;margin-right:auto;">
+  110만원짜리 비서가<br>
+  <span style="color:var(--gold)">진짜 동료</span>가 되는 자리
+ </h2>
+ <p style="font-family:var(--sans);font-weight:300;font-size:clamp(.92rem,1.6vw,1.06rem);line-height:1.95;color:var(--muted);max-width:720px;margin:0 auto 56px;text-align:center;">
+  지금까지의 모든 시스템은 — 재활용 PC, 중고 GPU, 무료 도구로 굴러갔다.<br>
+  110만원. 그게 6개월간 들어간 전부였다.<br>
+  이제 그 위에 <span class="hg" style="font-weight:500;">대대적인 업데이트</span>를 얹는다.<br>
+  속도, 용량, 자체 두뇌, 음성, 기억 — 전부.
+ </p>
+
+ <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-bottom:60px;">
+
+  <div style="border:1px solid rgba(232,168,58,.22);border-radius:6px;padding:26px 24px;background:rgba(232,168,58,.04);">
+   <p style="font-family:var(--mono);font-size:.55rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:12px;">01 · Hardware</p>
+   <p style="font-family:var(--serif);font-weight:700;font-size:1.18rem;line-height:1.4;margin-bottom:10px;">10배 빠른 CPU,<br>16GB GPU 3대</p>
+   <p style="font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.78;color:var(--muted);">지금은 RTX 3060 한 장. 다음 시즌은 GPU 3대 병렬 추론. 큰 모델이 동시에 여러 명을 본다.</p>
+  </div>
+
+  <div style="border:1px solid rgba(167,139,250,.22);border-radius:6px;padding:26px 24px;background:rgba(167,139,250,.04);">
+   <p style="font-family:var(--mono);font-size:.55rem;letter-spacing:3px;color:var(--violet);text-transform:uppercase;margin-bottom:12px;">02 · Own Brain</p>
+   <p style="font-family:var(--serif);font-weight:700;font-size:1.18rem;line-height:1.4;margin-bottom:10px;">Gemma 4 기반<br>자체 LLM</p>
+   <p style="font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.78;color:var(--muted);">EXAONE에서 한 번 더 내려간다. 회사 데이터로 길들인, 사외에 한 줄도 안 나가는 우리 모델.</p>
+  </div>
+
+  <div style="border:1px solid rgba(95,185,201,.22);border-radius:6px;padding:26px 24px;background:rgba(95,185,201,.04);">
+   <p style="font-family:var(--mono);font-size:.55rem;letter-spacing:3px;color:#5fb9c9;text-transform:uppercase;margin-bottom:12px;">03 · Voice</p>
+   <p style="font-family:var(--serif);font-weight:700;font-size:1.18rem;line-height:1.4;margin-bottom:10px;">키보드 없이,<br>말로 시키는 환경</p>
+   <p style="font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.78;color:var(--muted);">현장에서, 차 안에서, 회의 중에 — 손이 비어도 비서가 듣는다. 음성으로 일을 굴린다.</p>
+  </div>
+
+  <div style="border:1px solid rgba(106,175,133,.22);border-radius:6px;padding:26px 24px;background:rgba(106,175,133,.04);">
+   <p style="font-family:var(--mono);font-size:.55rem;letter-spacing:3px;color:#6aaf85;text-transform:uppercase;margin-bottom:12px;">04 · Archive</p>
+   <p style="font-family:var(--serif);font-weight:700;font-size:1.18rem;line-height:1.4;margin-bottom:10px;">회사의 모든 기록을<br>AI가 보관한다</p>
+   <p style="font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.78;color:var(--muted);">계약서, 도면, 메일, 회의록 전부. "그 파일 어디 갔어?"라고 물으면 가장 유력한 한 장을 골라서 꺼내준다.</p>
+  </div>
+
+  <div style="border:1px solid rgba(251,113,133,.22);border-radius:6px;padding:26px 24px;background:rgba(251,113,133,.04);">
+   <p style="font-family:var(--mono);font-size:.55rem;letter-spacing:3px;color:var(--rose);text-transform:uppercase;margin-bottom:12px;">05 · Second Brain</p>
+   <p style="font-family:var(--serif);font-weight:700;font-size:1.18rem;line-height:1.4;margin-bottom:10px;">사내 정보 DB,<br>회사의 두 번째 뇌</p>
+   <p style="font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.78;color:var(--muted);">사람의 기억으로 떠다니던 노하우가 검색되는 자산으로. 누가 그만둬도, 회사는 잊지 않는다.</p>
+  </div>
+
+  <div style="border:1px solid rgba(196,149,106,.22);border-radius:6px;padding:26px 24px;background:rgba(196,149,106,.04);">
+   <p style="font-family:var(--mono);font-size:.55rem;letter-spacing:3px;color:#c4956a;text-transform:uppercase;margin-bottom:12px;">06 · Onboarding</p>
+   <p style="font-family:var(--serif);font-weight:700;font-size:1.18rem;line-height:1.4;margin-bottom:10px;">신입의 질문에<br>자체 LLM이 답한다</p>
+   <p style="font-family:var(--sans);font-weight:300;font-size:.86rem;line-height:1.78;color:var(--muted);">"이건 왜 이렇게 해요?"라고 물으면 — 6년치 회사 맥락이 풀어서 설명한다. 선배의 시간을 뺏지 않는 입사.</p>
+  </div>
+
+ </div>
+
+ <div style="text-align:center;padding:36px 28px;border-top:1px dashed rgba(232,168,58,.25);border-bottom:1px dashed rgba(232,168,58,.25);">
+  <p style="font-family:var(--serif);font-weight:700;font-size:clamp(1.15rem,2.2vw,1.55rem);line-height:1.55;margin-bottom:16px;">
+   AI가 일하고,<br>
+   <span style="color:var(--gold)">사람은 사람의 일을 한다</span>
+  </p>
+  <p style="font-family:var(--sans);font-weight:300;font-size:.92rem;line-height:1.85;color:var(--muted);max-width:580px;margin:0 auto;">
+   감시도, 통제도, 대체도 아니다.<br>
+   서로 다른 능력의 두 종(種)이 — 한 회사 안에서 같이 일하는 환경.<br>
+   그걸 만들어 가는 과정을 다시, 처음부터 기록한다.
+  </p>
+ </div>
+
+ <p style="font-family:var(--mono);font-size:.65rem;letter-spacing:4px;color:var(--gold);text-transform:uppercase;text-align:center;margin-top:48px;opacity:.85;">
+  to be continued · Season 5 · Loading...
+ </p>
+</section>
+
+<div class="rule"></div>
 
 <!-- FOOTER -->
 <footer class="footer">
-  <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · ORCHESTRATION Chronicles</p>
-  <h2 class="footer-t">Season 4 · <span style="color:var(--violet)">完</span></h2>
-  <p class="footer-n">처음으로 → <a href="prologue.html" style="color:var(--violet);text-decoration:none;border-bottom:1px solid var(--violet);"><strong>Prologue · 비서 하나를 만들었더니, 조직이 생겼다</strong></a></p>
-  <p class="footer-n" style="margin-top:8px;">시즌 목록 → <a href="index.html" style="color:var(--violet);text-decoration:none;border-bottom:1px solid var(--violet);">Season 4 Index</a></p>
-  <p class="footer-m">
-    (주)데코페이브 · 대표이사 박문석<br>
-    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
-    이 블로그는 Claude AI와 함께 작성되었습니다
-  </p>
+ <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · ORCHESTRATION Chronicles</p>
+ <h2 class="footer-t">Season 4 · <span style="color:var(--violet)">完</span> · <span style="color:var(--gold);font-size:.7em;">→ Season 5 · Loading</span></h2>
+ <p class="footer-n">처음으로 → <a href="prologue.html" style="color:var(--violet);text-decoration:none;border-bottom:1px solid var(--violet);"><strong>Prologue · 비서 하나를 만들었더니, 조직이 생겼다</strong></a></p>
+ <p class="footer-n" style="margin-top:8px;">시즌 목록 → <a href="index.html" style="color:var(--violet);text-decoration:none;border-bottom:1px solid var(--violet);">Season 4 Index</a></p>
+ <p class="footer-m">
+  (주)데코페이브 · 대표이사 박문석<br>
+  본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+  이 블로그는 Claude AI와 함께 작성되었습니다
+ </p>
 </footer>
 
 <div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(167,139,250,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
-  <a href="ep006.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;">&larr;</a>
-  <a href="index.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
-  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+ <a href="ep009.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;">&larr;</a>
+ <a href="index.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+ <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
   <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">1</a>
   <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">2</a>
   <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">3</a>
   <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">4</a>
   <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">5</a>
   <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">6</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">7</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">8</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">9</a>
   <a href="final.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #a78bfa;">FN</a>
-  <a href="prologue.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;">&rarr;</a>
+ <a href="prologue.html" style="color:#a78bfa;text-decoration:none;padding:4px 8px;">&rarr;</a>
 </div>
 </body>
 </html>

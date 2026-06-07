@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>개발자 박대표 S4 EP003 · 봇들이 서로 모르는 채로 일하고 있었다</title>
+<title>개발자 박대표 S4 EP003 · AIHUB — 한 화면의 통치</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
 :root {
-  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
-  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
-  --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa; --sky:#38bdf8;
-  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+ --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+ --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+ --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa; --parch:#c4956a;
+ --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -18,302 +18,371 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(56,189,248,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(167,139,250,.06) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#06101a 100%);pointer-events:none;z-index:-1;}
-.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,248,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
-.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--sky);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
-.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6vw,5.2rem);line-height:1.12;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
-.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(196,149,106,.12) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(167,139,250,.08) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#0a0814 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(196,149,106,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(196,149,106,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--parch);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6vw,5.2rem);line-height:1.14;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero-desc{position:relative;z-index:1;margin-top:36px;max-width:700px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
 .hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
 .tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
 .tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
-.tag.s{border-color:rgba(56,189,248,.4);color:var(--sky);background:rgba(56,189,248,.07);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
+.tag.v{border-color:rgba(167,139,250,.4);color:var(--violet);background:rgba(167,139,250,.07);}
 .tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
+.tag.b{border-color:rgba(56,189,248,.4);color:var(--accent);background:rgba(56,189,248,.06);}
+.tag.p{border-color:rgba(196,149,106,.4);color:var(--parch);background:rgba(196,149,106,.06);}
 .scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
 .sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
-.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--sky);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
-.label.g{color:var(--gold);} .label.s{color:var(--sky);} .label.gr{color:var(--green);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--parch);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.v{color:var(--violet);} .label.gr{color:var(--green);} .label.r{color:var(--rose);} .label.b{color:var(--accent);} .label.p{color:var(--parch);}
 .label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
 .sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
-.sec-title em{font-style:normal;color:var(--sky);}
+.sec-title em{font-style:normal;color:var(--parch);}
 .rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
 .prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
 .prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
 .prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
-.prose code{font-family:var(--mono);font-size:.86em;color:var(--sky);background:rgba(56,189,248,.08);padding:1px 6px;border-radius:3px;}
-.hg{color:var(--gold);font-weight:500;} .hs{color:var(--sky);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
-.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--sky);background:linear-gradient(90deg,rgba(56,189,248,.06) 0%,transparent 100%);position:relative;}
-.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--sky);opacity:.35;line-height:1;}
+.prose code{font-family:var(--mono);font-size:.86em;color:var(--parch);background:rgba(196,149,106,.08);padding:1px 6px;border-radius:3px;}
+.hg{color:var(--gold);font-weight:500;} .hv{color:var(--violet);font-weight:500;} .hr{color:var(--rose);font-weight:500;} .hgr{color:var(--green);font-weight:500;} .hb{color:var(--accent);font-weight:500;} .hp{color:var(--parch);font-weight:500;}
+
+.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--parch);background:linear-gradient(90deg,rgba(196,149,106,.08) 0%,transparent 100%);position:relative;}
+.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--parch);opacity:.35;line-height:1;}
 .qbox p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.98rem,1.7vw,1.15rem);line-height:1.85;color:rgba(232,230,225,.92);}
 .qbox p strong{color:var(--text);font-weight:700;font-style:normal;}
-.qbox .who{font-family:var(--mono);font-style:normal;font-size:.6rem;letter-spacing:2px;color:var(--sky);text-transform:uppercase;margin-top:14px;display:block;}
-.layers{margin:36px 0;display:flex;flex-direction:column;gap:12px;}
-.lyr{display:flex;align-items:center;gap:16px;background:#0d1117;border:1px solid rgba(56,189,248,.18);border-radius:8px;padding:18px 22px;}
-.lyr .n{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:var(--sky);min-width:62px;}
-.lyr .t{font-family:var(--sans);font-size:.9rem;color:rgba(232,230,225,.8);line-height:1.6;}
-.lyr.broke{border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.04);}
-.lyr.broke .n{color:var(--rose);}
-.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin:36px 0;}
-.flow-step{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:var(--sans);font-size:.82rem;color:var(--text);text-align:center;min-width:120px;}
-.flow-step .d{font-family:var(--mono);font-size:.55rem;letter-spacing:2px;color:var(--sky);display:block;margin-bottom:5px;}
-.flow-arr{color:var(--sky);font-family:var(--mono);font-size:1rem;opacity:.6;}
-.term{background:#06101a;border:1px solid rgba(56,189,248,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
-.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(56,189,248,.04);border-bottom:1px solid rgba(56,189,248,.1);}
+
+.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:32px 0;}
+.metric{background:#0d1117;border:1px solid rgba(196,149,106,.25);border-radius:8px;padding:22px 18px;text-align:center;}
+.metric-num{font-family:var(--serif);font-size:2.2rem;font-weight:800;color:var(--parch);line-height:1;margin-bottom:8px;}
+.metric.g .metric-num{color:var(--gold);} .metric.b .metric-num{color:var(--accent);} .metric.gr .metric-num{color:var(--green);} .metric.v .metric-num{color:var(--violet);} .metric.r .metric-num{color:var(--rose);}
+.metric-label{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;color:rgba(232,230,225,.5);text-transform:uppercase;}
+
+.dash{margin:36px 0;background:#06080e;border:1px solid rgba(196,149,106,.22);border-radius:10px;overflow:hidden;}
+.dash-top{padding:12px 18px;background:rgba(196,149,106,.04);border-bottom:1px solid rgba(196,149,106,.14);display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.dash-top .dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 8px rgba(52,211,153,.5);}
+.dash-top .name{font-family:var(--mono);font-size:.7rem;letter-spacing:2px;color:var(--parch);font-weight:700;}
+.dash-top .live{margin-left:auto;font-family:var(--mono);font-size:.58rem;letter-spacing:2px;color:var(--green);text-transform:uppercase;}
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:rgba(196,149,106,.1);}
+.dash-cell{background:#0a0c14;padding:18px 20px;}
+.dash-cell .k{font-family:var(--mono);font-size:.55rem;letter-spacing:2px;color:rgba(232,230,225,.4);text-transform:uppercase;margin-bottom:6px;}
+.dash-cell .v{font-family:var(--mono);font-size:.85rem;color:var(--text);font-weight:600;line-height:1.5;}
+.dash-cell .v .s{color:var(--green);font-weight:700;}
+.dash-cell .v .w{color:var(--gold);}
+.dash-cell .v .e{color:var(--rose);}
+.dash-bots{padding:16px 20px;background:#0a0c14;border-top:1px solid rgba(196,149,106,.1);}
+.dash-bots .h{font-family:var(--mono);font-size:.55rem;letter-spacing:2px;color:rgba(232,230,225,.4);text-transform:uppercase;margin-bottom:10px;}
+.dash-bot-row{display:grid;grid-template-columns:140px 1fr 60px 90px;gap:10px;padding:6px 0;border-bottom:1px solid rgba(196,149,106,.06);font-family:var(--mono);font-size:.72rem;align-items:center;}
+.dash-bot-row:last-child{border-bottom:0;}
+.dash-bot-row .b{color:var(--parch);font-weight:600;}
+.dash-bot-row .t{color:rgba(232,230,225,.65);font-family:var(--sans);font-weight:300;font-size:.78rem;}
+.dash-bot-row .o{color:var(--green);text-align:right;}
+.dash-bot-row .o.warn{color:var(--gold);}
+.dash-bot-row .o.err{color:var(--rose);}
+.dash-bot-row .tk{color:rgba(232,230,225,.4);text-align:right;font-size:.66rem;}
+@media(max-width:680px){.dash-bot-row{grid-template-columns:1fr;gap:2px;padding:8px 0;}}
+
+.term{background:#0a0a14;border:1px solid rgba(196,149,106,.18);border-radius:8px;padding:32px 32px 28px;margin:32px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(196,149,106,.04);border-bottom:1px solid rgba(196,149,106,.1);}
 .dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
 .dots span{width:10px;height:10px;border-radius:50%;}
 .dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
 .term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
-.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--sky);}
-.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:#7cc5ff;} .dim{color:rgba(56,189,248,.6);} .warn{color:var(--gold);}
-.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(15,35,55,.4) 0%,rgba(56,189,248,.05) 100%);border:1px solid rgba(56,189,248,.2);text-align:center;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--parch);}
+.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:var(--accent);} .dim{color:rgba(196,149,106,.6);} .warn{color:var(--gold);} .err{color:var(--rose);}
+
+.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(60,45,30,.4) 0%,rgba(196,149,106,.06) 100%);border:1px solid rgba(196,149,106,.22);text-align:center;}
 .insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.2rem);line-height:1.8;color:var(--text);margin:0;}
-.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--sky);text-transform:uppercase;margin-top:14px;}
+.insight p strong{color:var(--parch);font-weight:700;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--parch);text-transform:uppercase;margin-top:14px;}
+
 .stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
-.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--sky);text-transform:uppercase;margin-bottom:30px;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--parch);text-transform:uppercase;margin-bottom:30px;}
 .stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
 .stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
 .footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
-.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--sky);text-transform:uppercase;margin-bottom:18px;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--parch);text-transform:uppercase;margin-bottom:18px;}
 .footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
 .footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
-.footer-n strong{color:var(--sky);font-weight:500;}
+.footer-n strong{color:var(--parch);font-weight:500;}
 .footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
 </style>
 </head>
 <body style="padding-top:40px;padding-bottom:60px;">
-<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(56,189,248,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
-  <a href="../index.html" style="color:#38bdf8;text-decoration:none;font-weight:700;">개발자 박대표</a>
-  <span style="color:rgba(255,255,255,.2);">|</span>
-  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
-  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
-  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
-  <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #38bdf8;padding-bottom:2px;">S4</a>
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(196,149,106,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+ <a href="../index.html" style="color:#c4956a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+ <span style="color:rgba(255,255,255,.2);">|</span>
+ <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+ <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+ <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+ <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #c4956a;padding-bottom:2px;">S4</a>
 </div>
 
 <section class="hero">
-  <p class="eyebrow">개발자 박대표 · Season 4 · Episode 003 · 6/5</p>
-  <h1 class="hero-title">
-    봇들이 서로<br>
-    <span style="color:var(--sky)">모르는 채로</span><br>
-    일하고 있었다
-  </h1>
-  <p class="hero-desc">
-    공휴일에 자발적으로 출근한 직원이 있었다.<br>
-    품질 채팅방에 그 이야기가 올라왔다.<br>
-    그런데 인사봇도, 생산봇도, 회사 기억도 그 사실을 몰랐다.<br>
-    한 봇이 아는 것이 옆 봇에게 가지 않았다.<br>
-    여덟 마리에게 하나의 기억을 만들어준 이야기.
+ <p class="eyebrow">개발자 박대표 · Season 4 · Episode 003 · 6/6~6/8</p>
+ <h1 class="hero-title">
+  여덟 명의<br>
+  AI 직원을,<br>
+  <span style="color:var(--parch)">한 화면에서 본다</span>
+ </h1>
+ <p class="hero-desc">
+  Taskworld 안에서 봇 셋이 일을 시키고, 영업봇이 매일 두 번 정리하고, 자동 절차들이 같은 시간에 돈다.<br>
+  여덟 명의 봇이 다 각자 자기 일을 잘 하는데, 그걸 한 사람이 어떻게 보는가.<br>
+  6월 1일에 그 답을 만들었다 — <strong>AIHUB</strong>. 한 화면의 통치.<br>
+  봇 상태, 시스템 부하, AI 추론 GPU, DB 연결, 활성 스케줄까지 — 5초 안에 회사 상태가 들어온다.
+ </p>
+ <div class="hero-tags">
+  <span class="tag p">AIHUB · 운영 대시보드</span>
+  <span class="tag gr">봇 온라인 8 / 8</span>
+  <span class="tag">활성 스케줄 96 / 104</span>
+  <span class="tag b">RTX 3060 · EXAONE 3.5</span>
+  <span class="tag g">PostgreSQL · 느린쿼리 0</span>
+  <span class="tag v">10 컨테이너 플릿</span>
+ </div>
+ <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+ <p class="label p">Chapter 01 · 왜 한 화면인가</p>
+ <h2 class="sec-title">여덟 명이 일하는데,<br><em>지금 누가 뭘 하고 있지?</em></h2>
+ <div class="prose">
+  <p>
+   Taskworld 안에서 법무 봇이 답하고, Ashley Kim이 영업을 정리하고, HRBOT이 인사를 챙기고, Decofin이 재무를 보고,
+   FactoryMbot이 공장 보고를 받고, DecoEdu가 교육 자료를 인덱싱한다 — 이 모든 게 한꺼번에 굴러가면 한 가지 문제가 생긴다.
+   <strong>"지금 누가 뭘 하고 있지?"</strong> 여덟 명의 봇이 다 각자 자기 일을 잘 하는데, 그걸 한 사람이 어떻게 보는가.
   </p>
-  <div class="hero-tags">
-    <span class="tag s">전사 맥락 공유</span>
-    <span class="tag g">사실 추출기 30분</span>
-    <span class="tag">공유 기억 (Qdrant)</span>
-    <span class="tag gr">102 테스트 통과</span>
-    <span class="tag">맥락 보강</span>
-  </div>
-  <p class="scroll-hint">↓ scroll</p>
+  <p>
+   예전이라면 대표가 폰을 잡고 텔레그램 채팅방 8개를 일일이 열어봤다. 누가 마지막으로 메시지를 보냈는지,
+   언제 보냈는지를 기억하면서. <em>"오늘 Decofin이 아직 보고 안 했네?"</em> 같은 걸 사람이 기억해야 했다.
+   여덟 명을 관리하는 일은 결국 <strong>여덟 명의 마지막 메시지 시각을 머릿속에 들고 다니는 일</strong>이 됐다.
+  </p>
+  <p>
+   6월 1일에 그걸 끝냈다. <span class="hp">AIHUB</span> — 봇 여덟 명의 상태, 진행 중인 task, 토큰 사용량, 에러, 마지막 보고 시각이 모두 한 화면에 모인다.
+   대표가 폰을 한 번 보면 회사 안에서 AI가 지금 무엇을 하고 있는지가 5초 안에 들어온다.
+   <strong>여덟 명의 마지막 메시지 시각을 시스템이 들고 있고, 사람은 판단만 한다.</strong>
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label s">Chapter 01 · 사람이 싫어하는 일</p>
-  <h2 class="sec-title">"그거 누가 알아?"<br>가 일상이던 <em>회사</em></h2>
-  <div class="prose">
-    <p>
-      작은 회사에서 정보는 사람 머릿속에 산다. 누가 오늘 휴가인지, 어느 공장이 야간 교대인지, 어떤 거래처가 요즘 예민한지 —
-      이런 건 문서에 안 적힌다. 아는 사람 머릿속에만 있다. 그래서 그 사람이 자리를 비우면, 회사가 그 사실을 잃는다.
-    </p>
-    <p>
-      회의 때마다 나오는 말이 있다. <em>"그거 누가 알아요?"</em> 아무도 모른다. 아는 사람이 오늘 외근이다.
-      그래서 그 일은 내일로 미뤄진다. 정보를 공유하는 일은 누구의 일도 아니라서, 아무도 안 한다.
-      <span class="hs">공유는 귀찮고, 안 해도 당장 티가 안 나니까.</span>
-    </p>
-    <p>
-      나는 AI 직원 여덟 마리를 만들면서 이건 해결될 줄 알았다. AI는 다 컴퓨터 안에 있으니까,
-      당연히 서로 아는 걸 공유할 거라고 생각했다. <strong>틀렸다. AI도 따로 놀고 있었다.</strong>
-    </p>
+ <p class="label g">Chapter 02 · 종합현황 — 8명을 한 화면에서</p>
+ <h2 class="sec-title">봇 온라인 8/8,<br>활성 스케줄 <em>96 / 104</em></h2>
+ <div class="dash">
+  <div class="dash-top">
+   <span class="dot"></span>
+   <span class="name">AIHUB · 운영 대시보드 · 종합현황</span>
+   <span class="live">● LIVE · 2026-06-08 06:41</span>
   </div>
+  <div class="dash-grid">
+   <div class="dash-cell"><div class="k">봇 온라인</div><div class="v"><span class="s">8 / 8</span></div></div>
+   <div class="dash-cell"><div class="k">활성 스케줄</div><div class="v">96 / 104</div></div>
+   <div class="dash-cell"><div class="k">서버 가동</div><div class="v"><span class="s">16h 7m</span> uptime</div></div>
+   <div class="dash-cell"><div class="k">활성 스트림</div><div class="v">0 SSE 연결</div></div>
+  </div>
+  <div class="dash-bots">
+   <div class="h">봇 상태 · 호스트 · 메모리 · 디스크 · 부하 · uptime</div>
+   <div class="dash-bot-row"><span class="b">문돌실장 (본체)</span><span class="t">local · 메모리 21.1G / 125.7G (17%) · 디스크 134G / 468G (31%) · 부하 1.77 · up 19h 9m</span><span class="o">●</span><span class="tk">운영중</span></div>
+   <div class="dash-bot-row"><span class="b">Decofin (재무)</span><span class="t">decofinbot · 메모리 3.1G / 7.6G (41%) · 디스크 36% · 부하 0.48 · up 13h 54m</span><span class="o">●</span><span class="tk">운영중</span></div>
+   <div class="dash-bot-row"><span class="b">DecoHR (인사)</span><span class="t">decohrbot · 메모리 6.4G / 7.6G (84%) · 디스크 34% · 부하 0.03 · up 13h 52m</span><span class="o warn">▲</span><span class="tk">메모리 임계</span></div>
+   <div class="dash-bot-row"><span class="b">DecoSale (영업)</span><span class="t">decosalebot · 메모리 4.2G / 7.6G (55%) · 디스크 16% · 부하 0.06 · up 13h 53m</span><span class="o">●</span><span class="tk">운영중</span></div>
+   <div class="dash-bot-row"><span class="b">DecoMES (생산)</span><span class="t">decomesbot · 메모리 388M / 3.7G (10%) · 디스크 15% · 부하 0 · up 9w 2d</span><span class="o">●</span><span class="tk">안정</span></div>
+   <div class="dash-bot-row"><span class="b">DecoAudit (감사)</span><span class="t">moons · 디스크 22G / 98G (24%) · 부하 0.07 · up 9w 6d</span><span class="o">●</span><span class="tk">안정</span></div>
+   <div class="dash-bot-row"><span class="b">FactoryMbot (공장)</span><span class="t">fmadmin · 메모리 451M / 7.7G (6%) · 디스크 24% · 부하 0.07</span><span class="o">●</span><span class="tk">운영중</span></div>
+   <div class="dash-bot-row"><span class="b">DecoEdu (교육)</span><span class="t">decoedubot · 메모리 3.5G / 19.2G (18%) · 디스크 17% · 부하 1.06 · up 3w 1d</span><span class="o">●</span><span class="tk">운영중</span></div>
+  </div>
+ </div>
+ <div class="prose">
+  <p>
+   AIHUB가 처음 정상 가동된 날, 가장 먼저 발견한 건 — DecoHR의 메모리가 84%를 찍고 있다는 사실이었다.
+   <span class="hg">메모리 임계 ▲</span> 노란 표시 한 줄로 사람이 그 사실을 알았다. 예전이라면 그 봇이 멈춰서 인사 데이터가 안 들어와야 비로소 알았을 일이다.
+   <strong>봇이 죽기 전에 사람이 안다.</strong> 그게 한 화면의 첫 번째 가치다.
+  </p>
+  <p>
+   활성 스케줄 96 / 104도 같은 의미다. 104개 자동 절차 중에 8개가 비활성. 그 8개가 왜 멈춰 있는지를 클릭 한 번으로 본다.
+   예전이라면 "어떤 스케줄이 굴러가고 있지?" 라는 질문 자체가 사람의 머릿속 기억에 의존했다.
+   이제는 시스템이 답을 들고 있다. 사람은 <em>"왜 멈췄지?"</em> 만 묻는다.
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label s">Chapter 02 · 안 굴러갔던 일</p>
-  <h2 class="sec-title">공휴일에 나온 직원 이야기가,<br><em>증발</em>했다</h2>
-  <div class="prose">
-    <p>
-      6월 3일은 공휴일이었다. 그날 품질 채팅방에 한 직원이 글을 올렸다 —
-      <strong>옥, 디팍, 트엉이 공휴일인데도 자발적으로 출근해서 일했다</strong>는 내용이었다.
-      외국인 직원들이 쉬는 날 나와서 회사 일을 했다는, 회사 입장에서 꼭 기억해야 할 사실이다.
-      고마워해야 하고, 수당을 챙겨야 하고, 다음에 반영해야 한다.
-    </p>
-    <p>
-      그런데 그 사실이 어디로도 안 갔다. 인사봇은 몰랐다. 생산봇도 몰랐다. 회사의 공유 기억에도 안 남았다.
-      <span class="hs">그냥 채팅방 한 줄로 떴다가 흘러갔다.</span> 다음 날이면 아무도 그 사실을 모르는 상태로 돌아갔다.
-      사장인 나조차도, 누가 짚어주지 않으면 놓쳤을 거다.
-    </p>
-    <p>
-      왜 이렇게 됐는지 뜯어보니, 세 군데가 끊겨 있었다.
-    </p>
+ <p class="label b">Chapter 03 · 시스템 관제 — GPU · 호스트 · AI 서빙 · DB</p>
+ <h2 class="sec-title">RTX 3060이 64% 돌고,<br>EXAONE 3.5가 <em>회사 안에서 답한다</em></h2>
+ <div class="dash">
+  <div class="dash-top">
+   <span class="dot"></span>
+   <span class="name">시스템 관제 · GPU · 호스트 · AI 서빙 · DB · 봇 플릿</span>
+   <span class="live">● LIVE · 갱신 06:45:53 · 임계 90% · GPU온도 90°C</span>
   </div>
-  <div class="layers">
-    <div class="lyr broke">
-      <span class="n">① 추출</span>
-      <span class="t"><strong>0%.</strong> 텔레그램 메시지는 기록만 될 뿐, 거기서 "사실"을 뽑아내는 장치가 아예 없었다. 사람이 말한 걸 회사가 알아듣지 못했다.</span>
-    </div>
-    <div class="lyr broke">
-      <span class="n">② 축적</span>
-      <span class="t"><strong>파편.</strong> 공장 가동 상태를 담을 자리는 선언만 돼 있고 실제 파일이 없었다. 교대 정보는 코드에 박혀 있었다. 한 곳에 모이지 않았다.</span>
-    </div>
-    <div class="lyr broke">
-      <span class="n">③ 전파</span>
-      <span class="t"><strong>꺼짐.</strong> 봇끼리 사실을 주고받는 통로는 만들어 놨는데, 시험 모드로만 돌고 실제로는 한 건도 안 나가고 있었다.</span>
-    </div>
+  <div class="dash-grid">
+   <div class="dash-cell"><div class="k">GPU · RTX 3060 (AI 추론)</div><div class="v">util <span class="s">64%</span> · VRAM 8.9 / 12G · 60°C · 103.4W · 1935MHz</div></div>
+   <div class="dash-cell"><div class="k">GPU · Quadro K620 (디스플레이)</div><div class="v">util 25% · VRAM 0.8 / 2G · 48°C · 1.6W · 405MHz</div></div>
+   <div class="dash-cell"><div class="k">호스트 CPU · 부하</div><div class="v">CPU 8% · load 2.25 / 24c · <span class="s">여유</span></div></div>
+   <div class="dash-cell"><div class="k">호스트 RAM</div><div class="v">RAM <span class="s">17%</span> (21 / 135G)</div></div>
+   <div class="dash-cell"><div class="k">호스트 디스크</div><div class="v">/ 30% (144 / 502G) · /data 26% (63 / 251G)</div></div>
+   <div class="dash-cell"><div class="k">네트워크</div><div class="v">↑ 3,281M · ↓ 3,366M · uptime 19.2h</div></div>
+   <div class="dash-cell"><div class="k">AI 서빙 · Ollama</div><div class="v"><span class="s">EXAONE 3.5 · 7.8B</span> · q4_K_M · 5.3G 상주</div></div>
+   <div class="dash-cell"><div class="k">PostgreSQL</div><div class="v">conn 11 / 100 · size 0.3G · <span class="s">느린쿼리 0</span></div></div>
+   <div class="dash-cell"><div class="k">시스템 서비스 (4)</div><div class="v"><span class="s">claude-telegram</span> · ollama · postgresql · moondol-webui — 모두 active</div></div>
+   <div class="dash-cell"><div class="k">봇 플릿 (10 컨테이너)</div><div class="v">moonsiljang · decofin · decohr · decosale · decomes · decoaudit · decofactory · decoedu · skyvern-api · skyvern-ui</div></div>
   </div>
-  <div class="prose">
-    <p>
-      세 군데가 다 끊겨 있으니, 한 사람이 채팅방에 올린 사실이 회사 어디에도 도착하지 못한 거다.
-      AI가 여덟 마리라도, 서로 모르면 한 마리만도 못하다.
-    </p>
+ </div>
+ <div class="prose">
+  <p>
+   이 한 화면이 회사의 신경계 상태다. <strong>RTX 3060 한 장</strong> 위에 — Ollama로 띄운 LG의 EXAONE 3.5 7.8B 모델이 5.3G를 상주하면서 회사 안의 모든 AI 질의를 처리한다.
+   클로드나 GPT 같은 외부 API에 보내야 할 민감 데이터는 여기서 잘리고, 사내 LLM이 답한다.
+   <span class="hb">우리 회사 데이터가 회사 밖으로 한 줄도 안 나가는 상태에서 AI가 일한다.</span> 폐쇄망 사내 LLM이라는 게 이 한 줄의 의미다.
+  </p>
+  <p>
+   PostgreSQL도 같은 의미다. <em>conn 11 / 100, 느린쿼리 0.</em> 봇 여덟 명이 동시에 데이터를 읽고 쓰는데도 DB가 여유 있게 일하고 있다.
+   봇 플릿 10개 컨테이너 — moonsiljang부터 skyvern까지 — 가 한 호스트 안에서 서로 충돌 없이 돈다.
+   <strong>예전에는 봇 하나 죽으면 다른 봇도 같이 죽었다.</strong> 컨테이너로 격리하니, 한 명 죽어도 나머지 일곱은 멀쩡하다.
+  </p>
+ </div>
+ <div class="term">
+  <div class="dots"><span></span><span></span><span></span></div>
+  <div class="term-title">AIHUB · 6/8 06:45 자동 진단 사이클</div>
+  <div class="term-body">
+   <div class="cmt"># Step 1 — 봇 헬스체크 (8개)</div>
+   <div class="ok">  ✓ 문돌실장 200 OK · ✓ Decofin 200 · ✓ DecoSale 200</div>
+   <div class="ok">  ✓ DecoMES 200 · ✓ DecoAudit 200 · ✓ FactoryMbot 200</div>
+   <div class="ok">  ✓ DecoEdu 200</div>
+   <div class="warn">  ▲ DecoHR 200 · 메모리 84% (임계 80% 초과) · 자동 알림 전송</div>
+   <br>
+   <div class="cmt"># Step 2 — GPU/Ollama 상주 모델 확인</div>
+   <div class="ok">  ✓ RTX 3060 util 64% · EXAONE 3.5 7.8B 상주 · 응답 0.42s</div>
+   <br>
+   <div class="cmt"># Step 3 — PostgreSQL 연결/쿼리 점검</div>
+   <div class="ok">  ✓ conn 11 / 100 · 느린쿼리 0 · WAL 정상</div>
+   <br>
+   <div class="cmt"># Step 4 — 비활성 스케줄 점검 (8 / 104)</div>
+   <div class="dim">  · taskworld-comment-old (수동 비활성) · 명함 OCR 2차 라인(개발중)</div>
+   <div class="dim">  · ERP 야간 백업 슬롯 2개 (이중화 후 폐기 예정) · 4개 검토 필요</div>
+   <br>
+   <div class="ok">→ 자동 진단 완료. 1 warning · 0 critical · 0 error.</div>
   </div>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label g">Chapter 03 · AI에게 어떻게 시켰나</p>
-  <h2 class="sec-title">사실 하나가<br>여덟 머리로 <em>흐르게</em></h2>
-  <div class="prose">
-    <p>
-      그날 내가 시킨 건 이거였다.
-    </p>
-  </div>
-  <div class="qbox">
-    <p>
-      텔레그램으로 들어오는 회사 주요 사항 —<br>
-      공장 가동, 휴일 근무 같은 것들이<br>
-      확인되고, 기억되고, <strong>전 봇에게 전파</strong>돼야 하는데<br>
-      적용이 안 되고 따로 논다. 해결하라.
-      <span class="who">— 사장님 지시 · 2026-06-05</span>
-    </p>
-  </div>
-  <div class="prose">
-    <p>
-      끊긴 세 군데를 하나씩 이었다.
-    </p>
-    <p>
-      <strong>하나 — 사실 추출기를 달았다.</strong> 30분마다 채팅방 메시지를 훑어서, 그 안에서 "회사가 기억해야 할 사실"을 골라낸다.
-      이건 무료로 돌아가는 우리 회사 자체 AI(로컬 LLM)가 한다. 외부에 돈 내고 보낼 필요가 없다.
-      실제로 돌려보니 <strong>"6월 3일 공휴일, 옥·디팍·트엉 자발 출근"을 정확히 뽑아냈다.</strong> 끊겼던 첫 고리가 이어졌다.
-    </p>
-    <p>
-      <strong>둘 — 사실이 모이는 한 곳을 만들었다.</strong> 날짜와 공장별로 "오늘 가동하나, 어느 조 교대인가, 공휴일인가, 누가 휴일 근무했나, 특이사항은 뭔가"를
-      한 테이블에 담는 <em>회사 상태판</em>을 만들었다. <span class="hg">이제 모든 봇은 이 한 곳만 본다.</span>
-      여기저기 흩어진 정보를 각자 긁는 게 아니라, 한 우물에서 같은 물을 마신다.
-    </p>
-    <p>
-      <strong>셋 — 봇들의 공유 기억을 켰다.</strong> 추출한 사실은 회사 상태판에 적히는 동시에, 봇들이 함께 쓰는 기억 저장소에 올라간다.
-      그래서 인사봇이 답을 할 때도, 생산봇이 답을 할 때도, 그 사실을 <strong>대화의 맥락으로 끌어와</strong> 쓴다.
-      누가 휴일에 나왔는지를 인사봇만 아는 게 아니라, 회사 전체가 안다.
-    </p>
-  </div>
-  <div class="term">
-    <div class="dots"><span></span><span></span><span></span></div>
-    <div class="term-title">fact_extractor · 2026-06-05 · 30분 주기</div>
-    <div class="term-body">
-      <div class="cmt"># 품질방 메시지에서 사실 추출 (로컬 LLM, 무료)</div>
-      <div class="you">입력: "옥·디팍·트엉 공휴일인데 자발 출근했네요 고생"</div>
-      <br>
-      <div class="ok">추출 ✔ → ops.company_state</div>
-      <div class="dim">  · date: 2026-06-03  is_holiday: true</div>
-      <div class="dim">  · holiday_workers: [옥, 디팍, 트엉]</div>
-      <div class="dim">  · special_notes: "공휴일 자발 출근"</div>
-      <br>
-      <div class="ok">→ 공유 기억 push  →  전 봇이 같은 사실을 본다</div>
-    </div>
-  </div>
-  <div class="prose">
-    <p>
-      함정도 있었다. 공휴일을 "오늘"로 판정하는 코드가 시간대 계산을 잘못해서, 내일 공휴일(현충일 6/6)을 오늘(6/5)로 오인할 뻔했다.
-      그날 하루 범위로 정확히 맞춰 고쳤다. 그리고 <strong>전체 테스트 102개를 통과</strong>시킨 뒤에 박았다.
-      앞 편에서 배운 대로 — 검증 없이는 "됐다"고 안 한다.
-    </p>
-  </div>
+ <p class="label v">Chapter 04 · 봇 여덟 명, 각자의 자리</p>
+ <h2 class="sec-title">한 사람이 만든 비서가,<br><em>여덟 명의 동료</em>가 되었다</h2>
+ <div class="prose">
+  <p>
+   AIHUB 한 화면에 모이는 여덟 명은, 처음부터 한꺼번에 만든 게 아니다. 2월에 문돌실장 한 명에서 시작했다.
+   재무 봇이 필요해서 Decofin이 들어왔다. 인사가 자꾸 빠지길래 DecoHR이 들어왔다. 영업 통화가 묻히길래 DecoSale이 들어왔다.
+   <strong>필요한 자리마다 한 명씩, 같은 구조로 늘어났다.</strong> 그게 4개월 만에 여덟 명이 됐다.
+  </p>
+ </div>
+ <div class="metric-row">
+  <div class="metric"><div class="metric-num">문돌실장</div><div class="metric-label">전체 통치 · 텔레그램 본체</div></div>
+  <div class="metric g"><div class="metric-num">Decofin</div><div class="metric-label">재무 · 미수금 · 세금계산서</div></div>
+  <div class="metric gr"><div class="metric-num">DecoHR</div><div class="metric-label">인사 · 462명 인덱스</div></div>
+  <div class="metric r"><div class="metric-num">DecoSale</div><div class="metric-label">영업 · Ashley Kim</div></div>
+  <div class="metric b"><div class="metric-num">DecoMES</div><div class="metric-label">생산관리 · 작업지시</div></div>
+  <div class="metric v"><div class="metric-num">DecoAudit</div><div class="metric-label">감사 · 김*철 계정</div></div>
+  <div class="metric"><div class="metric-num">FactoryMbot</div><div class="metric-label">공장 보고 · 출하 요청</div></div>
+  <div class="metric g"><div class="metric-num">DecoEdu</div><div class="metric-label">교육 · 신입 자료 인덱싱</div></div>
+ </div>
+ <div class="prose">
+  <p>
+   여덟 명이 각자 다른 부서를 맡고 있지만, 한 호스트 안에서 같은 두뇌(EXAONE 3.5)를 빌려 쓴다.
+   같은 텔레그램 본체(문돌실장)를 통해 사장과 통신한다. 같은 데이터베이스를 본다.
+   <span class="hv">지능은 하나, 얼굴은 여덟. 회사 안에서 봇이 늘어나도 두뇌 비용은 한 번만 든다.</span>
+  </p>
+  <p>
+   AIHUB는 이 여덟 명 사이를 묶는 신경계다. DecoHR이 알아낸 자격증 만료가 Decofin의 급여 계산에 영향을 주고,
+   DecoSale이 받은 견적이 DecoMES의 작업지시로 흘러간다. 봇들이 서로의 결과를 보면서 자기 일을 한다.
+   <strong>여덟 개의 봇이 아니라, 하나의 AI 조직이다.</strong>
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label gr">Chapter 04 · AI가 더 잘 하는 점</p>
-  <h2 class="sec-title">사람은 잊지만,<br>기억은 <em>안 잊는다</em></h2>
-  <div class="prose">
-    <p>
-      사람의 정보 공유에는 한계가 있다. 아는 사람이 말해줘야 하고, 듣는 사람이 기억해야 하고, 둘 다 그 자리에 있어야 한다.
-      한 명이라도 빠지면 정보가 끊긴다. 그리고 사람은 잊는다. 어제 들은 걸 오늘 잊는다. 나도 그렇다.
-    </p>
-    <p>
-      <strong>AI의 공유는 사람이 그 자리에 없어도 된다.</strong> 채팅방에 한 번 올라온 사실은 30분 안에 자동으로 뽑혀서,
-      회사 상태판에 적히고, 여덟 마리의 공유 기억에 들어간다. 누가 전달할 필요도, 누가 기억할 필요도 없다.
-      <span class="hgr">한 번 들어온 사실은 안 잊힌다.</span> 옥·디팍·트엉이 공휴일에 나왔다는 사실은, 이제 회사가 영구히 안다.
-    </p>
-    <p>
-      이게 "대화의 맥락을 보강한다"는 말의 진짜 의미다. 봇이 답을 할 때, 그냥 질문만 보고 답하는 게 아니라
-      <strong>회사가 지금 어떤 상태인지를 알고 답한다.</strong> 오늘이 공휴일인지, 어느 공장이 야간인지, 누가 어제 무슨 말을 했는지를
-      깔고 답한다. 사람 직원이 옆자리 동료한테 <em>"오늘 그 공장 야간이지?"</em> 물어보듯, 봇도 회사 상태를 알고 말한다.
-      여덟 마리가 한 회사의 같은 현실 위에서 일하기 시작한 거다.
-    </p>
-  </div>
-  <div class="insight">
-    <p>
-      사람은 그 자리에 있어야 정보를 나누고,<br>
-      들어도 다음 날이면 잊는다.<br><br>
-      <strong>한 번 들어온 사실은,<br>여덟 머리가 영원히 기억한다.</strong>
-    </p>
-    <p class="sub">fact_extractor · 회사 상태판 · 공유 기억 · 2026-06-05</p>
-  </div>
-  <div class="prose">
-    <p>
-      그런데 사실을 잘 흐르게 만들었더니, 정반대 문제가 동시에 터졌다. AI가 <strong>너무 많이 말하기</strong> 시작한 거다.
-      하루에 수백 건씩. 진짜 중요한 게 그 안에 묻혔다. 다음 편은 그 소음을 끈 이야기다.
-    </p>
-  </div>
+ <p class="label gr">Chapter 05 · 그래서 무엇이 달라졌는가</p>
+ <h2 class="sec-title">기억은 시스템이 하고,<br><em>판단은 사람이 한다</em></h2>
+ <div class="prose">
+  <p>
+   이 한 화면이 시즌 4 전체의 진짜 무기다. 봇 여덟 명이 각자 자기 자리에서 일하지만,
+   그게 한 회사 한 시스템이라는 사실이 이 한 화면에서 증명된다.
+   <strong>대표가 회사 안의 모든 일을 머릿속에 들고 있을 필요가 없어졌다.</strong>
+  </p>
+  <p>
+   예전 5년 동안 대표가 했던 일이 무엇이었는지 보면 — <em>"기억하고, 떠올리고, 누가 무엇을 하는지 추적하고, 안 한 사람 부르는 것"</em>이었다.
+   그 모든 일이 이 한 화면 안에 옮겨졌다. 대표는 이제 <strong>판단</strong>만 한다.
+   <span class="hp">기억은 시스템이 하고, 판단은 사람이 한다.</span> 그게 한 사람이 작은 회사를 통치하는 새 방식이다.
+  </p>
+  <p>
+   그리고 이건 대표 한 사람의 이야기가 아니다. 부서장들도 같은 변화 안에 있다.
+   생산관리팀장이 매일 아침 출근해서 "어제 무슨 일 있었는지" 묻지 않아도 된다 — AIHUB에 다 있다.
+   재무 담당자가 매월 마감 때 ERP 화면을 손으로 뒤지지 않아도 된다 — Decofin이 이미 정리해 뒀다.
+   <strong>회사 안의 모든 사람이 자기 머릿속에 안 들어도 되는 자리들이 매일 생기고 있다.</strong>
+  </p>
+ </div>
+ <div class="insight">
+  <p>
+   한 사람이 회사 전체를 머릿속에 들고 다니던 시대가 끝났다.<br>
+   <strong>기억은 시스템이 하고,<br>판단은 사람이 한다.</strong><br><br>
+   여덟 명을 한 화면에서 보는 일이,<br>
+   회사를 운영하는 새 방식이 됐다.
+  </p>
+  <p class="sub">AIHUB · 한 화면의 통치 · 2026-06-01 가동</p>
+ </div>
+ <div class="prose">
+  <p>
+   여덟 명이 한 화면에 모이고 나서 다음 문제가 보였다. <strong>봇끼리 서로 일을 시키기 시작했다.</strong>
+   사람의 개입 없이 봇 A가 봇 B에게 task를 만들어 넘기는 일이 일어났다. 다음 편은 그 이야기다.
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <div class="stmt">
-  <p class="stmt-k">EP003 · STATEMENT</p>
-  <p class="stmt-t">한 명이 아는 것을,<br><span style="color:var(--sky)">여덟이 알게</span> 했다</p>
-  <p class="stmt-s">
-    공휴일에 나온 직원 이야기가 증발하던 회사가,<br>
-    이제는 한 번 들어온 사실을 영원히 기억한다.<br>
-    AI 여덟 마리가 한 회사의 같은 현실 위에서 일하기 시작했다.
-  </p>
+ <p class="stmt-k">EP003 · STATEMENT</p>
+ <p class="stmt-t">여덟 명을 한 화면에서.<br><span style="color:var(--parch)">기억은 시스템이, 판단은 사람이.</span></p>
+ <p class="stmt-s">
+  봇 온라인 8/8, 활성 스케줄 96/104, RTX 3060 위의 EXAONE 3.5,<br>
+  10 컨테이너 플릿, PostgreSQL 느린쿼리 0.<br>
+  여덟 명이 일하고, 한 사람이 본다. 회사 데이터는 회사 밖으로 한 줄도 안 나간다.<br>
+  대표가 회사 전체를 머릿속에 들고 다니던 시대가 — 6월 1일에 끝났다.
+ </p>
 </div>
 
 <footer class="footer">
-  <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · EP003</p>
-  <h2 class="footer-t">Episode <span style="color:var(--sky)">003</span></h2>
-  <p class="footer-n">이어서 → <a href="ep004.html" style="color:var(--sky);text-decoration:none;border-bottom:1px solid var(--sky);"><strong>EP004 · 7일 353건, 진짜 보고는 2건</strong></a></p>
-  <p class="footer-m">
-    (주)데코페이브 · 대표이사 박문석<br>
-    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
-    이 블로그는 Claude AI와 함께 작성되었습니다
-  </p>
+ <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · EP003</p>
+ <h2 class="footer-t">Episode <span style="color:var(--parch)">003</span></h2>
+ <p class="footer-n">이어서 → <a href="ep004.html" style="color:var(--parch);text-decoration:none;border-bottom:1px solid var(--parch);"><strong>EP004 · AI 직원들이 서로에게 일을 시키기 시작했다</strong></a></p>
+ <p class="footer-m">
+  (주)데코페이브 · 대표이사 박문석<br>
+  본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+  이 블로그는 Claude AI와 함께 작성되었습니다
+ </p>
 </footer>
 
-<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(56,189,248,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
-  <a href="ep002.html" style="color:#38bdf8;text-decoration:none;padding:4px 8px;">&larr;</a>
-  <a href="index.html" style="color:#38bdf8;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
-  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(196,149,106,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+ <a href="ep002.html" style="color:#c4956a;text-decoration:none;padding:4px 8px;">&larr;</a>
+ <a href="index.html" style="color:#c4956a;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+ <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
   <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">1</a>
   <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">2</a>
-  <a href="ep003.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #38bdf8;">3</a>
+  <a href="ep003.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #c4956a;">3</a>
   <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">4</a>
   <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">5</a>
   <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">6</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">7</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">8</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">9</a>
   <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
-  <a href="ep004.html" style="color:#38bdf8;text-decoration:none;padding:4px 8px;">&rarr;</a>
+ <a href="ep004.html" style="color:#c4956a;text-decoration:none;padding:4px 8px;">&rarr;</a>
 </div>
 </body>
 </html>

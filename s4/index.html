@@ -8,9 +8,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Noto+Serif+KR:wght@300;400;700&family=DM+Mono:ital@0;1&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --void:#04050a;--amber:#e8a83a;--gold:#f5c842;--dawn:#c8922a;
-  --cream:#f0e8d0;--mist:rgba(240,232,208,0.5);--fog:rgba(240,232,208,0.22);
-  --ghost:rgba(240,232,208,0.07);--violet:#a78bfa;
+ --void:#04050a;--amber:#e8a83a;--gold:#f5c842;--dawn:#c8922a;
+ --cream:#f0e8d0;--mist:rgba(240,232,208,0.5);--fog:rgba(240,232,208,0.22);
+ --ghost:rgba(240,232,208,0.07);--violet:#a78bfa;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
@@ -54,144 +54,179 @@ footer{padding:3rem 8vw 4rem;border-top:1px solid var(--ghost);display:flex;just
 .ep-card{opacity:0;transform:translateY(16px);transition:opacity 0.6s ease,transform 0.6s ease,background 0.3s ease;}
 .ep-card.visible{opacity:1;transform:translateY(0);}
 @media(max-width:700px){
-  .site-header{padding:4rem 5vw 2.5rem;}
-  main{padding:3rem 5vw 5rem;}
-  .ep-grid{grid-template-columns:1fr;}
-  .stats-bar{grid-template-columns:1fr 1fr;}
-  footer{flex-direction:column;align-items:flex-start;}
+ .site-header{padding:4rem 5vw 2.5rem;}
+ main{padding:3rem 5vw 5rem;}
+ .ep-grid{grid-template-columns:1fr;}
+ .stats-bar{grid-template-columns:1fr 1fr;}
+ footer{flex-direction:column;align-items:flex-start;}
 }
 </style>
 </head>
 <body>
 
 <div class="series-nav" style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(232,168,58,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:'JetBrains Mono',monospace;font-size:.7rem;letter-spacing:1px;">
-  <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
-  <span style="color:rgba(255,255,255,.2);">|</span>
-  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
-  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
-  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
-  <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S4</a>
+ <a href="../index.html" style="color:#e8a83a;text-decoration:none;font-weight:700;">개발자 박대표</a>
+ <span style="color:rgba(255,255,255,.2);">|</span>
+ <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+ <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+ <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+ <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #e8a83a;padding-bottom:2px;">S4</a>
 </div>
 
 <header class="site-header">
-  <div class="season-badge">Season 4 · ORCHESTRATION Chronicles · 2026</div>
-  <h1 class="site-title">개발자<br><em>박대표</em></h1>
-  <p class="site-sub">비서 하나를 만들었더니, 조직이 생겼다.<br>(주)데코페이브 박문석 대표이사의 AI 조직 구축 여정 — 2026년 5월 31일부터 6월 6일까지.</p>
-  <div class="site-meta">
-    <div class="meta-item">에피소드 <span>6편</span></div>
-    <div class="meta-item">프롤로그 <span>1편</span></div>
-    <div class="meta-item">피날레 <span>1편</span></div>
-    <div class="meta-item">Decopave Co., Ltd. <span>2026</span></div>
-  </div>
+ <div class="season-badge">Season 4 · ORCHESTRATION Chronicles · 2026</div>
+ <h1 class="site-title">개발자<br><em>박대표</em></h1>
+ <p class="site-sub">비서 하나를 만들었더니, 조직이 생겼다.<br>(주)데코페이브 박문석 대표이사의 AI 조직 구축 여정 — 2026년 5월 31일부터 6월 6일까지.</p>
+ <div class="site-meta">
+  <div class="meta-item">에피소드 <span>9편</span></div>
+  <div class="meta-item">프롤로그 <span>1편</span></div>
+  <div class="meta-item">피날레 <span>1편</span></div>
+  <div class="meta-item">+ 시즌 5 예고 <span>1편</span></div>
+  <div class="meta-item">Decopave Co., Ltd. <span>2026</span></div>
+ </div>
 </header>
 
 <main>
 
-  <div class="stats-bar">
-    <div class="stat-cell"><span class="stat-num">8</span><span class="stat-label">AI 직원<br>(조직)</span></div>
-    <div class="stat-cell"><span class="stat-num">2,493</span><span class="stat-label">라이브 스캔<br>task</span></div>
-    <div class="stat-cell"><span class="stat-num">98%</span><span class="stat-label">보고 소음<br>감축</span></div>
-    <div class="stat-cell"><span class="stat-num">4개월</span><span class="stat-label">2월 → 6월<br>바이브 코딩</span></div>
+ <div class="stats-bar">
+  <div class="stat-cell"><span class="stat-num">8</span><span class="stat-label">AI 직원<br>(조직)</span></div>
+  <div class="stat-cell"><span class="stat-num">2,493</span><span class="stat-label">라이브 스캔<br>task</span></div>
+  <div class="stat-cell"><span class="stat-num">98%</span><span class="stat-label">보고 소음<br>감축</span></div>
+  <div class="stat-cell"><span class="stat-num">4개월</span><span class="stat-label">2월 → 6월<br>바이브 코딩</span></div>
+ </div>
+
+ <!-- 특별편 -->
+ <div class="ep-section">
+  <div class="ep-section-label">Special · Prologue</div>
+  <div class="ep-grid">
+   <a href="prologue.html" class="ep-card special">
+    <div class="ep-num special-num">Prologue</div>
+    <div class="ep-title">비서 하나를 만들었더니, <em>조직</em>이 생겼다</div>
+    <div class="ep-desc">시즌 3은 AI 직원을 만드는 이야기였다. 시즌 4는 그들이 서로 일을 시키고, 사람을 감독하고, 하나의 조직이 되는 이야기다. 6월 1일 = 데코페이브 기념일.</div>
+    <div class="ep-tag tag-special">매니페스토 · 6/1 기념일</div>
+   </a>
   </div>
+ </div>
 
-  <!-- 특별편 -->
-  <div class="ep-section">
-    <div class="ep-section-label">Special · Prologue</div>
-    <div class="ep-grid">
-      <a href="prologue.html" class="ep-card special">
-        <div class="ep-num special-num">Prologue</div>
-        <div class="ep-title">비서 하나를 만들었더니, <em>조직</em>이 생겼다</div>
-        <div class="ep-desc">시즌 3은 AI 직원을 만드는 이야기였다. 시즌 4는 그들이 서로 일을 시키고, 사람을 감독하고, 하나의 조직이 되는 이야기다. 6월 1일 = 데코페이브 기념일.</div>
-        <div class="ep-tag tag-special">매니페스토 · 6/1 기념일</div>
-      </a>
-    </div>
+ <!-- 에피소드 -->
+ <div class="ep-section">
+  <div class="ep-section-label">Episodes · 2주 동안 벌어진 아홉 장면</div>
+  <div class="ep-grid">
+
+   <a href="ep001.html" class="ep-card">
+    <div class="ep-num">Episode 001</div>
+    <div class="ep-title">Taskworld 법무 트랙 — <em>5년치 자산</em>이 일을 시작했다</div>
+    <div class="ep-desc">살아 있는 3개 법무 task — 공기업 손해배상 #1*724, 또 한 건의 법무 트랙 #1*500, 매일 18:35의 대외공문 #1*798. 같은 8단계 파이프라인이 세 자리에 흐른다.</div>
+    <div class="ep-tag">5년치 자산 · 법무 자동화</div>
+   </a>
+
+   <a href="ep002.html" class="ep-card">
+    <div class="ep-num">Episode 002</div>
+    <div class="ep-title">영업·인사가 매일 두 번 <em>정리되는</em> 자리</div>
+    <div class="ep-desc">영업봇 Ashley Kim, 통화 6,636건 자동 요약, G2B 12,306건에서 18건, 명함 OCR, HRBOT 462명. 사람의 머릿속에서 회사의 자산으로 매일 두 번씩 자리가 옮겨간다.</div>
+    <div class="ep-tag">영업·인사 통합 · 통화 리마인드</div>
+   </a>
+
+   <a href="ep003.html" class="ep-card">
+    <div class="ep-num">Episode 003</div>
+    <div class="ep-title">AIHUB — <em>한 화면</em>의 통치</div>
+    <div class="ep-desc">봇 8 / 8 온라인, 활성 스케줄 96 / 104, RTX 3060 위의 EXAONE 3.5, 10 컨테이너 플릿, PostgreSQL 느린쿼리 0. 여덟 명을 한 화면에서 5초 안에 본다.</div>
+    <div class="ep-tag">대시보드 · 폐쇄망 사내 LLM</div>
+   </a>
+
+   <a href="ep004.html" class="ep-card">
+    <div class="ep-num">Episode 004</div>
+    <div class="ep-title">AI 직원들이 서로에게 <em>일을 시키기</em> 시작했다</div>
+    <div class="ep-desc">봇 셋이 독립 계정으로 Taskworld에서 직접 일을 시킨다. 맥락을 읽고, 담당자를 지목하고, 안 하면 D-3·D-5·D-7로 사장에게 올린다.</div>
+    <div class="ep-tag">독립 TW 계정 · 맥락이해 · 독촉</div>
+   </a>
+
+   <a href="ep005.html" class="ep-card">
+    <div class="ep-num">Episode 005</div>
+    <div class="ep-title">AI가 <em>거짓말</em>을 했다</div>
+    <div class="ep-desc">봇은 36억, 장부는 22억. 14억의 침묵. 미수금 22억인데 독촉 0건. AI도 거짓말한다 — 그래서 검증 게이트와 PG 스냅샷을 채웠다.</div>
+    <div class="ep-tag">정직성 · 검증 게이트</div>
+   </a>
+
+   <a href="ep006.html" class="ep-card">
+    <div class="ep-num">Episode 006</div>
+    <div class="ep-title">봇들이 서로 <em>모르는 채로</em> 일하고 있었다</div>
+    <div class="ep-desc">공휴일에 자발 출근한 직원 이야기가 어느 봇에게도 안 갔다. 사실 추출기·회사 상태판·공유 기억으로 여덟 명에게 하나의 기억을 만들었다.</div>
+    <div class="ep-tag">전사 맥락 공유 · 맥락 보강</div>
+   </a>
+
+   <a href="ep007.html" class="ep-card">
+    <div class="ep-num">Episode 007</div>
+    <div class="ep-title">7일 353건, 진짜 보고는 <em>2건</em></div>
+    <div class="ep-desc">내가 만든 AI가 너무 시끄러웠다. 0.6%만 진짜 보고였다. "이상 없으면 말하지 마"를 가르치니 366건이 6건이 됐다.</div>
+    <div class="ep-tag">보고 폭주 차단 · 절제</div>
+   </a>
+
+   <a href="ep008.html" class="ep-card">
+    <div class="ep-num">Episode 008</div>
+    <div class="ep-title">까먹은 약속을, <em>AI가 잊지 않는다</em></div>
+    <div class="ep-desc">하루 30~40통화를 받는 사람한테 모든 약속을 머릿속에 들고 있으라는 건 불가능하다. AI가 약속·할 일·다음 액션을 자동으로 뽑아 직원에게 다시 알려준다. 감시가 아니다 — 동료다.</div>
+    <div class="ep-tag">통화 리마인드 · 동료 시스템</div>
+   </a>
+
+   <a href="ep009.html" class="ep-card">
+    <div class="ep-num">Episode 009</div>
+    <div class="ep-title">남들이 좋다는 걸, <em>안 했다</em></div>
+    <div class="ep-desc">208줄짜리 문제 앞에서 자부터 댔다. 새 기술은 유튜브·GitHub·헤르메스에서 공짜로 가져와 이식했다. AI가 스스로 배우기 시작했다 — 무한 성장.</div>
+    <div class="ep-tag">측정 먼저 · 자가학습 · 기술 이식</div>
+   </a>
+
   </div>
+ </div>
 
-  <!-- 에피소드 -->
-  <div class="ep-section">
-    <div class="ep-section-label">Episodes · 2주 동안 벌어진 여섯 장면</div>
-    <div class="ep-grid">
-
-      <a href="ep001.html" class="ep-card">
-        <div class="ep-num">Episode 001</div>
-        <div class="ep-title">AI 직원들이 서로에게 <em>일을 시키기</em> 시작했다</div>
-        <div class="ep-desc">봇 셋이 독립 계정으로 Taskworld에서 직접 일을 시킨다. 맥락을 읽고, 담당자를 지목하고, 안 하면 D-3·D-5·D-7로 사장에게 올린다.</div>
-        <div class="ep-tag">독립 TW 계정 · 맥락이해 · 독촉</div>
-      </a>
-
-      <a href="ep002.html" class="ep-card">
-        <div class="ep-num">Episode 002</div>
-        <div class="ep-title">AI가 <em>거짓말</em>을 했다</div>
-        <div class="ep-desc">봇은 36억, 장부는 22억. 14억의 침묵. 미수금 22억인데 독촉 0건. AI도 거짓말한다 — 그래서 검증 게이트와 PG 스냅샷을 박았다.</div>
-        <div class="ep-tag">정직성 · 검증 게이트</div>
-      </a>
-
-      <a href="ep003.html" class="ep-card">
-        <div class="ep-num">Episode 003</div>
-        <div class="ep-title">봇들이 서로 <em>모르는 채로</em> 일하고 있었다</div>
-        <div class="ep-desc">공휴일에 자발 출근한 직원 이야기가 어느 봇에게도 안 갔다. 사실 추출기·회사 상태판·공유 기억으로 여덟 마리에게 하나의 기억을 만들었다.</div>
-        <div class="ep-tag">전사 맥락 공유 · 맥락 보강</div>
-      </a>
-
-      <a href="ep004.html" class="ep-card">
-        <div class="ep-num">Episode 004</div>
-        <div class="ep-title">7일 353건, 진짜 보고는 <em>2건</em></div>
-        <div class="ep-desc">내가 만든 AI가 너무 시끄러웠다. 0.6%만 진짜 보고였다. "이상 없으면 말하지 마"를 가르치니 366건이 6건이 됐다.</div>
-        <div class="ep-tag">보고 폭주 차단 · 절제</div>
-      </a>
-
-      <a href="ep005.html" class="ep-card">
-        <div class="ep-num">Episode 005</div>
-        <div class="ep-title">직원이 사장한테 안 한 통화를, <em>AI가 듣는다</em></div>
-        <div class="ep-desc">영업 통화를 사장이 다 들을 순 없다. AI가 전부 듣고 위험을 골라낸다. 그리고 그 속도·품질은 비싼 솔루션이 아니라 자원을 제대로 쓴 데서 나왔다.</div>
-        <div class="ep-tag">법인폰 인텔리전스 · 시스템 투자</div>
-      </a>
-
-      <a href="ep006.html" class="ep-card">
-        <div class="ep-num">Episode 006</div>
-        <div class="ep-title">남들이 좋다는 걸, <em>안 했다</em></div>
-        <div class="ep-desc">208줄짜리 문제 앞에서 자부터 댔다. 새 기술은 유튜브·GitHub·헤르메스에서 공짜로 가져와 이식했다. AI가 스스로 배우기 시작했다 — 무한 성장.</div>
-        <div class="ep-tag">측정 먼저 · 자가학습 · 기술 이식</div>
-      </a>
-
-    </div>
+ <!-- FINAL -->
+ <div class="ep-section">
+  <div class="ep-section-label">Special · FINAL · 시즌 4 마무리</div>
+  <div class="ep-grid">
+   <a href="final.html" class="ep-card special" style="border-color:rgba(167,139,250,.3);">
+    <div class="ep-num special-num">FINAL</div>
+    <div class="ep-title">AIHUB — 한 사람이 만든 <em>AI 조직</em></div>
+    <div class="ep-desc">여덟 명을 한 화면에서 본다. 새 직원 하나 늘리는 데 코드 0줄. 조달·채용·공문으로 사업이 자란다. 2월의 바이브 코딩이 넉 달 만에 도달한 자리. 그리고 GitHub에 공개한다. <strong>시즌 4 종결.</strong></div>
+    <div class="ep-tag tag-special">AIHUB · 코드 0줄 · 오픈소스</div>
+   </a>
   </div>
+ </div>
 
-  <!-- FINAL -->
-  <div class="ep-section">
-    <div class="ep-section-label">Special · FINAL · 시즌 4 마무리</div>
-    <div class="ep-grid">
-      <a href="final.html" class="ep-card special" style="border-color:rgba(167,139,250,.3);">
-        <div class="ep-num special-num">FINAL</div>
-        <div class="ep-title">AIHUB — 한 사람이 만든 <em>AI 조직</em></div>
-        <div class="ep-desc">여덟 마리를 한 화면에서 본다. 새 직원 하나 늘리는 데 코드 0줄. 조달·채용·공문으로 사업이 자란다. 2월의 바이브 코딩이 넉 달 만에 도달한 자리. 그리고 GitHub에 공개한다. <strong>시즌 4 종결.</strong></div>
-        <div class="ep-tag tag-special">AIHUB · 코드 0줄 · 오픈소스</div>
-      </a>
-    </div>
+ <!-- SEASON 5 TEASER -->
+ <div class="ep-section">
+  <div class="ep-section-label">Coming Next · Season 5 · Teaser</div>
+  <div class="ep-grid">
+   <a href="final.html#season-5-teaser" class="ep-card special" style="border-color:rgba(232,168,58,.3);background:rgba(232,168,58,.03);">
+    <div class="ep-num special-num" style="color:rgba(232,168,58,.7);">Season 5 · Loading</div>
+    <div class="ep-title" style="color:var(--cream);">110만원짜리 비서가, <em>진짜 동료</em>가 되는 자리</div>
+    <div class="ep-desc">10배 빠른 CPU, 16GB GPU 3대, Gemma 4 기반 자체 LLM, 음성 컨트롤, 회사 전체 기록의 AI 보관, 사내 세컨드 브레인 DB, 신입 교육 LLM — 재활용 PC 위의 시스템에 대대적 업데이트. AI와 사람이 협업하는 환경을 처음부터 다시 기록한다.</div>
+    <div class="ep-tag tag-special" style="border-color:rgba(232,168,58,.4);color:rgba(232,168,58,.75);">to be continued · Season 5</div>
+   </a>
   </div>
+ </div>
 
 </main>
 
 <footer>
-  <div class="footer-left">
-    Decopave Co., Ltd. · (주)데코페이브 · 2026<br>
-    개발자 박대표 · Season 4 · ORCHESTRATION Chronicles
-  </div>
-  <div class="footer-right">
-    AI로 회사를 바꾸는<br>중소기업 대표의 기록
-  </div>
-  <div style="grid-column:1/-1;text-align:center;font-size:.55rem;color:rgba(240,232,208,.2);margin-top:12px;font-family:'DM Mono',monospace;">© 2025–2026 박문석 / (주)데코페이브. All rights reserved.</div>
+ <div class="footer-left">
+  Decopave Co., Ltd. · (주)데코페이브 · 2026<br>
+  개발자 박대표 · Season 4 · ORCHESTRATION Chronicles
+ </div>
+ <div class="footer-right">
+  AI로 회사를 바꾸는<br>중소기업 대표의 기록
+ </div>
+ <div style="grid-column:1/-1;text-align:center;font-size:.55rem;color:rgba(240,232,208,.2);margin-top:12px;font-family:'DM Mono',monospace;">© 2025–2026 박문석 / (주)데코페이브. All rights reserved.</div>
 </footer>
 
 <script>
 const cards = document.querySelectorAll('.ep-card');
 const obs = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), i * 80);
-      obs.unobserve(entry.target);
-    }
-  });
+ entries.forEach((entry, i) => {
+  if (entry.isIntersecting) {
+   setTimeout(() => entry.target.classList.add('visible'), i * 80);
+   obs.unobserve(entry.target);
+  }
+ });
 }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
 cards.forEach(el => obs.observe(el));
 </script>

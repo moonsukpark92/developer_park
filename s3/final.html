@@ -85,6 +85,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
   <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
   <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
   <a href="../s3/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #a78bfa;padding-bottom:2px;">S3</a>
+  <a href="../s4/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S4</a>
 </div>
 
 <section class="hero">
@@ -125,7 +126,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
     </p>
     <p>
       대표가 그 풍경을 보면 두 가지가 동시에 느껴진다. 첫째, 신입은 배우고 있다. 둘째, 기존 직원이 일을 못 하고 있다.
-      그 기존 직원은 평소처럼 6시에 못 끝나니까 야근을 한다. 야근을 며칠 하다가, 6개월 안에 대표한테 면담을 신청한다.
+      그 기존 직원은 평소처럼 6시에 못 끝나니까 야근을 한다. 야근을 며칠 하다가, 한두 달 안에 대표한테 면담을 신청한다.
       <em>"대표님 저 좀 힘들어요."</em> 그러면 대표는 <em>"신입 적응 좀 더 하면 나아질 거예요"</em> 라고 답한다.
       그 답이 약속이라는 걸 대표도 안다. <strong>안 나아진다.</strong>
     </p>
@@ -134,10 +135,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
     </p>
   </div>
   <div class="qbox">
-    <p>직원이 알아서 교육하도록 했었다.<br>
-    <strong>하지만 안 한다.</strong></p>
-    <p>주변의 기존 직원들을 괴롭힌다.<br>
-    알여준다고 일을 안 한다. 야근 한다.</p>
+    <p>직원이 알아서 교육하도록 맡겨두었었다.<br>
+    <strong>그런데 그게 잘 안 됐다.</strong></p>
+    <p>옆 자리 기존 직원의 부담이 컸다.<br>
+    가르치느라 본인 업무가 밀리고, 그래서 야근이 늘었다.</p>
   </div>
   <div class="prose">
     <p>
@@ -161,8 +162,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
       <strong>그렇게 직감으로 결정한다.</strong>
     </p>
     <p>
-      잘못 뽑으면 어떻게 되는가. 1년차에 그 사람이 회사 안의 다른 일을 망친다. 다른 직원이 또 면담을 신청한다.
-      대표가 그 사람을 다시 면담한다. 다시 직감으로 결정한다. 이번에는 내보내야 한다는 직감. 그 직감이 또 틀릴 수도 있다.
+      판단이 어긋나면 회사 안 다른 일에 영향이 간다. 다른 직원이 또 면담을 신청한다.
+      대표가 그 사람을 다시 면담한다. 다시 직감으로 결정한다. 이번에는 전환 의사결정을 해야 한다는 직감. 그 직감이 또 어긋날 수도 있다.
       <span class="hr">한 길 사람 속은 모른다.</span>
     </p>
     <p>
@@ -172,8 +173,8 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
       <em>알아보는 시스템이 없는 회사다, 라고 그들끼리 정리한다.</em>
     </p>
     <p>
-      대표는 5년 동안 그 패턴을 봤다. 좋은 직원이 떠나고, 안 좋은 직원이 남고, 대표가 직접 일을 더 하고,
-      그 와중에 잘못된 직원이 또 들어와서 옆 직원을 또 괴롭히고.
+      대표는 5년 동안 그 패턴을 봤다. 좋은 분이 떠나고, 적합도 낮은 경우가 남고, 대표가 직접 일을 더 하고,
+      그 와중에 또 잘못 맞춰진 채용이 발생해서 옆 직원의 부담이 늘고.
       <strong>그 패턴을 깨야 회사가 산다는 결론에 도달했다.</strong> 그래서 5월 13일이 들어왔다.
     </p>
   </div>
@@ -287,39 +288,37 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
 
 <section class="sec">
   <p class="label v">Chapter 05 · 그리고 GitHub에 공개한다</p>
-  <h2 class="sec-title">"대표들은<br><em>죄가</em> 없습니다"</h2>
+  <h2 class="sec-title">작은 회사 대표가<br>마주하는 <em>어려움</em>에 대해</h2>
   <div class="prose">
     <p>
-      5월 13일에 또 한 가지를 남겼다. <strong>이 시스템을 GitHub에 오픈소스로 공개한다.</strong>
+      5월 13일에 또 한 가지를 결심했다. <strong>이 시스템을 GitHub에 오픈소스로 공개한다.</strong>
       데코페이브 한 회사를 위한 도구가 아니라, 한국 작은 제조 중소기업 모두가 fork — 자기 회사용으로 복제해서 — 쓸 수 있는 형태로.
-      원문은 다음과 같다 (이 글에는 인용할 수 있는 만큼만 옮긴다).
+      공개용으로 다듬은 한 문단을 옮긴다.
     </p>
   </div>
   <div class="qbox">
-    <p>대표들은 죄가 없습니다.</p>
-    <p>잘못된 직원,<br>
-    시간과 공간을 채우고 월급 루팡하고<br>
-    기회만 보는,<br>
-    이 세상에서 존재하지 말아야 할 인간들,<br>
-    일의 신성함 보다는<br>
-    자신의 편리를 찾는 인간들을<br>
-    정상적인 세상에서 격리하는 체계를 만들어서<br>
-    <strong>공개할 예정입니다.</strong></p>
+    <p>작은 회사 대표는 매일 외롭다.</p>
+    <p>성실히 일하는 분들은 보호받아야 하고,<br>
+    그렇지 않은 경우는 객관적인 데이터로 조기에 식별되어<br>
+    공정한 전환 의사결정으로 이어져야 한다.<br>
+    이게 회사가 다음 5년을 사는 길이고,<br>
+    좋은 분들이 떠나지 않는 회사의 조건이다.<br>
+    <strong>그래서 이 시스템을 공개한다.</strong></p>
   </div>
   <div class="prose">
     <p>
-      이 강한 표현은 내부 메모리에만 원문 보존된다.
-      GitHub 공개 코드의 README는 노무사·법률 친화 표현으로 다듬어진다.
-      <em>"성과 부진 직원 조기 식별·전환 의사결정 지원"</em> 같은 표현으로.
-      그게 시스템의 윤리 게이트 E1~E12의 첫 번째 룰이다. 동력은 메모리에만, 공개 코드는 중립 표현으로.
+      내부 메모리에는 더 거친 1인칭 원문이 별도로 보존된다 — 작은 회사 대표가 5년 동안 가슴에 쌓아둔 동기, 그건 사적인 기록이다.
+      GitHub 공개 코드의 README와 본 글의 인용은 <em>"성과 부진 직원 조기 식별·전환 의사결정 지원"</em> 같은
+      <strong>노무사·법률 친화 중립 표현</strong>으로만 작성된다.
+      그게 시스템의 윤리 게이트 E1~E12의 첫 번째 룰이다.
     </p>
     <p>
-      그리고 12가지 윤리 게이트가 들어 있다.
+      12가지 윤리 게이트가 들어 있다.
       <strong>E3</strong> — 평가 데이터 접근은 대표와 문돌실장만. 동료와 상사는 못 본다.
-      <strong>E4</strong> — AI 의 회사 적합도 판단은 권고일 뿐. 인사 결정 단독 근거가 되지 않는다.
+      <strong>E4</strong> — AI의 회사 적합도 판단은 권고일 뿐, 인사 결정의 단독 근거가 되지 않는다.
       <strong>E5</strong> — 외국인·성별·연령·장애 정보 기반 평가 알고리즘 금지.
-      <strong>E9</strong> — 조기 방출 권고가 나오면 대표가 직접 1:1 면담을 의무로 진행한다.
-      AI 단독 결정은 절대 없다. <strong>AI가 검정자고, 결정자는 사람이다.</strong>
+      <strong>E9</strong> — 전환 권고가 나오면 대표가 직접 1:1 면담을 의무로 진행한다.
+      AI 단독 결정은 절대 없다. <strong>AI는 데이터 정리자이고, 결정자는 사람이다.</strong>
     </p>
   </div>
 </section>
@@ -345,9 +344,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
     일하지 않고 편취하는 것이<br>
     자랑이 된 세상에서,</p>
     <p><strong>정면으로 반박</strong>하고,<br>
-    그런 세상이 우리 회사에서는 존재하지 않는다,<br>
-    투명하고 공정하게 제대로 일한 자가 대접받고<br>
-    일하지 않는 자는 퇴출된다,</p>
+    그런 세상이 우리 회사에서는 통하지 않는다,<br>
+    투명하고 공정하게 제대로 일한 분이 대접받고<br>
+    그렇지 않은 경우는 객관적인 데이터로 드러난다,</p>
     <p>는 이 작은 원칙이 바로 선 세상을 만들기 위함이<br>
     <strong>이 모든 프로젝트의 핵심</strong>이고,<br>
     내가 매일 죽어라<br>

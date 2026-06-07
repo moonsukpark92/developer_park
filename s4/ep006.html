@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>개발자 박대표 S4 EP006 · 남들이 좋다는 걸, 안 했다</title>
+<title>개발자 박대표 S4 EP006 · 봇들이 서로 모르고 있었다</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
 :root {
-  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
-  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
-  --accent:#34d399; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa;
-  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+ --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+ --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+ --accent:#38bdf8; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa; --sky:#38bdf8;
+ --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -18,350 +18,305 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(52,211,153,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(232,168,58,.06) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#06120d 100%);pointer-events:none;z-index:-1;}
-.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(52,211,153,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(52,211,153,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
-.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--green);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(56,189,248,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(167,139,250,.06) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#06101a 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(56,189,248,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(56,189,248,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--sky);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
 .hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6vw,5.2rem);line-height:1.12;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
 .hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
 .hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
 .tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
 .tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
-.tag.gr{border-color:rgba(52,211,153,.4);color:var(--green);background:rgba(52,211,153,.07);}
-.tag.v{border-color:rgba(167,139,250,.4);color:var(--violet);background:rgba(167,139,250,.07);}
+.tag.s{border-color:rgba(56,189,248,.4);color:var(--sky);background:rgba(56,189,248,.07);}
+.tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
 .scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
 .sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
-.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--green);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
-.label.g{color:var(--gold);} .label.gr{color:var(--green);} .label.v{color:var(--violet);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--sky);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.s{color:var(--sky);} .label.gr{color:var(--green);}
 .label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
 .sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
-.sec-title em{font-style:normal;color:var(--green);}
+.sec-title em{font-style:normal;color:var(--sky);}
 .rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
 .prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
 .prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
 .prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
-.prose code{font-family:var(--mono);font-size:.86em;color:var(--green);background:rgba(52,211,153,.08);padding:1px 6px;border-radius:3px;}
-.hg{color:var(--gold);font-weight:500;} .hgr{color:var(--green);font-weight:500;} .hv{color:var(--violet);font-weight:500;} .hr{color:var(--rose);font-weight:500;}
-.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--green);background:linear-gradient(90deg,rgba(52,211,153,.06) 0%,transparent 100%);position:relative;}
-.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--green);opacity:.35;line-height:1;}
+.prose code{font-family:var(--mono);font-size:.86em;color:var(--sky);background:rgba(56,189,248,.08);padding:1px 6px;border-radius:3px;}
+.hg{color:var(--gold);font-weight:500;} .hs{color:var(--sky);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
+.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--sky);background:linear-gradient(90deg,rgba(56,189,248,.06) 0%,transparent 100%);position:relative;}
+.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--sky);opacity:.35;line-height:1;}
 .qbox p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.98rem,1.7vw,1.15rem);line-height:1.85;color:rgba(232,230,225,.92);}
 .qbox p strong{color:var(--text);font-weight:700;font-style:normal;}
-.qbox .who{font-family:var(--mono);font-style:normal;font-size:.6rem;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-top:14px;display:block;}
-.pipe{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin:36px 0;}
-.pipe-step{background:#0d1117;border:1px solid rgba(52,211,153,.22);border-radius:8px;padding:16px 20px;font-family:var(--sans);font-size:.84rem;color:var(--text);text-align:center;min-width:118px;}
-.pipe-step .d{font-family:var(--mono);font-size:.55rem;letter-spacing:2px;color:var(--green);display:block;margin-bottom:5px;}
-.pipe-arr{color:var(--green);font-family:var(--mono);font-size:1.1rem;opacity:.6;}
-.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin:36px 0;}
-.feat{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:20px 22px;}
-.feat .fk{font-family:var(--mono);font-size:.55rem;letter-spacing:2px;color:var(--green);text-transform:uppercase;margin-bottom:8px;}
-.feat .ft{font-family:var(--sans);font-weight:700;font-size:.95rem;color:var(--text);margin-bottom:8px;}
-.feat .fd{font-family:var(--sans);font-weight:300;font-size:.82rem;line-height:1.7;color:rgba(232,230,225,.6);}
-.metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:36px 0;}
-.metric{background:#0d1117;border:1px solid rgba(52,211,153,.25);border-radius:8px;padding:24px 18px;text-align:center;}
-.metric-num{font-family:var(--serif);font-size:2.2rem;font-weight:800;color:var(--green);line-height:1;margin-bottom:8px;}
-.metric-label{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;color:rgba(232,230,225,.5);text-transform:uppercase;}
-.term{background:#06120d;border:1px solid rgba(52,211,153,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
-.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(52,211,153,.04);border-bottom:1px solid rgba(52,211,153,.1);}
+.qbox .who{font-family:var(--mono);font-style:normal;font-size:.6rem;letter-spacing:2px;color:var(--sky);text-transform:uppercase;margin-top:14px;display:block;}
+.layers{margin:36px 0;display:flex;flex-direction:column;gap:12px;}
+.lyr{display:flex;align-items:center;gap:16px;background:#0d1117;border:1px solid rgba(56,189,248,.18);border-radius:8px;padding:18px 22px;}
+.lyr .n{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:var(--sky);min-width:62px;}
+.lyr .t{font-family:var(--sans);font-size:.9rem;color:rgba(232,230,225,.8);line-height:1.6;}
+.lyr.broke{border-color:rgba(251,113,133,.35);background:rgba(251,113,133,.04);}
+.lyr.broke .n{color:var(--rose);}
+.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin:36px 0;}
+.flow-step{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:var(--sans);font-size:.82rem;color:var(--text);text-align:center;min-width:120px;}
+.flow-step .d{font-family:var(--mono);font-size:.55rem;letter-spacing:2px;color:var(--sky);display:block;margin-bottom:5px;}
+.flow-arr{color:var(--sky);font-family:var(--mono);font-size:1rem;opacity:.6;}
+.term{background:#06101a;border:1px solid rgba(56,189,248,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(56,189,248,.04);border-bottom:1px solid rgba(56,189,248,.1);}
 .dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
 .dots span{width:10px;height:10px;border-radius:50%;}
 .dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
 .term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
-.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--green);}
-.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:#7cc5ff;} .dim{color:rgba(52,211,153,.6);} .warn{color:var(--rose);}
-.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(12,42,30,.4) 0%,rgba(52,211,153,.05) 100%);border:1px solid rgba(52,211,153,.2);text-align:center;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--sky);}
+.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:#7cc5ff;} .dim{color:rgba(56,189,248,.6);} .warn{color:var(--gold);}
+.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(15,35,55,.4) 0%,rgba(56,189,248,.05) 100%);border:1px solid rgba(56,189,248,.2);text-align:center;}
 .insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.2rem);line-height:1.8;color:var(--text);margin:0;}
-.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--green);text-transform:uppercase;margin-top:14px;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--sky);text-transform:uppercase;margin-top:14px;}
 .stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
-.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--green);text-transform:uppercase;margin-bottom:30px;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--sky);text-transform:uppercase;margin-bottom:30px;}
 .stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
 .stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
 .footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
-.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--green);text-transform:uppercase;margin-bottom:18px;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--sky);text-transform:uppercase;margin-bottom:18px;}
 .footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
 .footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
-.footer-n strong{color:var(--green);font-weight:500;}
+.footer-n strong{color:var(--sky);font-weight:500;}
 .footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
 </style>
 </head>
 <body style="padding-top:40px;padding-bottom:60px;">
-<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(52,211,153,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
-  <a href="../index.html" style="color:#34d399;text-decoration:none;font-weight:700;">개발자 박대표</a>
-  <span style="color:rgba(255,255,255,.2);">|</span>
-  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
-  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
-  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
-  <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #34d399;padding-bottom:2px;">S4</a>
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(56,189,248,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+ <a href="../index.html" style="color:#38bdf8;text-decoration:none;font-weight:700;">개발자 박대표</a>
+ <span style="color:rgba(255,255,255,.2);">|</span>
+ <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+ <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+ <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+ <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #38bdf8;padding-bottom:2px;">S4</a>
 </div>
 
 <section class="hero">
-  <p class="eyebrow">개발자 박대표 · Season 4 · Episode 006 · 6/1~6/2</p>
-  <h1 class="hero-title">
-    남들이<br>
-    좋다는 걸,<br>
-    <span style="color:var(--green)">안 했다</span>
-  </h1>
-  <p class="hero-desc">
-    세상은 비싼 기술을 사라고 한다. 벡터 DB, 임베딩, 그래프 검색.<br>
-    나는 208줄짜리 문제 앞에서, 먼저 자로 쟀다.<br>
-    그리고 정말 필요한 건 공짜로, 공개된 데서 가져와 이식했다.<br>
-    유튜브 영상에서, GitHub 오픈소스에서, 헤르메스 에이전트에서.<br>
-    AI가 스스로 배우기 시작했다 — 무한 성장의 시작.
+ <p class="eyebrow">개발자 박대표 · Season 4 · Episode 006 · 6/5</p>
+ <h1 class="hero-title">
+  봇들이 서로<br>
+  <span style="color:var(--sky)">모르는 채로</span><br>
+  일하고 있었다
+ </h1>
+ <p class="hero-desc">
+  공휴일에 자발적으로 출근한 직원이 있었다.<br>
+  품질 채팅방에 그 이야기가 올라왔다.<br>
+  그런데 인사봇도, 생산봇도, 회사 기억도 그 사실을 몰랐다.<br>
+  한 봇이 아는 것이 옆 봇에게 가지 않았다.<br>
+  여덟 명에게 하나의 기억을 만들어준 이야기.
+ </p>
+ <div class="hero-tags">
+  <span class="tag s">전사 맥락 공유</span>
+  <span class="tag g">사실 추출기 30분</span>
+  <span class="tag">공유 기억 (Qdrant)</span>
+  <span class="tag gr">102 테스트 통과</span>
+  <span class="tag">맥락 보강</span>
+ </div>
+ <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+ <p class="label s">Chapter 01 · 사람이 싫어하는 일</p>
+ <h2 class="sec-title">"그거 누가 알아?"<br>가 일상이던 <em>회사</em></h2>
+ <div class="prose">
+  <p>
+   작은 회사에서 정보는 사람 머릿속에 산다. 누가 오늘 휴가인지, 어느 공장이 야간 교대인지, 어떤 거래처가 요즘 예민한지 —
+   이런 건 문서에 안 적힌다. 아는 사람 머릿속에만 있다. 그래서 그 사람이 자리를 비우면, 회사가 그 사실을 잃는다.
   </p>
-  <div class="hero-tags">
-    <span class="tag gr">측정 먼저</span>
-    <span class="tag">FTS R@5 = 1.000</span>
-    <span class="tag g">YouTube → Gemini Gems → Claude</span>
-    <span class="tag v">hermes 자가학습 4기능</span>
-    <span class="tag">무한 성장</span>
-  </div>
-  <p class="scroll-hint">↓ scroll</p>
+  <p>
+   회의 때마다 나오는 말이 있다. <em>"그거 누가 알아요?"</em> 아무도 모른다. 아는 사람이 오늘 외근이다.
+   그래서 그 일은 내일로 미뤄진다. 정보를 공유하는 일은 누구의 일도 아니라서, 아무도 안 한다.
+   <span class="hs">공유는 귀찮고, 안 해도 당장 티가 안 나니까.</span>
+  </p>
+  <p>
+   나는 AI 직원 여덟 명을 만들면서 이건 해결될 줄 알았다. AI는 다 컴퓨터 안에 있으니까,
+   당연히 서로 아는 걸 공유할 거라고 생각했다. <strong>틀렸다. AI도 따로 놀고 있었다.</strong>
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label gr">Chapter 01 · 사람이 싫어하는 일</p>
-  <h2 class="sec-title">새 기술은<br>늘 <em>벅차다</em></h2>
-  <div class="prose">
-    <p>
-      AI 세계는 매주 새 기술이 쏟아진다. 어제 배운 게 오늘 낡는다. 비개발자한테는 더 벅차다.
-      <em>"이거 안 쓰면 뒤처진다"</em>는 말이 사방에서 들린다. 벡터 데이터베이스를 써라, 임베딩을 써라, 그래프 검색을 써라.
-      이름만 들어도 주눅이 든다. 그래서 사람들은 둘 중 하나를 한다 — <strong>겁먹고 포기하거나, 겁나서 다 사들이거나.</strong>
-    </p>
-    <p>
-      나도 그랬다. 유행하는 기술 이름을 들으면, 우리 회사도 써야 할 것 같았다. 안 쓰면 구식인 것 같았다.
-      그래서 "남들이 좋다는 것"을 일단 도입하려 했다. <span class="hgr">그게 가장 위험한 충동이라는 걸, 이번에 배웠다.</span>
-    </p>
-    <p>
-      이건 사람의 오래된 습성이다. 회사 다니는 사람이라면 다 봤을 거다. 비싼 장비를 샀는데 안 쓴다.
-      좋다는 소프트웨어를 도입했는데 아무도 안 쓴다. <em>"좋다더라"</em>는 말 하나로 돈을 쓰고, 정작 우리 문제에 맞는지는 안 본다.
-    </p>
+ <p class="label s">Chapter 02 · 안 굴러갔던 일</p>
+ <h2 class="sec-title">공휴일에 나온 직원 이야기가,<br><em>증발</em>했다</h2>
+ <div class="prose">
+  <p>
+   6월 3일은 공휴일이었다. 그날 품질 채팅방에 한 직원이 글을 올렸다 —
+   <strong>옥, 디팍, 트엉이 공휴일인데도 자발적으로 출근해서 일했다</strong>는 내용이었다.
+   외국인 직원들이 쉬는 날 나와서 회사 일을 했다는, 회사 입장에서 꼭 기억해야 할 사실이다.
+   고마워해야 하고, 수당을 챙겨야 하고, 다음에 반영해야 한다.
+  </p>
+  <p>
+   그런데 그 사실이 어디로도 안 갔다. 인사봇은 몰랐다. 생산봇도 몰랐다. 회사의 공유 기억에도 안 남았다.
+   <span class="hs">그냥 채팅방 한 줄로 떴다가 흘러갔다.</span> 다음 날이면 아무도 그 사실을 모르는 상태로 돌아갔다.
+   사장인 나조차도, 누가 짚어주지 않으면 놓쳤을 거다.
+  </p>
+  <p>
+   왜 이렇게 됐는지 뜯어보니, 세 군데가 끊겨 있었다.
+  </p>
+ </div>
+ <div class="layers">
+  <div class="lyr broke">
+   <span class="n">① 추출</span>
+   <span class="t"><strong>0%.</strong> 텔레그램 메시지는 기록만 될 뿐, 거기서 "사실"을 뽑아내는 장치가 아예 없었다. 사람이 말한 걸 회사가 알아듣지 못했다.</span>
   </div>
+  <div class="lyr broke">
+   <span class="n">② 축적</span>
+   <span class="t"><strong>파편.</strong> 공장 가동 상태를 담을 자리는 선언만 돼 있고 실제 파일이 없었다. 교대 정보는 코드에 박혀 있었다. 한 곳에 모이지 않았다.</span>
+  </div>
+  <div class="lyr broke">
+   <span class="n">③ 전파</span>
+   <span class="t"><strong>꺼짐.</strong> 봇끼리 사실을 주고받는 통로는 만들어 놨는데, 시험 모드로만 돌고 실제로는 한 건도 안 나가고 있었다.</span>
+  </div>
+ </div>
+ <div class="prose">
+  <p>
+   세 군데가 다 끊겨 있으니, 한 사람이 채팅방에 올린 사실이 회사 어디에도 도착하지 못한 거다.
+   AI가 여덟 명라도, 서로 모르면 한 명만도 못하다.
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label gr">Chapter 02 · 안 굴러갔던 일</p>
-  <h2 class="sec-title">208줄짜리 문제에,<br><em>3중 엔진</em>을 얹을 뻔했다</h2>
-  <div class="prose">
-    <p>
-      AI에게 "기억"을 만들어주려고 했다. 봇이 과거 대화를 잘 찾아내게 하는 기능이다.
-      나는 유행하는 설계를 가져와 붙이려 했다 — 벡터 검색에 키워드 검색에 그래프 검색까지, 세 가지를 섞은 "3중 하이브리드".
-      외부에서 좋다고 소문난 방식이었다. 벤치마크 수치도 화려했다(정확도 0.967).
-    </p>
-    <p>
-      그런데 냉정한 재검토에 들어가니, 내가 박아둔 전제가 줄줄이 거짓이었다.
-    </p>
-    <p>
-      <strong>"우리가 이미 벡터 검색을 쓰고 있다"</strong> → 거짓이었다. 직접 들여다보니 그냥 단순한 파일 검색이었다.
-      <strong>"3중 엔진이 필요하다"</strong> → 그 화려한 벤치마크는 <em>그들의 데이터</em>에서 나온 수치였다.
-      그럼 우리 데이터는 얼마나 큰가? 실제로 세어 봤다. <span class="hr">208줄. 232킬로바이트.</span>
-      <strong>208줄짜리 문제에, 10만~100만 줄에서나 의미 있는 엔진을 얹으려 한 거다.</strong>
-    </p>
-    <p>
-      이게 흔한 함정이다 — "남이 쓰는 걸 그대로 베끼는 것(cargo-cult)". 남의 규모에 맞는 해법을, 우리 규모를 안 재고 가져오는 것.
-      208줄짜리 문제에 그래프 최단경로 엔진을 얹는 건, 동네 슈퍼에 대형마트 물류 시스템을 까는 거다. 돈과 시간 낭비고, 게다가 더 자주 고장 난다.
-    </p>
+ <p class="label g">Chapter 03 · AI에게 어떻게 시켰나</p>
+ <h2 class="sec-title">사실 하나가<br>여덟 머리로 <em>흐르게</em></h2>
+ <div class="prose">
+  <p>
+   그날 내가 시킨 건 이거였다.
+  </p>
+ </div>
+ <div class="qbox">
+  <p>
+   텔레그램으로 들어오는 회사 주요 사항 —<br>
+   공장 가동, 휴일 근무 같은 것들이<br>
+   확인되고, 기억되고, <strong>전 봇에게 전파</strong>돼야 하는데<br>
+   적용이 안 되고 따로 논다. 해결하라.
+   <span class="who">— 사장님 지시 · 2026-06-05</span>
+  </p>
+ </div>
+ <div class="prose">
+  <p>
+   끊긴 세 군데를 하나씩 이었다.
+  </p>
+  <p>
+   <strong>하나 — 사실 추출기를 달았다.</strong> 30분마다 채팅방 메시지를 훑어서, 그 안에서 "회사가 기억해야 할 사실"을 골라낸다.
+   이건 무료로 돌아가는 우리 회사 자체 AI(로컬 LLM)가 한다. 외부에 돈 내고 보낼 필요가 없다.
+   실제로 돌려보니 <strong>"6월 3일 공휴일, 옥·디팍·트엉 자발 출근"을 정확히 뽑아냈다.</strong> 끊겼던 첫 고리가 이어졌다.
+  </p>
+  <p>
+   <strong>둘 — 사실이 모이는 한 곳을 만들었다.</strong> 날짜와 공장별로 "오늘 가동하나, 어느 조 교대인가, 공휴일인가, 누가 휴일 근무했나, 특이사항은 뭔가"를
+   한 테이블에 담는 <em>회사 상태판</em>을 만들었다. <span class="hg">이제 모든 봇은 이 한 곳만 본다.</span>
+   여기저기 흩어진 정보를 각자 긁는 게 아니라, 한 우물에서 같은 물을 마신다.
+  </p>
+  <p>
+   <strong>셋 — 봇들의 공유 기억을 켰다.</strong> 추출한 사실은 회사 상태판에 적히는 동시에, 봇들이 함께 쓰는 기억 저장소에 올라간다.
+   그래서 인사봇이 답을 할 때도, 생산봇이 답을 할 때도, 그 사실을 <strong>대화의 맥락으로 끌어와</strong> 쓴다.
+   누가 휴일에 나왔는지를 인사봇만 아는 게 아니라, 회사 전체가 안다.
+  </p>
+ </div>
+ <div class="term">
+  <div class="dots"><span></span><span></span><span></span></div>
+  <div class="term-title">fact_extractor · 2026-06-05 · 30분 주기</div>
+  <div class="term-body">
+   <div class="cmt"># 품질방 메시지에서 사실 추출 (로컬 LLM, 무료)</div>
+   <div class="you">입력: "옥·디팍·트엉 공휴일인데 자발 출근했네요 고생"</div>
+   <br>
+   <div class="ok">추출 ✔ → ops.company_state</div>
+   <div class="dim"> · date: 2026-06-03 is_holiday: true</div>
+   <div class="dim"> · holiday_workers: [옥, 디팍, 트엉]</div>
+   <div class="dim"> · special_notes: "공휴일 자발 출근"</div>
+   <br>
+   <div class="ok">→ 공유 기억 push → 전 봇이 같은 사실을 본다</div>
   </div>
+ </div>
+ <div class="prose">
+  <p>
+   함정도 있었다. 공휴일을 "오늘"로 판정하는 코드가 시간대 계산을 잘못해서, 내일 공휴일(현충일 6/6)을 오늘(6/5)로 오인할 뻔했다.
+   그날 하루 범위로 정확히 맞춰 고쳤다. 그리고 <strong>전체 테스트 102개를 통과</strong>시킨 뒤에 박았다.
+   앞 편에서 배운 대로 — 검증 없이는 "됐다"고 안 한다.
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label g">Chapter 03 · AI에게 어떻게 시켰나</p>
-  <h2 class="sec-title">공개된 걸 가져와,<br><em>이식</em>한다</h2>
-  <div class="prose">
-    <p>
-      그렇다고 새 기술을 안 따라간다는 건 아니다. 정반대다. <strong>나는 새 기술을 끊임없이 가져온다. 단, 공짜로, 공개된 데서.</strong>
-      그 방법이 이번 시즌의 또 다른 핵심이다. 내가 기술을 확보하는 파이프라인은 이렇게 생겼다.
-    </p>
-  </div>
-  <div class="pipe">
-    <div class="pipe-step"><span class="d">발견</span>YouTube<br>GitHub</div>
-    <div class="pipe-arr">→</div>
-    <div class="pipe-step"><span class="d">소화</span>Gemini<br>Gems</div>
-    <div class="pipe-arr">→</div>
-    <div class="pipe-step"><span class="d">이식</span>Claude<br>Code</div>
-    <div class="pipe-arr">→</div>
-    <div class="pipe-step"><span class="d">확산</span>전 봇<br>(8마리)</div>
-  </div>
-  <div class="prose">
-    <p>
-      유튜브에서 새 기술 영상을 본다. 그 영상 링크를 <strong>제미나이 Gem</strong> — 특정 일을 반복하도록 길들인 제미나이 — 에 던지면,
-      1분 안에 학습용 보고서와 정리 문서로 바꿔준다. 그 문서를 <strong>Claude Code</strong>에 넘기면, 우리 회사 코드로 이식된다.
-      마지막으로 그 기능이 봇 여덟 마리에게 퍼진다. <span class="hg">유튜브 영상 하나가, 1분 만에 회사 시스템이 된다.</span>
-      (시즌 3 EP014에서 처음 만든 이 파이프라인을, 이번 시즌엔 실제 기술 도입에 본격적으로 썼다.)
-    </p>
-    <p>
-      이번에 이렇게 가져온 게 <strong>헤르메스 에이전트</strong>(hermes-agent)다. GitHub에 공개된 오픈소스인데,
-      AI가 스스로 배우는 기능들이 들어 있었다. 통째로 베끼지 않았다. 클론해서 분석하고, <em>우리에게 쓸모 있는 것만</em> 네 가지 골라 이식했다.
-    </p>
-  </div>
-  <div class="feat-grid">
-    <div class="feat">
-      <div class="fk">기능 A</div>
-      <div class="ft">세션 회상</div>
-      <div class="fd">예전 작업 대화를 한국어로 검색해 끌어온다. "지난번에 그거 어떻게 했지?"를 AI가 스스로 찾는다.</div>
-    </div>
-    <div class="feat">
-      <div class="fk">기능 B</div>
-      <div class="ft">근본 원인 회고</div>
-      <div class="fd">실패가 나면 매일 밤 "왜 실패했고, 어떻게 막을까"를 스스로 복기해 개선안을 큐에 쌓는다.</div>
-    </div>
-    <div class="feat">
-      <div class="fk">기능 C</div>
-      <div class="ft">스킬 distill</div>
-      <div class="fd">반복하는 절차를 발견하면, 그걸 재사용 가능한 "기술"로 초안화한다. 사람은 검토만.</div>
-    </div>
-    <div class="feat">
-      <div class="fk">기능 D</div>
-      <div class="ft">자가 수정 게이트 5종</div>
-      <div class="fd">AI가 자기 코드를 고칠 때 통과해야 할 다섯 관문(크기·캐싱·의미·테스트·사장 검토).</div>
-    </div>
-  </div>
-  <div class="prose">
-    <p>
-      중요한 건 <strong>전부 게이트를 거치고, 전부 무료(회사 자체 AI)로 돌고, 자율로 함부로 적용 안 한다</strong>는 점이다.
-      외부 유료 서비스나, 비싼 학습 방식은 일부러 안 가져왔다. 우리 규모와 우리 지갑에 맞는 것만 골랐다.
-    </p>
-  </div>
-</section>
-
-<div class="rule"></div>
-
-<section class="sec">
-  <p class="label gr">Chapter 04 · 측정이 먼저다</p>
-  <h2 class="sec-title">자를 대보니,<br>답은 <em>가장 단순한</em> 거였다</h2>
-  <div class="prose">
-    <p>
-      앞의 "기억" 문제로 돌아가자. 3중 엔진을 얹는 대신, 사장님 지시대로 했다.
-    </p>
-  </div>
-  <div class="qbox">
-    <p>
-      도입 계획은<br>
-      <strong>시니어 개발자의 냉정한 재검토</strong>와<br>
-      기존 코드 면밀 검토 후에 확정하고<br>
-      진행하라.
-      <span class="who">— 사장님 지시 · 2026-06-02</span>
-    </p>
-  </div>
-  <div class="prose">
-    <p>
-      그래서 가장 단순한 방법(키워드 검색)부터 만들어서, 실제로 정확도를 쟀다.
-      질문 15개를 던져서 답이 상위 5개 안에 들어오는지 봤다. 결과가 충격적이었다 —
-      <strong>정확도 1.000.</strong> 15개 질문 전부, 정답이 상위 5개 안에 들어왔다.
-    </p>
-  </div>
-  <div class="term">
-    <div class="dots"><span></span><span></span><span></span></div>
-    <div class="term-title">측정 먼저 · 2026-06-02</div>
-    <div class="term-body">
-      <div class="cmt"># 1단계 — 우리 데이터 규모를 직접 잰다</div>
-      <div class="you">$ SELECT count(*) FROM conversation_log</div>
-      <div class="dim">  → 208 rows / 232 kB</div>
-      <br>
-      <div class="cmt"># 2단계 — 가장 단순한 안(키워드 검색)으로 정확도 측정</div>
-      <div class="ok">  graded query 15개 → R@5 = 1.000</div>
-      <br>
-      <div class="cmt"># 벡터DB 도입 조건: R@5 &lt; 0.85 일 때만</div>
-      <div class="warn">→ 조건 미충족. 벡터DB·임베딩·그래프 전부 폐기</div>
-      <div class="ok">→ 단순 검색만으로 종료. 비용 0, 새 DB 0</div>
-    </div>
-  </div>
-  <div class="prose">
-    <p>
-      벡터 DB를 쓸 이유가 사라졌다. 그래서 안 썼다. 임베딩도, 그래프도 다 버렸다.
-      <span class="hgr">208줄짜리 문제는 208줄에 맞는 답으로 풀었다.</span> 돈 한 푼 안 들었고, 새 데이터베이스도 안 깔았다.
-      벡터 검색이 단순 검색을 의미 있게 이기는 건 10만~100만 줄부터다. 우리가 거기 도달하면 그때 다시 보면 된다.
-    </p>
-  </div>
-</section>
-
-<div class="rule"></div>
-
-<section class="sec">
-  <p class="label gr">Chapter 05 · AI가 더 잘 하는 점</p>
-  <h2 class="sec-title">AI는 자기 실패를<br><em>스스로</em> 복기한다</h2>
-  <div class="prose">
-    <p>
-      사람은 새 기술을 따라잡느라 끝없이 공부해야 한다. 그리고 자기 실수를 복기하는 걸 싫어한다.
-      실패 회고는 괴로우니까, 대충 넘긴다. 그래서 같은 실수를 반복한다.
-    </p>
-    <p>
-      <strong>AI는 다르다. 자기 실패를 매일 밤 스스로 복기한다.</strong> 오늘 뭐가 실패했는지, 왜 실패했는지, 어떻게 막을지를
-      스스로 적어서 개선 큐에 쌓는다. 반복하는 일은 스스로 "기술"로 만들어 다음엔 더 빨리 한다.
-      그리고 그 모든 게 <span class="hgr">무료로, 우리 그래픽카드 안에서 돈다.</span> 사람이 야근해서 하는 회고를, AI는 매일 자정에 공짜로 한다.
-    </p>
-    <p>
-      이게 "무한 성장"의 진짜 의미다. 거창한 게 아니다. <strong>공개된 기술을 끊임없이 가져와 이식하고(유튜브·GitHub·헤르메스),
-      자기 실패를 매일 복기하고, 반복을 기술로 굳히는 것.</strong> 이 세 개의 톱니가 맞물려 돌면, AI 조직은 가만 둬도 어제보다 나아진다.
-      여덟 마리가 같은 엔진을 공유하니까, 하나가 배우면 여덟이 배운다.
-    </p>
-    <p>
-      그런데 나는 그 성장에 굳이 비싼 걸 안 썼다. 자로 재고, 공짜를 가져오고, 우리 규모에 맞춘다.
-      2월에 코딩을 처음 만진 사람이 이걸 할 수 있었던 이유다 — <strong>돈이 아니라, 측정과 절제로.</strong>
-      작은 회사 대표가 매일 죽어라 이 일을 하는 이유의 마지막 조각이 채워진다 —
-      유행이 아니라 우리 문제에 맞는 답을 고르는 회사를 만들기 위해서.
-    </p>
-  </div>
-  <div class="metric-row">
-    <div class="metric"><div class="metric-num">208줄</div><div class="metric-label">실제 데이터 규모</div></div>
-    <div class="metric"><div class="metric-num">1.000</div><div class="metric-label">단순안 정확도</div></div>
-    <div class="metric"><div class="metric-num">4개</div><div class="metric-label">이식한 자가학습 기능</div></div>
-    <div class="metric"><div class="metric-num">0원</div><div class="metric-label">추가 비용</div></div>
-  </div>
-  <div class="insight">
-    <p>
-      사람은 유행을 좇아 사들이고,<br>
-      AI는 측정하고, 가져오고, 스스로 복기한다.<br><br>
-      <strong>무한 성장은 돈이 아니라,<br>측정과 절제에서 나온다.</strong>
-    </p>
-    <p class="sub">measure-first · hermes 자가학습 · YouTube→Gems→Claude · 2026-06-02</p>
-  </div>
-  <div class="prose">
-    <p>
-      여기까지가 2주 동안 벌어진 여섯 장면이다. 협업, 정직, 공유, 침묵, 청취, 절제.
-      이제 이 여섯을 하나로 묶는 자리 — <strong>한 사람이 만든 AI 조직, AIHUB</strong> 로 간다. 시즌 4의 마무리다.
-    </p>
-  </div>
+ <p class="label gr">Chapter 04 · AI가 더 잘 하는 점</p>
+ <h2 class="sec-title">사람은 잊지만,<br>기억은 <em>안 잊는다</em></h2>
+ <div class="prose">
+  <p>
+   사람의 정보 공유에는 한계가 있다. 아는 사람이 말해줘야 하고, 듣는 사람이 기억해야 하고, 둘 다 그 자리에 있어야 한다.
+   한 명이라도 빠지면 정보가 끊긴다. 그리고 사람은 잊는다. 어제 들은 걸 오늘 잊는다. 나도 그렇다.
+  </p>
+  <p>
+   <strong>AI의 공유는 사람이 그 자리에 없어도 된다.</strong> 채팅방에 한 번 올라온 사실은 30분 안에 자동으로 뽑혀서,
+   회사 상태판에 적히고, 여덟 명의 공유 기억에 들어간다. 누가 전달할 필요도, 누가 기억할 필요도 없다.
+   <span class="hgr">한 번 들어온 사실은 안 잊힌다.</span> 옥·디팍·트엉이 공휴일에 나왔다는 사실은, 이제 회사가 영구히 안다.
+  </p>
+  <p>
+   이게 "대화의 맥락을 보강한다"는 말의 진짜 의미다. 봇이 답을 할 때, 그냥 질문만 보고 답하는 게 아니라
+   <strong>회사가 지금 어떤 상태인지를 알고 답한다.</strong> 오늘이 공휴일인지, 어느 공장이 야간인지, 누가 어제 무슨 말을 했는지를
+   깔고 답한다. 사람 직원이 옆자리 동료한테 <em>"오늘 그 공장 야간이지?"</em> 물어보듯, 봇도 회사 상태를 알고 말한다.
+   여덟 명이 한 회사의 같은 현실 위에서 일하기 시작한 거다.
+  </p>
+ </div>
+ <div class="insight">
+  <p>
+   사람은 그 자리에 있어야 정보를 나누고,<br>
+   들어도 다음 날이면 잊는다.<br><br>
+   <strong>한 번 들어온 사실은,<br>여덟 머리가 영원히 기억한다.</strong>
+  </p>
+  <p class="sub">fact_extractor · 회사 상태판 · 공유 기억 · 2026-06-05</p>
+ </div>
+ <div class="prose">
+  <p>
+   그런데 사실을 잘 흐르게 만들었더니, 정반대 문제가 동시에 터졌다. AI가 <strong>너무 많이 말하기</strong> 시작한 거다.
+   하루에 수백 건씩. 진짜 중요한 게 그 안에 묻혔다. 다음 편은 그 소음을 끈 이야기다.
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <div class="stmt">
-  <p class="stmt-k">EP006 · STATEMENT</p>
-  <p class="stmt-t">유행이 아니라,<br><span style="color:var(--green)">우리 문제</span>에 맞는 답</p>
-  <p class="stmt-s">
-    208줄짜리 문제는 208줄에 맞는 답으로 풀었다.<br>
-    새 기술은 공짜로, 공개된 데서 가져와 이식했다.<br>
-    그리고 AI가 자기 실패를 스스로 복기하기 시작했다 — 무한 성장의 시작.
-  </p>
+ <p class="stmt-k">EP006 · STATEMENT</p>
+ <p class="stmt-t">한 명이 아는 것을,<br><span style="color:var(--sky)">여덟이 알게</span> 했다</p>
+ <p class="stmt-s">
+  공휴일에 나온 직원 이야기가 증발하던 회사가,<br>
+  이제는 한 번 들어온 사실을 영원히 기억한다.<br>
+  AI 여덟 명이 한 회사의 같은 현실 위에서 일하기 시작했다.
+ </p>
 </div>
 
 <footer class="footer">
-  <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · EP006</p>
-  <h2 class="footer-t">Episode <span style="color:var(--green)">006</span></h2>
-  <p class="footer-n">이어서 → <a href="final.html" style="color:var(--green);text-decoration:none;border-bottom:1px solid var(--green);"><strong>FINAL · AIHUB, 한 사람이 만든 AI 조직</strong></a> <span style="color:var(--muted);">· 시즌 4 마무리</span></p>
-  <p class="footer-m">
-    (주)데코페이브 · 대표이사 박문석<br>
-    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
-    이 블로그는 Claude AI와 함께 작성되었습니다
-  </p>
+ <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · EP003</p>
+ <h2 class="footer-t">Episode <span style="color:var(--sky)">006</span></h2>
+ <p class="footer-n">이어서 → <a href="ep007.html" style="color:var(--sky);text-decoration:none;border-bottom:1px solid var(--sky);"><strong>EP007 · 7일 353건, 진짜 보고는 2건</strong></a></p>
+ <p class="footer-m">
+  (주)데코페이브 · 대표이사 박문석<br>
+  본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+  이 블로그는 Claude AI와 함께 작성되었습니다
+ </p>
 </footer>
 
-<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(52,211,153,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
-  <a href="ep005.html" style="color:#34d399;text-decoration:none;padding:4px 8px;">&larr;</a>
-  <a href="index.html" style="color:#34d399;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
-  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(56,189,248,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+ <a href="ep005.html" style="color:#38bdf8;text-decoration:none;padding:4px 8px;">&larr;</a>
+ <a href="index.html" style="color:#38bdf8;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+ <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
   <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">1</a>
   <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">2</a>
   <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">3</a>
   <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">4</a>
   <a href="ep005.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">5</a>
-  <a href="ep006.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #34d399;">6</a>
+  <a href="ep006.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #5fb9c9;">6</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">7</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">8</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">9</a>
   <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
-  <a href="final.html" style="color:#34d399;text-decoration:none;padding:4px 8px;">&rarr;</a>
+ <a href="ep007.html" style="color:#38bdf8;text-decoration:none;padding:4px 8px;">&rarr;</a>
 </div>
 </body>
 </html>

@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>개발자 박대표 S4 EP005 · 직원이 사장한테 말 안 한 통화를, AI가 듣는다</title>
+<title>개발자 박대표 S4 EP005 · AI가 거짓말을 했다</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;700;900&family=JetBrains+Mono:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
 :root {
-  --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
-  --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
-  --accent:#5fb9c9; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa; --teal:#5fb9c9;
-  --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
+ --bg:#040608; --surface:#0d1117; --border:rgba(255,255,255,0.07);
+ --text:#e8e6e1; --muted:rgba(232,230,225,0.45);
+ --accent:#fb7185; --gold:#e8a83a; --rose:#fb7185; --green:#34d399; --violet:#a78bfa;
+ --mono:'JetBrains Mono',monospace; --serif:'Noto Serif KR',serif; --sans:'Noto Sans KR',sans-serif;
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
@@ -18,327 +18,343 @@ body{background:var(--bg);color:var(--text);font-family:var(--serif);overflow-x:
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:clamp(60px,10vw,140px) clamp(24px,8vw,100px);overflow:hidden;}
-.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(95,185,201,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(232,168,58,.06) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#06100f 100%);pointer-events:none;z-index:-1;}
-.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(95,185,201,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(95,185,201,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
-.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--teal);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
-.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.1rem,5.6vw,4.9rem);line-height:1.14;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(251,113,133,.10) 0%,transparent 65%),radial-gradient(ellipse 40% 30% at 80% 90%,rgba(232,168,58,.07) 0%,transparent 60%),linear-gradient(180deg,var(--bg) 0%,#100a0e 100%);pointer-events:none;z-index:-1;}
+.hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(251,113,133,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.022) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;z-index:-1;}
+.eyebrow{position:relative;z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:5px;text-transform:uppercase;color:var(--rose);margin-bottom:28px;opacity:0;animation:fadeUp .7s .1s forwards;}
+.hero-title{position:relative;z-index:1;font-family:var(--serif);font-weight:900;font-size:clamp(2.2rem,6vw,5.2rem);line-height:1.12;max-width:920px;opacity:0;animation:fadeUp .8s .3s forwards;}
 .hero-desc{position:relative;z-index:1;margin-top:36px;max-width:660px;font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.6vw,1.05rem);line-height:1.9;color:var(--muted);opacity:0;animation:fadeUp .8s .5s forwards;}
 .hero-tags{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;margin-top:40px;opacity:0;animation:fadeUp .7s .7s forwards;}
 .tag{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border);border-radius:2px;padding:6px 14px;color:var(--muted);background:rgba(255,255,255,.03);}
 .tag.g{border-color:rgba(232,168,58,.4);color:var(--gold);background:rgba(232,168,58,.06);}
-.tag.t{border-color:rgba(95,185,201,.4);color:var(--teal);background:rgba(95,185,201,.07);}
+.tag.r{border-color:rgba(251,113,133,.4);color:var(--rose);background:rgba(251,113,133,.07);}
 .tag.gr{border-color:rgba(52,211,153,.35);color:var(--green);background:rgba(52,211,153,.05);}
 .scroll-hint{position:absolute;bottom:40px;left:clamp(24px,8vw,100px);z-index:1;font-family:var(--mono);font-size:.6rem;letter-spacing:4px;color:rgba(255,255,255,.2);text-transform:uppercase;animation:pulse 2.5s infinite;}
 .sec{max-width:880px;margin:0 auto;padding:clamp(70px,10vw,120px) clamp(24px,6vw,60px);}
-.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--teal);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
-.label.g{color:var(--gold);} .label.t{color:var(--teal);} .label.gr{color:var(--green);} .label.r{color:var(--rose);}
+.label{font-family:var(--mono);font-size:.58rem;letter-spacing:5px;text-transform:uppercase;color:var(--rose);margin-bottom:20px;display:flex;align-items:center;gap:14px;}
+.label.g{color:var(--gold);} .label.r{color:var(--rose);} .label.gr{color:var(--green);}
 .label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,currentColor 0%,transparent 100%);opacity:.25;}
 .sec-title{font-family:var(--serif);font-weight:700;font-size:clamp(1.6rem,3.8vw,2.6rem);line-height:1.25;margin-bottom:32px;}
-.sec-title em{font-style:normal;color:var(--teal);}
+.sec-title em{font-style:normal;color:var(--rose);}
 .rule{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);}
 .prose{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2.05;color:rgba(232,230,225,.78);}
 .prose p{margin-bottom:1.6em;} .prose p:last-child{margin-bottom:0;}
 .prose strong{font-weight:700;color:var(--text);} .prose em{font-style:italic;color:var(--muted);}
-.prose code{font-family:var(--mono);font-size:.86em;color:var(--teal);background:rgba(95,185,201,.08);padding:1px 6px;border-radius:3px;}
-.hg{color:var(--gold);font-weight:500;} .ht{color:var(--teal);font-weight:500;} .hgr{color:var(--green);font-weight:500;} .hr{color:var(--rose);font-weight:500;}
-.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--teal);background:linear-gradient(90deg,rgba(95,185,201,.06) 0%,transparent 100%);position:relative;}
-.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--teal);opacity:.35;line-height:1;}
+.prose code{font-family:var(--mono);font-size:.86em;color:var(--rose);background:rgba(251,113,133,.08);padding:1px 6px;border-radius:3px;}
+.hg{color:var(--gold);font-weight:500;} .hr{color:var(--rose);font-weight:500;} .hgr{color:var(--green);font-weight:500;}
+.qbox{margin:36px 0;padding:28px 32px;border-left:2px solid var(--rose);background:linear-gradient(90deg,rgba(251,113,133,.06) 0%,transparent 100%);position:relative;}
+.qbox::before{content:'"';position:absolute;top:-12px;left:24px;font-family:var(--serif);font-size:4rem;color:var(--rose);opacity:.35;line-height:1;}
 .qbox p{font-family:var(--serif);font-style:italic;font-weight:400;font-size:clamp(.98rem,1.7vw,1.15rem);line-height:1.85;color:rgba(232,230,225,.92);}
 .qbox p strong{color:var(--text);font-weight:700;font-style:normal;}
-.qbox .who{font-family:var(--mono);font-style:normal;font-size:.6rem;letter-spacing:2px;color:var(--teal);text-transform:uppercase;margin-top:14px;display:block;}
+.qbox .who{font-family:var(--mono);font-style:normal;font-size:.6rem;letter-spacing:2px;color:var(--rose);text-transform:uppercase;margin-top:14px;display:block;}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:36px 0;}
+@media(max-width:680px){.compare{grid-template-columns:1fr;}}
+.cc{border-radius:8px;padding:26px 22px;text-align:center;}
+.cc.lie{background:rgba(251,113,133,.06);border:1px solid rgba(251,113,133,.35);}
+.cc.truth{background:rgba(52,211,153,.05);border:1px solid rgba(52,211,153,.3);}
+.cc-k{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.cc.lie .cc-k{color:var(--rose);} .cc.truth .cc-k{color:var(--green);}
+.cc-n{font-family:var(--serif);font-size:2.6rem;font-weight:800;line-height:1;margin-bottom:8px;}
+.cc.lie .cc-n{color:var(--rose);} .cc.truth .cc-n{color:var(--green);}
+.cc-d{font-family:var(--sans);font-size:.78rem;color:rgba(232,230,225,.55);line-height:1.6;}
 .metric-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:36px 0;}
-.metric{background:#0d1117;border:1px solid rgba(95,185,201,.25);border-radius:8px;padding:24px 18px;text-align:center;}
-.metric-num{font-family:var(--serif);font-size:2.2rem;font-weight:800;color:var(--teal);line-height:1;margin-bottom:8px;}
+.metric{background:#0d1117;border:1px solid rgba(251,113,133,.25);border-radius:8px;padding:24px 18px;text-align:center;}
+.metric-num{font-family:var(--serif);font-size:2.4rem;font-weight:800;color:var(--rose);line-height:1;margin-bottom:8px;}
 .metric-label{font-family:var(--mono);font-size:.58rem;letter-spacing:2px;color:rgba(232,230,225,.5);text-transform:uppercase;}
-.flow{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px;margin:36px 0;}
-.flow-step{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-family:var(--sans);font-size:.82rem;color:var(--text);text-align:center;min-width:116px;}
-.flow-step .d{font-family:var(--mono);font-size:.55rem;letter-spacing:2px;color:var(--teal);display:block;margin-bottom:5px;}
-.flow-arr{color:var(--teal);font-family:var(--mono);font-size:1rem;opacity:.6;}
-.term{background:#06100f;border:1px solid rgba(95,185,201,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
-.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(95,185,201,.04);border-bottom:1px solid rgba(95,185,201,.1);}
+.term{background:#100a0e;border:1px solid rgba(251,113,133,.18);border-radius:8px;padding:32px 32px 28px;margin:36px 0;position:relative;overflow:hidden;}
+.term::before{content:'';position:absolute;top:0;left:0;right:0;height:32px;background:rgba(251,113,133,.04);border-bottom:1px solid rgba(251,113,133,.1);}
 .dots{position:absolute;top:10px;left:18px;display:flex;gap:7px;}
 .dots span{width:10px;height:10px;border-radius:50%;}
 .dots span:nth-child(1){background:#ff5f57;} .dots span:nth-child(2){background:#febc2e;} .dots span:nth-child(3){background:#28c840;}
 .term-title{position:absolute;top:9px;right:18px;font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.25);text-transform:uppercase;}
-.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--teal);}
-.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:#7cc5ff;} .dim{color:rgba(95,185,201,.6);} .warn{color:var(--rose);}
-.note{margin:36px 0;padding:22px 26px;border:1px dashed rgba(95,185,201,.3);border-radius:8px;background:rgba(95,185,201,.03);font-family:var(--sans);font-size:.85rem;line-height:1.8;color:rgba(232,230,225,.62);}
-.note strong{color:var(--teal);font-weight:600;}
-.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(12,40,42,.4) 0%,rgba(95,185,201,.05) 100%);border:1px solid rgba(95,185,201,.2);text-align:center;}
+.term-body{margin-top:20px;font-family:var(--mono);font-size:.78rem;line-height:1.95;color:var(--rose);}
+.cmt{color:rgba(232,230,225,.3);} .ok{color:var(--green);} .you{color:#7cc5ff;} .dim{color:rgba(251,113,133,.6);} .warn{color:var(--gold);}
+.insight{margin:36px 0;padding:30px 32px;background:linear-gradient(135deg,rgba(60,20,30,.35) 0%,rgba(251,113,133,.05) 100%);border:1px solid rgba(251,113,133,.2);text-align:center;}
 .insight p{font-family:var(--serif);font-weight:500;font-size:clamp(1rem,2vw,1.2rem);line-height:1.8;color:var(--text);margin:0;}
-.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--teal);text-transform:uppercase;margin-top:14px;}
+.insight .sub{font-family:var(--mono);font-size:.6rem;letter-spacing:3px;color:var(--rose);text-transform:uppercase;margin-top:14px;}
 .stmt{max-width:880px;margin:0 auto;padding:clamp(70px,9vw,110px) clamp(24px,6vw,60px);text-align:center;}
-.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--teal);text-transform:uppercase;margin-bottom:30px;}
+.stmt-k{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--rose);text-transform:uppercase;margin-bottom:30px;}
 .stmt-t{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,4.2vw,3rem);line-height:1.25;margin-bottom:30px;}
 .stmt-s{font-family:var(--sans);font-weight:300;font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.95;color:var(--muted);max-width:640px;margin:0 auto;}
 .footer{background:#08090d;border-top:1px solid var(--border);padding:clamp(60px,8vw,100px) clamp(24px,6vw,60px);text-align:center;}
-.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--teal);text-transform:uppercase;margin-bottom:18px;}
+.footer-s{font-family:var(--mono);font-size:.6rem;letter-spacing:5px;color:var(--rose);text-transform:uppercase;margin-bottom:18px;}
 .footer-t{font-family:var(--serif);font-weight:700;font-size:clamp(1.4rem,2.8vw,1.9rem);margin-bottom:24px;}
 .footer-n{margin-top:16px;font-family:var(--sans);font-size:.92rem;line-height:1.85;color:var(--muted);font-weight:300;}
-.footer-n strong{color:var(--teal);font-weight:500;}
+.footer-n strong{color:var(--rose);font-weight:500;}
 .footer-m{font-family:var(--mono);font-size:.62rem;letter-spacing:2px;color:rgba(255,255,255,.18);line-height:2;margin-top:30px;}
 </style>
 </head>
 <body style="padding-top:40px;padding-bottom:60px;">
-<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(95,185,201,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
-  <a href="../index.html" style="color:#5fb9c9;text-decoration:none;font-weight:700;">개발자 박대표</a>
-  <span style="color:rgba(255,255,255,.2);">|</span>
-  <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
-  <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
-  <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
-  <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #5fb9c9;padding-bottom:2px;">S4</a>
+<div style="position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.95);backdrop-filter:blur(8px);border-bottom:1px solid rgba(251,113,133,.15);padding:8px 24px;display:flex;align-items:center;gap:16px;font-family:monospace;font-size:.7rem;letter-spacing:1px;">
+ <a href="../index.html" style="color:#fb7185;text-decoration:none;font-weight:700;">개발자 박대표</a>
+ <span style="color:rgba(255,255,255,.2);">|</span>
+ <a href="../s1/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S1</a>
+ <a href="../s2/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S2</a>
+ <a href="../s3/index.html" style="color:rgba(255,255,255,.4);text-decoration:none;">S3</a>
+ <a href="../s4/index.html" style="color:#fff;text-decoration:none;font-weight:700;border-bottom:2px solid #fb7185;padding-bottom:2px;">S4</a>
 </div>
 
 <section class="hero">
-  <p class="eyebrow">개발자 박대표 · Season 4 · Episode 005 · 6/2~6/5</p>
-  <h1 class="hero-title">
-    직원이 사장한테<br>
-    <span style="color:var(--teal)">말 안 한 통화</span>를,<br>
-    AI가 듣는다
-  </h1>
-  <p class="hero-desc">
-    영업 통화를 사장이 다 들을 수는 없다.<br>
-    그래서 직원이 골라서 보고한다. 좋은 건 말하고, 곤란한 건 묻는다.<br>
-    이제 AI가 회사 폰의 모든 통화를 듣고, 요약하고,<br>
-    "중요하고 위험한데 보고 안 된" 통화를 골라낸다.<br>
-    그리고 그 일을 가능하게 한 건, 시스템에 돈을 쓴 결정이었다.
+ <p class="eyebrow">개발자 박대표 · Season 4 · Episode 005 · 6/5</p>
+ <h1 class="hero-title">
+  AI가<br>
+  <span style="color:var(--rose)">거짓말</span>을<br>
+  했다
+ </h1>
+ <p class="hero-desc">
+  같은 미수금을 두고 봇은 36억이라 보고했고, 장부는 22억이었다.<br>
+  14억의 침묵. 누구도 그 숫자가 어디서 나왔는지 재현할 수 없었다.<br>
+  시즌 3에서 나는 "프로그램은 정직하다"고 썼다.<br>
+  이번 편은 그 문장을 뒤집는다 — 프로그램도 거짓말한다.<br>
+  그래서 나는 AI에게 검증 게이트를 채웠다.
+ </p>
+ <div class="hero-tags">
+  <span class="tag r">live 36억 vs 장부 22억</span>
+  <span class="tag">미수금 22억 · 독촉 0건</span>
+  <span class="tag g">PG 스냅샷 강제</span>
+  <span class="tag gr">검증 게이트</span>
+  <span class="tag">정직성</span>
+ </div>
+ <p class="scroll-hint">↓ scroll</p>
+</section>
+
+<div class="rule"></div>
+
+<section class="sec">
+ <p class="label r">Chapter 01 · 사람이 싫어하는 일</p>
+ <h2 class="sec-title">숫자는 늘<br>누군가에게 <em>유리하게</em> 나온다</h2>
+ <div class="prose">
+  <p>
+   회사에서 숫자만큼 정치적인 게 없다. 같은 미수금을 두고도, 보고하는 사람에 따라 숫자가 달라진다.
+   재무는 깎아서 말하고, 영업은 부풀려서 말한다. 일부러 거짓말하는 게 아니다. <strong>각자 자기 관점에서 진짜라고 믿는다.</strong>
+   그래서 회의에서 숫자가 부딪치면 답이 안 난다. <em>"그 숫자 어디서 나온 거예요?"</em> 라고 물으면, 답이 또 길어진다.
   </p>
-  <div class="hero-tags">
-    <span class="tag t">법인폰 = 회사 자산</span>
-    <span class="tag">최근 30일 · AI 선별</span>
-    <span class="tag g">MMS 6,533건 복구</span>
-    <span class="tag gr">통화 미보고 적발</span>
-    <span class="tag">RTX 3060 투자</span>
-  </div>
-  <p class="scroll-hint">↓ scroll</p>
+  <p>
+   나는 그게 싫었다. 숫자는 한 곳에서, 같은 방식으로, 누구나 재현할 수 있게 나와야 한다.
+   그래서 AI에게 회사 숫자를 맡겼다. <strong>AI는 정치를 안 하니까, 적어도 숫자는 정직할 거라고 믿었다.</strong>
+   시즌 3에서 나는 그렇게 썼다 — "사람은 정직하지 않다. 그래서 AI가 필요하다. 프로그램은 정직하다."
+  </p>
+  <p>
+   <span class="hr">그 믿음이 6월 5일에 깨졌다.</span>
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label t">Chapter 01 · 사람이 싫어하는 일</p>
-  <h2 class="sec-title">직원은 통화를<br><em>골라서</em> 보고한다</h2>
-  <div class="prose">
-    <p>
-      영업은 통화로 한다. 하루에 수십 통씩 거래처와 통화한다. 그 통화 안에 회사의 진짜 현실이 다 들어 있다 —
-      어떤 거래처가 화났는지, 어떤 단가 약속이 오갔는지, 누가 클레임을 걸었는지, 어떤 납기가 펑크 났는지.
-      그런데 사장은 그 통화를 들을 수가 없다. 물리적으로 불가능하다.
-    </p>
-    <p>
-      그래서 직원이 보고한다. 문제는, <strong>직원은 통화를 골라서 보고한다</strong>는 거다.
-      잘한 건 말하고, 곤란한 건 안 말한다. 거래처가 화난 통화, 자기 실수가 드러나는 통화, 약속을 못 지킨 통화는
-      <span class="ht">조용히 묻힌다.</span> 일부러 나쁜 사람이라서가 아니다. 사람이니까 그렇다. 나라도 그럴 거다.
-    </p>
-    <p>
-      이게 작은 회사에서 사고가 터지는 전형적인 경로다. 거래처가 통화로 한 달 전부터 신호를 줬는데,
-      그 통화가 사장한테 안 올라왔고, 어느 날 클레임이 되어 터진다. <em>"왜 진작 말 안 했어요?"</em> 라고 물으면 답이 없다.
-      말 안 한 게 아니라, 말할 자리가 없었던 거다. <strong>그 자리를 만들어야 했다.</strong>
-    </p>
+ <p class="label r">Chapter 02 · 안 굴러갔던 일</p>
+ <h2 class="sec-title">봇은 36억,<br>장부는 <em>22억</em>이라 했다</h2>
+ <div class="prose">
+  <p>
+   6월 5일, 보고를 점검하다가 이상한 걸 봤다. 우리 봇이 매일 아침 보내는 「미발행 갭」 숫자가
+   <strong>36.3억</strong>이었다. 그런데 같은 날 회계 장부(PG 데이터베이스)를 직접 조회하니 <strong>22.10억</strong>이었다.
+   둘 다 그날 자정 기준으로 신선한 숫자였다. <span class="hr">14억이 소리 없이 벌어져 있었다.</span>
+  </p>
+ </div>
+ <div class="compare">
+  <div class="cc lie">
+   <div class="cc-k">봇 보고 (live API)</div>
+   <div class="cc-n">36.3억</div>
+   <div class="cc-d">외부 시스템을 즉석 호출 →<br>스냅샷 안 남음 → 재현 불가</div>
   </div>
+  <div class="cc truth">
+   <div class="cc-k">회계 장부 (PG)</div>
+   <div class="cc-n">22.1억</div>
+   <div class="cc-d">우리 서버에 적재된 숫자 →<br>언제든 같은 결과 재현 가능</div>
+  </div>
+ </div>
+ <div class="prose">
+  <p>
+   원인은 단순했다. 봇이 그 숫자를 <strong>외부 시스템(Decohub)을 즉석에서 호출</strong>해서 바로 텔레그램으로 쐈던 거다.
+   문제는 그 숫자가 <em>어디에도 저장되지 않았다</em>는 점이다. 사장이 받은 36억이라는 숫자를,
+   다음 날 누구도 다시 꺼내볼 수 없었다. 재현이 안 되는 숫자는, 옳든 그르든 검증할 수가 없다.
+   <strong>검증할 수 없는 숫자는 거짓말과 구분되지 않는다.</strong>
+  </p>
+  <p>
+   더 깊이 파보니 「미수금」이라는 한 단어에 숫자가 세 개 붙어 있었다. 회계 공식 기준 22.70억,
+   채권 분석 기준 22.89억, 거래처별 실질 잔액 합 21.10억. 셋 다 "미수금"이라는 같은 이름표를 달고 있었다.
+   <span class="hr">같은 단어가 세 개의 숫자를 가리키면, 회의는 절대 안 끝난다.</span>
+  </p>
+  <p>
+   그 와중에 더 무서운 걸 봤다. 미수금이 22억이나 쌓여 있는데, <strong>독촉 엔진이 0건을 돌리고 있었다.</strong>
+   미수금을 회수하라고 만든 자동 독촉 장치가, 채권 데이터를 잘못 읽어서 "독촉할 게 없다"고 판단하고 있었던 거다.
+   22억이 떠 있는데 한 통도 안 나가고 있었다. AI가 거짓말을 한 게 아니라, <em>잘못된 전제 위에서 성실하게 일하고 있었다.</em>
+   그게 더 무섭다.
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label t">Chapter 02 · 안 굴러갔던 일</p>
-  <h2 class="sec-title">6,533건이<br>통째로 <em>안 보였다</em></h2>
-  <div class="prose">
-    <p>
-      회사 폰(법인폰)의 데이터를 모으기 시작했다. 그런데 처음엔 절반만 읽고 있었다.
-      문자(SMS)는 읽는데, <strong>사진·파일이 붙은 문자(MMS)를 통째로 못 읽고 있었다.</strong> 그 수가 무려 <strong>6,533건</strong>이었다.
-    </p>
-    <p>
-      더 황당한 건, 우리 회사가 매일 거래처에 보내는 <strong>출하 배송 안내(현장명·차량·기사·연락처)가 전부 그 MMS였다</strong>는 거다.
-      특정 번호(043-423-8936)에서 나가는 그 배송 문자들이, 수집기 눈에 통째로 안 보였다. 회사의 핵심 영업 데이터 한 덩어리가 사각지대에 있었다.
-      읽는 방식을 고치니 6,533건이 다 살아났다. <span class="ht">못 보던 절반이 보이기 시작했다.</span>
-    </p>
-    <p>
-      통화 쪽은 더 골치였다. 통화 음성을 글자로 바꾸는 작업(STT)이 <strong>매일 전부 실패</strong>하고 있었다.
-      화면의 「통화 요약」에 아무것도 안 떴다. 원인은 한 장짜리 그래픽카드에 무거운 음성 변환 모델과 회사 자체 AI가 같이 올라가서
-      메모리가 터지는 거였다. <em>"실시간 업로드가 안 보인다"</em>는 게 이 실패의 실체였다.
-    </p>
+ <p class="label g">Chapter 03 · AI에게 어떻게 시켰나</p>
+ <h2 class="sec-title">"보고의 정직성을<br><em>확보</em>하라"</h2>
+ <div class="prose">
+  <p>
+   그날 내가 AI에게 시킨 건 한 문장이었다.
+  </p>
+ </div>
+ <div class="qbox">
+  <p>
+   보고의 <strong>정직성과 객관성</strong>을 확보하라.<br>
+   누구도 재현할 수 없는 숫자,<br>
+   어디에도 저장 안 되는 숫자,<br>
+   정의가 불분명한 숫자를<br>
+   나에게 보고하지 마라.
+   <span class="who">— 사장님 지시 · 2026-06-05</span>
+  </p>
+ </div>
+ <div class="prose">
+  <p>
+   이걸 네 가지 규칙으로 박았다.
+  </p>
+  <p>
+   <strong>하나 — 외부 시스템을 즉석 호출해 바로 보고하는 걸 금지했다.</strong>
+   외부에서 받은 숫자는 일단 우리 서버(PG)에 시각 도장을 찍어 저장한 다음, <em>저장된 그 숫자를 읽어서</em> 보고한다.
+   그래야 나중에 누구든 같은 숫자를 다시 꺼내볼 수 있다.
+  </p>
+  <p>
+   <strong>둘 — 한 지표는 공식 출처 하나만 쓴다.</strong> "미수금"은 회계 공식 기준 하나로 통일했다.
+   세 개의 숫자가 같은 이름표를 다는 일을 끝냈다.
+  </p>
+  <p>
+   <strong>셋 — "완료"는 말이 아니라 실제 행 수로만 선언한다.</strong> 데이터를 넣었다고 말하는 게 아니라,
+   데이터베이스에서 실제로 몇 줄이 들어갔는지를 세서 확인한다. 이건 우리 운영 매뉴얼의 <em>완료 선언 게이트</em>로 박혀 있다 —
+   <span class="hg">검증 명령을 지금 실행하지 않았으면, 통과했다고 말할 수 없다.</span>
+  </p>
+  <p>
+   <strong>넷 — 모든 산출식을 문서로 남기고 영속 뷰로 만든다.</strong> 이 숫자가 어떤 계산으로 나왔는지가 코드와 문서에 박힌다.
+  </p>
+ </div>
+ <div class="term">
+  <div class="dots"><span></span><span></span><span></span></div>
+  <div class="term-title">완료 선언 게이트 · 2026-06-05</div>
+  <div class="term-body">
+   <div class="cmt"># 예전: 봇이 "적재 완료"라고 말함 → 검증 안 함</div>
+   <div class="dim">$ "ETL 완료했습니다" ← 증거 없음 (거부)</div>
+   <br>
+   <div class="cmt"># 지금: 실제 행 수를 세서 증거로 박음</div>
+   <div class="you">$ SELECT count(*) FROM erp.decohub_ar_summary</div>
+   <div class="ok"> → 22.10억 (PG 실측, 재현 가능)</div>
+   <br>
+   <div class="warn">⚠ live API 36.3억 vs PG 22.10억 = 14억 괴리 감지</div>
+   <div class="ok">→ live-only 보고 차단. PG 스냅샷 경유로 전환</div>
   </div>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label g">Chapter 03 · AI에게 어떻게 시켰나</p>
-  <h2 class="sec-title">"법인폰의 모든 것은<br><em>회사 자산</em>이다"</h2>
-  <div class="prose">
-    <p>
-      방향을 정해준 건 사장님의 두 문장이었다.
-    </p>
-  </div>
-  <div class="qbox">
-    <p>
-      법인폰의 모든 내용 —<br>
-      통화, 연락처, 명함, 사진, 위치 — 은<br>
-      <strong>회사의 자산</strong>이다.<br><br>
-      다만 통화·문자는 AI가 분석해서,<br>
-      <strong>업무에 필요한 부분만</strong> 연동하라. 최근 한 달치만.
-      <span class="who">— 사장님 지시 · 2026-06-03</span>
-    </p>
-  </div>
-  <div class="prose">
-    <p>
-      이 원칙을 세 갈래로 구현했다.
-    </p>
-    <p>
-      <strong>하나 — 최근 30일치만, AI가 골라서.</strong> 과거 2년치를 다 퍼오면 폭탄이 된다. 그래서 모든 폰에서 최근 한 달치만 본다.
-      새로 연결되는 폰도 똑같다. 그리고 전부 저장하는 게 아니라, AI가 분류해서 <em>업무에 필요한 것만</em> 남긴다 —
-      출하 배송, 결제, 견적·단가, 택배 도착은 구조화해서 저장하고, <strong>광고·개인·스팸은 버린다.</strong> 세지만 저장은 안 한다.
-    </p>
-    <p>
-      <strong>둘 — 통화를 듣고, 요약하고, 검토하는 상주 일꾼을 세웠다.</strong> 통화 음성이 들어오면
-      글자로 바꾸고(STT) → 요약하고 → <strong>문돌실장이 그 내용을 검토</strong>한다. 이게 24시간 상주하며 돈다.
-      그리고 평일 저녁 6시 50분, <code>call_review_daily</code>가 그날 통화를 자동 검토해서
-      <span class="ht">"중요하거나 위험한데 직원이 보고 안 한 것으로 의심되는" 통화를 골라낸다.</span>
-    </p>
-    <p>
-      <strong>셋 — 통화를 직원에게 정확히 귀속시켰다.</strong> 어느 폰의 통화가 누구 것인지를 직원별로 매핑해서,
-      그 직원의 업무일지와 대조한다. 통화에서 중요한 일이 오갔는데 일지에 없으면, 그게 "미보고 의심" 신호다.
-      AI가 통화 내용과 보고 내용을 맞대보는 거다.
-    </p>
-  </div>
-  <div class="term">
-    <div class="dots"><span></span><span></span><span></span></div>
-    <div class="term-title">call_review_daily · 문돌실장 검토 · 평일 18:50</div>
-    <div class="term-body">
-      <div class="cmt"># 그날 통화 전건 STT → 요약 → 검토</div>
-      <div class="dim">통화 187건 처리 (faster-whisper, GPU 1)</div>
-      <br>
-      <div class="warn">⚠ 미보고 의심 — 거래처 A 통화 (영업 ○○ 프로)</div>
-      <div class="cmt">  요약: 납기 지연 항의 + 클레임 시사</div>
-      <div class="cmt">  → 해당 직원 업무일지에 관련 기재 없음</div>
-      <br>
-      <div class="you">→ 문돌실장이 사장 1:1 DM으로 보고</div>
-      <div class="ok">  (직원 비난 아님 — '확인 필요' 신호로 전달)</div>
-    </div>
-  </div>
-  <div class="note">
-    <strong>경계 — 이건 감시가 아니라 자산 관리다.</strong>
-    법인폰은 회사 자산이지만, 통화 상대방과 근로자의 개인정보 보호는 별개 의무다. 수집 목적·범위는 사전에 고지·동의를 거치며
-    (통신비밀보호법·개인정보보호법·위치정보법), 통화 원본과 전체 녹취록은 <strong>외부로 절대 반출하지 않는다.</strong> 회사 안에서만, 업무 목적에만 쓴다.
-  </div>
+ <p class="label r">Chapter 04 · 같은 병이 곳곳에 있었다</p>
+ <h2 class="sec-title">정합성 검사가<br><em>거짓 경보</em>까지 울리고 있었다</h2>
+ <div class="prose">
+  <p>
+   한 번 의심하기 시작하니, 같은 병이 곳곳에서 나왔다. 두 시스템의 데이터가 맞는지 비교하는 검사 장치가
+   엉뚱한 기준으로 비교하는 바람에, <strong>실제로는 멀쩡한데 "70% 불일치, 심각"이라고 거짓 경보</strong>를 울리고 있었다.
+   또 다른 채널은 "25.9% 불일치"라고 매일 빨간불을 켰다. 둘 다 비교 방식 자체가 틀린 거였다.
+   <span class="hr">거짓 경보는 진짜 경보를 죽인다.</span> 매일 빨간불이 켜지면, 사람은 빨간불을 무시하게 된다.
+  </p>
+  <p>
+   제일 아찔했던 건 생산 데이터였다. 공장에서 반출한 자재 기록을 적재하는데,
+   문서의 줄 번호를 자연키(데이터를 구분하는 고유 열쇠)로 잘못 잡았다. 그 결과 <strong>1,445줄이 들어가야 할 데이터가 14줄로 쪼그라들었다.</strong>
+   한 문서에 여러 줄이 있으면, 줄마다 따로 저장돼야 하는데 같은 열쇠로 묶이는 바람에 서로를 덮어쓴 거다.
+   진짜 열쇠는 「문서번호 + 줄번호」였다. 그걸 바로잡으니 1,445줄이 다 살아났다.
+  </p>
+ </div>
+ <div class="metric-row">
+  <div class="metric"><div class="metric-num">14억</div><div class="metric-label">미발행갭 괴리</div></div>
+  <div class="metric"><div class="metric-num">0건</div><div class="metric-label">22억 미수금 독촉</div></div>
+  <div class="metric"><div class="metric-num">70%</div><div class="metric-label">거짓 critical 종식</div></div>
+  <div class="metric"><div class="metric-num">14→1,445</div><div class="metric-label">붕괴된 자재 행 복구</div></div>
+ </div>
+ <div class="prose">
+  <p>
+   하나하나 고쳤다. 미수금 독촉 엔진은 채권 나이를 스스로 다시 계산하게 고쳐서, 22억에 대해 다시 독촉이 나가게 했다.
+   거짓 경보는 비교 기준을 바로잡아 일치율 100%로 정상화했다. 자재 데이터는 자연키를 고쳐 전부 복구했다.
+   그리고 이 고친 것들을 <strong>테스트로 잠가</strong> 뒀다. 같은 실수가 다시 일어나면 다음 배포가 막히도록.
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <section class="sec">
-  <p class="label t">Chapter 04 · 시스템에 돈을 썼다</p>
-  <h2 class="sec-title">속도와 품질은,<br><em>장비</em>에서 나왔다</h2>
-  <div class="prose">
-    <p>
-      이게 이번 시즌에서 중요한 전환점이다. 위의 모든 게 가능했던 건, <strong>시스템 자원에 돈을 썼기 때문</strong>이다.
-      통화 음성을 글자로 바꾸는 일은 무겁다. 처음엔 무거운 모델(openai-whisper)을 쓰다가, 회사 자체 AI와 같이 올리니
-      그래픽카드 메모리가 매일 터졌다. 그래서 두 가지를 했다.
-    </p>
-    <p>
-      하나는 <strong>더 가볍고 빠른 엔진으로 갈아탔다</strong>(faster-whisper). 같은 정확도를 4~5배 빠르게, 메모리는 절반으로.
-      회사 자체 AI와 한 장의 그래픽카드 위에서 사이좋게 공존할 수 있게 됐다. 외부 API에 돈 한 푼 안 내고, 전부 우리 그래픽카드 안에서 돈다.
-    </p>
-    <p>
-      또 하나는 <strong>그래픽카드 역할을 나눴다.</strong> 화면 띄우는 건 작은 카드에 맡기고,
-      모든 계산은 큰 카드(RTX 3060) 하나에 몰아줬다. 그리고 1시간 넘게 걸리는 긴 작업은 별도 세션으로 띄워서,
-      다른 작업이 끝나도 안 죽게 했다. <span class="ht">장비를 제대로 쓰니, 매일 실패하던 게 매일 성공으로 바뀌었다.</span>
-    </p>
-    <p>
-      한국어 인식 품질도 올렸다. 우리 회사에서 자주 쓰는 단어(제품명·거래처·현장명)를 미리 알려주고, 잘못 알아듣는 용어는 자동으로 고치게 했다.
-      <strong>속도는 엔진으로, 품질은 도메인 지식으로.</strong> 둘 다 "더 좋은 모델을 사자"가 아니라 "있는 자원을 제대로 쓰자"로 풀었다.
-    </p>
-  </div>
-  <div class="metric-row">
-    <div class="metric"><div class="metric-num">6,533</div><div class="metric-label">복구된 MMS</div></div>
-    <div class="metric"><div class="metric-num">4~5배</div><div class="metric-label">STT 속도 향상</div></div>
-    <div class="metric"><div class="metric-num">3,070</div><div class="metric-label">외장 보존 통화</div></div>
-    <div class="metric"><div class="metric-num">30일</div><div class="metric-label">수집 윈도우</div></div>
-  </div>
-  <div class="prose">
-    <p>
-      분석이 끝난 통화 음성은 SSD에서 빼서 외장 하드로 옮긴다. 폰 번호별 폴더로, 7년 넘게 보존한다.
-      처음 적용에서 <strong>3,070건/3.5GB</strong>를 외장으로 옮겼고, 새로 연결한 폰의 2년치 18GB도 외장에 백업했다.
-      운영 디스크는 가볍게, 기록은 영구히. 이것도 "자원을 제대로 쓰는 법"의 일부다.
-    </p>
-  </div>
-</section>
-
-<div class="rule"></div>
-
-<section class="sec">
-  <p class="label gr">Chapter 05 · AI가 더 잘 하는 점</p>
-  <h2 class="sec-title">AI는 통화를<br><em>고르지 않는다</em></h2>
-  <div class="prose">
-    <p>
-      사람은 통화를 골라서 보고한다. 잘한 건 말하고, 곤란한 건 묻는다. 그게 사람이다.
-      <strong>AI는 고르지 않는다.</strong> 모든 통화를 똑같이 듣는다. 잘한 통화도, 곤란한 통화도, 화난 거래처 통화도 똑같이 듣고 요약한다.
-      그리고 그중에서 사장이 알아야 할 걸 골라낸다. 직원이 숨긴 걸 들춰내려는 게 아니라, <span class="hgr">묻힐 뻔한 위험을 일찍 잡으려는 거다.</span>
-    </p>
-    <p>
-      이게 직원을 못 믿어서 하는 게 아니라는 걸 분명히 하고 싶다. 오히려 반대다.
-      통화 미보고가 적발되는 건 직원을 벌주려는 게 아니라, <strong>"이 거래처 신호 놓치지 마세요"라고 일찍 알려주는 거다.</strong>
-      클레임이 터진 뒤에 <em>"왜 말 안 했냐"</em>고 추궁하는 회사와, 통화 단계에서 <em>"이 건 챙기세요"</em>라고 짚어주는 회사는 다르다.
-      후자가 직원에게도 낫다. 사고가 커지기 전에 손쓸 수 있으니까.
-    </p>
-    <p>
-      그리고 이 모든 게, 2월에 코딩을 처음 만진 사람이 넉 달 만에 만든 거다.
-      비싼 솔루션을 산 게 아니라, 그래픽카드 한 장 제대로 쓰고, 무료 엔진 갈아 끼우고, AI한테 매일 물어가며 붙였다.
-      <strong>속도와 품질은 돈이 아니라, 자원을 제대로 쓰는 데서 나왔다.</strong>
-      작은 회사 대표가 매일 죽어라 이 일을 하는 이유의 한 조각이 또 채워졌다 —
-      회사의 진짜 현실이 사장 눈을 피해 묻히지 않는 회사를 만들기 위해서.
-    </p>
-  </div>
-  <div class="insight">
-    <p>
-      사람은 곤란한 통화를 묻고,<br>
-      AI는 모든 통화를 똑같이 듣는다.<br><br>
-      <strong>추궁이 아니라 조기 경보로.<br>사고가 커지기 전에.</strong>
-    </p>
-    <p class="sub">법인폰 인텔리전스 · faster-whisper · 통화 검토 · 2026-06-05</p>
-  </div>
-  <div class="prose">
-    <p>
-      여기까지가, AI 조직이 일하게 만든 다섯 장면이다. 마지막으로 하나가 남았다 —
-      <strong>이 모든 걸 가능하게 한, "남들이 좋다는 걸 안 한" 이야기.</strong> 다음 편이다.
-    </p>
-  </div>
+ <p class="label gr">Chapter 05 · AI가 더 잘 하는 점</p>
+ <h2 class="sec-title">AI는 자기 거짓말을<br><em>검증</em>당할 수 있다</h2>
+ <div class="prose">
+  <p>
+   여기서 사람과 AI의 진짜 차이가 나온다. 사람이 잘못된 숫자를 보고하면, 그걸 추적하기가 어렵다.
+   <em>"왜 그 숫자가 나왔냐"</em>고 물으면 기억이 흐릿하고, 변명이 붙고, 관계가 상한다.
+   <strong>AI는 다르다. AI가 만든 숫자는 코드와 데이터로 남아서, 끝까지 추적할 수 있다.</strong>
+   14억 괴리도, 0건 독촉도, 1,445줄 붕괴도, 전부 원인까지 거슬러 올라가서 잡아냈다.
+  </p>
+  <p>
+   그러니까 "프로그램은 정직하다"는 시즌 3의 문장은 반만 맞았다.
+   <strong>프로그램은 거짓말도 한다. 다만 그 거짓말을 검증당할 수 있다는 점이 사람과 다르다.</strong>
+   사람의 거짓말은 관계 뒤에 숨지만, AI의 거짓말은 데이터 위에 드러난다.
+   그래서 검증 게이트만 잘 채워두면, AI는 결국 사람보다 정직해진다. 정직해서가 아니라, <span class="hgr">검증당할 수 있어서.</span>
+  </p>
+  <p>
+   이건 AI를 못 믿어서 채우는 자물쇠가 아니다. <strong>AI를 회사의 숫자를 맡길 수 있는 동료로 키우기 위한 자물쇠다.</strong>
+   사람한테는 못 채우는 자물쇠를, AI한테는 채울 수 있다. 그게 작은 회사 대표가 매일 죽어라 이 일을 하는 이유의 한 조각이다 —
+   숫자가 정치가 아니라 사실이 되는 회사를 만들기 위해서.
+  </p>
+ </div>
+ <div class="insight">
+  <p>
+   사람의 거짓말은 관계 뒤에 숨고,<br>
+   AI의 거짓말은 데이터 위에 드러난다.<br><br>
+   <strong>검증 게이트를 채우니,<br>AI가 사람보다 정직해졌다.</strong>
+  </p>
+  <p class="sub">PG 스냅샷 강제 · 완료 선언 게이트 · 2026-06-05</p>
+ </div>
+ <div class="prose">
+  <p>
+   숫자를 바로잡고 나니 다음 문제가 보였다. AI 직원 여덟 명이 각자 정직하게 일하는데,
+   <strong>서로가 뭘 아는지를 몰랐다.</strong> 한 봇이 아는 사실이 옆 봇에게 안 갔다. 다음 편은 그 이야기다.
+  </p>
+ </div>
 </section>
 
 <div class="rule"></div>
 
 <div class="stmt">
-  <p class="stmt-k">EP005 · STATEMENT</p>
-  <p class="stmt-t">AI는 곤란한 통화를<br><span style="color:var(--teal)">묻지 않는다</span></p>
-  <p class="stmt-s">
-    직원이 골라 보고하던 통화를, AI가 전부 듣고 위험을 골라낸다.<br>
-    감시가 아니라 조기 경보 — 사고가 커지기 전에.<br>
-    그리고 그 속도와 품질은, 비싼 솔루션이 아니라 자원을 제대로 쓴 데서 나왔다.
-  </p>
+ <p class="stmt-k">EP005 · STATEMENT</p>
+ <p class="stmt-t">프로그램도 거짓말한다.<br><span style="color:var(--rose)">다만 검증당할 수 있다</span></p>
+ <p class="stmt-s">
+  14억의 침묵, 22억의 멈춘 독촉, 1,445줄의 붕괴.<br>
+  AI는 잘못된 전제 위에서 성실하게 거짓을 말하고 있었다.<br>
+  그래서 자물쇠를 채웠다 — 못 믿어서가 아니라, 맡기기 위해서.
+ </p>
 </div>
 
 <footer class="footer">
-  <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · EP005</p>
-  <h2 class="footer-t">Episode <span style="color:var(--teal)">005</span></h2>
-  <p class="footer-n">이어서 → <a href="ep006.html" style="color:var(--teal);text-decoration:none;border-bottom:1px solid var(--teal);"><strong>EP006 · 남들이 좋다는 걸, 안 했다</strong></a></p>
-  <p class="footer-m">
-    (주)데코페이브 · 대표이사 박문석<br>
-    본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
-    이 블로그는 Claude AI와 함께 작성되었습니다
-  </p>
+ <p class="footer-s">개발자 박대표 · Developer Park · Season 4 · EP002</p>
+ <h2 class="footer-t">Episode <span style="color:var(--rose)">005</span></h2>
+ <p class="footer-n">이어서 → <a href="ep006.html" style="color:var(--rose);text-decoration:none;border-bottom:1px solid var(--rose);"><strong>EP006 · 봇들이 서로 모르고 있었다</strong></a></p>
+ <p class="footer-m">
+  (주)데코페이브 · 대표이사 박문석<br>
+  본사: 부산 | 스마트팩토리: 충북 단양 | R&amp;D센터: 경기 하남<br><br>
+  이 블로그는 Claude AI와 함께 작성되었습니다
+ </p>
 </footer>
 
-<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(95,185,201,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
-  <a href="ep004.html" style="color:#5fb9c9;text-decoration:none;padding:4px 8px;">&larr;</a>
-  <a href="index.html" style="color:#5fb9c9;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
-  <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
+<div style="position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(4,5,10,.97);backdrop-filter:blur(10px);border-top:1px solid rgba(251,113,133,.12);padding:10px 16px;display:flex;align-items:center;justify-content:center;gap:5px;font-family:monospace;font-size:.6rem;flex-wrap:wrap;">
+ <a href="ep004.html" style="color:#fb7185;text-decoration:none;padding:4px 8px;">&larr;</a>
+ <a href="index.html" style="color:#fb7185;text-decoration:none;padding:4px 8px;font-weight:700;">&#9776;</a>
+ <a href="prologue.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">PR</a>
   <a href="ep001.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">1</a>
   <a href="ep002.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">2</a>
   <a href="ep003.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">3</a>
   <a href="ep004.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">4</a>
-  <a href="ep005.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #5fb9c9;">5</a>
+  <a href="ep005.html" style="color:#fff;text-decoration:none;padding:4px 5px;font-weight:700;border-bottom:2px solid #fb7185;">5</a>
   <a href="ep006.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">6</a>
+  <a href="ep007.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">7</a>
+  <a href="ep008.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">8</a>
+  <a href="ep009.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">9</a>
   <a href="final.html" style="color:rgba(255,255,255,.4);text-decoration:none;padding:4px 5px;">FN</a>
-  <a href="ep006.html" style="color:#5fb9c9;text-decoration:none;padding:4px 8px;">&rarr;</a>
+ <a href="ep006.html" style="color:#fb7185;text-decoration:none;padding:4px 8px;">&rarr;</a>
 </div>
 </body>
 </html>
