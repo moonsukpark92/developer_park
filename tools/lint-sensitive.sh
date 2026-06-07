@@ -3,7 +3,7 @@
 # 위반 발견 시 exit 1, 통과 시 exit 0.
 #
 # 사용법:
-#   bash tools/lint-sensitive.sh                      # s1/ s2/ s3/ index.html 전체
+#   bash tools/lint-sensitive.sh                      # s1/ s2/ s3/ s4/ index.html 전체
 #   bash tools/lint-sensitive.sh path1 path2 ...      # 명시한 경로만
 #
 # 박문석(CEO/작가)은 화이트리스트 — 마스킹 제외.
@@ -13,7 +13,7 @@ export LC_ALL=C.UTF-8 2>/dev/null || true
 
 # 인자가 없으면 기본 타깃
 if [ "$#" -eq 0 ]; then
-  set -- s1/ s2/ s3/ index.html
+  set -- s1/ s2/ s3/ s4/ index.html
 fi
 
 # 검출 대상 직원 명단 (14명, 마스킹되지 않은 형태)

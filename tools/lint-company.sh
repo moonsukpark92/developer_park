@@ -9,7 +9,7 @@ set -euo pipefail
 export LC_ALL=C.UTF-8 2>/dev/null || true
 
 if [ "$#" -eq 0 ]; then
-  set -- s1/ s2/ s3/ index.html
+  set -- s1/ s2/ s3/ s4/ index.html
 fi
 
 # ㈜로 사용되어서는 안 되는 인코딩

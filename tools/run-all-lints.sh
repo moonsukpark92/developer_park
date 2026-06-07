@@ -11,10 +11,10 @@ cd "$REPO_ROOT"
 
 echo "==> [run-all-lints] repo: $REPO_ROOT"
 
-bash "$SCRIPT_DIR/lint-sensitive.sh" s1/ s2/ s3/ index.html
+bash "$SCRIPT_DIR/lint-sensitive.sh" s1/ s2/ s3/ s4/ index.html
 echo ""
-bash "$SCRIPT_DIR/lint-company.sh"   s1/ s2/ s3/ index.html
+bash "$SCRIPT_DIR/lint-company.sh"   s1/ s2/ s3/ s4/ index.html
 echo ""
-bash "$SCRIPT_DIR/lint-html.sh"      s1/ s2/ s3/ index.html
+bash "$SCRIPT_DIR/lint-html.sh"      s1/ s2/ s3/ s4/ index.html
 echo ""
 echo "==> [run-all-lints] all checks passed"
