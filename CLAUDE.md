@@ -74,6 +74,19 @@ YouTube의 돈벌이용 AI 콘텐츠가 일반인에게 주는 것은 결국 "�
 
 ---
 
+## 0.5 세션 영역 분리 (LOCKED — 박대표 직접 지시 2026-05-10)
+
+본 프로젝트는 **여러 Claude Code 세션이 병렬 운영**된다.
+
+- **메인 관리 세션**: 메타·인프라·`s1/s2/s3/`·`devlogs/`·`MEMORY.md`·`.gitignore`·도구 설치·세션 조율
+- **콘텐츠 세션**: `marketing/`·`voice_rec/`·트레일러·롱폼·쇼츠·ElevenLabs·Midjourney·Descript·YouTube 채널 운영
+
+**작업 전 의무 확인**: [`SCOPE_BOUNDARY.md`](SCOPE_BOUNDARY.md) 전체 규정 (5개 섹션 — 책임/금지 영역, 경계 모호 영역 룰, 영역 침범 절차, 다중 세션 동기화).
+
+영역 외 작업 요청을 받으면 → **박대표에게 해당 세션으로 전환 권유**, 절대 자동 진입 금지.
+
+---
+
 ## 1. 프로젝트 개요
 
 - **프로젝트명**: 개발자 박대표 (developer_park)
@@ -267,3 +280,12 @@ developer_park_repo/           ← Git 저장소 (../developer_park_repo/)
 2. 트랙 미명시 시 첫 응답에서 1줄로 확인
 3. 해당 트랙의 `HANDOFF.json` + 메모리 (`project_developer_park.md` 또는 `project_youtube_track.md`) 로드
 4. 자기 트랙 외 디렉토리는 read-only로 취급
+
+## 13. 콘텐츠 감수성 검수 전담 (park-review 스킬)
+
+**이 세션 계열은 콘텐츠 감수성 검수를 전담한다.** 새 에피소드 작성·기능 개발은 하지 않고, 기존 공개 콘텐츠(`s1`~`s4`, `index.html`)를 읽어 문제 표현을 찾아 중립화하는 작업만 수행한다.
+
+- **트리거**: `/park-review` 또는 "검수" → `Skill` 도구로 `park-review` 호출. 스킬 본문: `~/.claude/skills/park-review/SKILL.md`
+- **2개 검수 축**: ① 반사회적·오해 소지 표현(외부 독자) ② 직원 감시·불신·위협 뉘앙스(직원 관점)
+- **핵심 원칙**: 작가 목소리(욕설·자조·불안·추상적 시스템 비판·구어체)는 보존, 특정 사람·집단을 향한 단정·위협·감시 표현만 완화. 과잉 검열 금지, 너무 매끄럽게 다듬지 말 것.
+- **절차**: 시즌별 병렬 Explore 분석 → grep 교차검증 → 최소 침습 Edit → 원본+repo 동기화 → lint 통과 push(`--no-verify` 금지) → devlog.
